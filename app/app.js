@@ -34,7 +34,7 @@
     layers: { political: true, borders: true, cities: true, battles: true },
     projection: (war.geo && war.geo.projection) || 'robinson',
     railPinned: false,
-    geo: null,
+    geo: null, geoUrl: null,
     quiz: null, chosenOption: null
   };
 
@@ -101,9 +101,15 @@
 
     const tip = document.getElementById('maptip');
     const nameProp = E.geoNameProp(war);
+    // Rebuild land paths from scratch. renderGeometry runs only on load, snapshot
+    // swap, projection or theme change — never on the smooth year-recolor (that's
+    // colorLand alone) — so a clean enter avoids index-keyed data-join mismatches
+    // when one snapshot has a different feature set than the next.
+    gLand.selectAll('path').remove();
     const sel = gLand.selectAll('path').data(state.geo.features, (d, i) => i);
     sel.join(
-      enter => enter.append('path')
+      enter => enter.append('path').attr('class', 'land')
+        .attr('fill', css('--neutral'))
         .attr('stroke', css('--neutral-stroke')).attr('stroke-width', 0.35)
         .style('cursor', 'pointer')
         .on('mousemove', function (ev, d) {
@@ -131,8 +137,9 @@
 
   function colorLand() {
     const F = FACTION();
-    const t = gLand.selectAll('path').transition().duration(420);
-    t.attr('fill', d => state.layers.political ? F[E.factionForFeature(war, d.properties, state.year)].color : css('--neutral'))
+    // Set fills directly (correctness); the .land CSS rule cross-fades the change.
+    gLand.selectAll('path')
+      .attr('fill', d => state.layers.political ? F[E.factionForFeature(war, d.properties, state.year)].color : css('--neutral'))
       .attr('fill-opacity', 1)
       .attr('stroke', css('--neutral-stroke'))
       .attr('stroke-opacity', state.layers.borders ? 1 : 0);
@@ -165,7 +172,7 @@
     en.each(function (d) {
       const s = d3.select(this);
       if (d.capitalOf) s.append('path').attr('d', 'M0,-5 L1.5,-1.6 5.2,-1 2.3,1.7 3.1,5.3 0,3.1 -3.1,5.3 -2.3,1.7 -5.2,-1 -1.5,-1.6 Z')
-        .attr('fill', css('--capital')).attr('stroke', css('--page')).attr('stroke-width', 0.5);
+        .attr('transform', 'scale(0.62)').attr('fill', css('--capital')).attr('stroke', css('--page')).attr('stroke-width', 0.8);
       else s.append('circle').attr('r', 2.6).attr('fill', css('--ink')).attr('stroke', css('--page')).attr('stroke-width', 0.7);
     });
     g.exit().remove();
@@ -234,9 +241,14 @@
     document.getElementById('yearbig').textContent = state.year;
     document.getElementById('yearslider').value = state.year;
     document.getElementById('yearinput').value = state.year;
-    colorLand(); renderBattles(); redrawSelection();
-    renderRail(); renderWorld();
-    updateLegend();
+    // reload geometry only if this year falls under a different border snapshot
+    if (E.geoSourceFor(war, state.year) !== state.geoUrl) {
+      loadGeometryAndRender();   // handles colorLand / battles / cities / legend / world
+    } else {
+      colorLand(); renderBattles(); redrawSelection();
+      renderWorld(); updateLegend();
+    }
+    renderRail();
   }
 
   /* ---------------- RAIL ---------------- */
@@ -632,7 +644,7 @@
     state.selectedEntityId = null; state.selectedType = null; selectedNode = null;
     state.activeTab = 'overview'; state.quiz = null; state.chosenOption = null;
     state.projection = (war.geo && war.geo.projection) || 'robinson';
-    state.geo = null;
+    state.geo = null; state.geoUrl = null;
     gSel.selectAll('*').remove(); gLand.selectAll('path').remove();
     gBattle.selectAll('*').remove(); gCity.selectAll('*').remove();
     closeQuiz();
@@ -693,18 +705,25 @@
   }
 
   let geoLoadToken = 0;
+  const geoCache = {};   // processed FeatureCollections keyed by URL — snapshots swap instantly once seen
+  function applyGeometry(geo) {
+    state.geo = geo;
+    fitProjection();
+    renderGeometry(); colorLand(); renderBattles(); renderCities();
+    updateLegend(); renderWorld();
+  }
   function loadGeometryAndRender() {
     const url = E.geoSourceFor(war, state.year);
     const nameProp = E.geoNameProp(war);
-    const myToken = ++geoLoadToken;   // ignore a slow load if the war changed meanwhile
+    state.geoUrl = url;
+    if (geoCache[url]) { applyGeometry(geoCache[url]); return; }
+    const myToken = ++geoLoadToken;   // ignore a slow load if the war/year moved on meanwhile
     d3.json(url).then(geo => {
       if (myToken !== geoLoadToken) return;
       if (war.geo && war.geo.exclude) geo.features = geo.features.filter(f => !war.geo.exclude.includes(f.properties[nameProp]));
       if (war.geo && war.geo.rewind) geo.features.forEach(f => rewindGeometry(f.geometry));
-      state.geo = geo;
-      fitProjection();
-      renderGeometry(); colorLand(); renderBattles(); renderCities();
-      updateLegend(); renderWorld();
+      geoCache[url] = geo;
+      applyGeometry(geo);
     }).catch(() => { if (myToken === geoLoadToken) document.getElementById('map').innerHTML = '<p style="font-family:var(--ui);padding:40px;color:var(--muted)">The map needs internet access to load the historical basemap (CDN).</p>'; });
   }
 

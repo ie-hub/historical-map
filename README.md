@@ -34,13 +34,13 @@ It needs an internet connection: the historical basemap and the D3 libraries loa
 
 ## Architecture in one idea
 
-**Data is fully separated from a war-agnostic engine.** Adding a war means dropping in another `app/data/<war>.js` file (and one `<script>` tag) shaped like `american-revolution.js` — no changes to the engine or the app. Each war supplies its own factions, side labels, map geometry, and projection, so the Civil War colors US *states* by allegiance while the Revolution and World War I color *world* polities, all through the same engine. Scrubbing the WWI timeline shows the alliances shift — Italy joins in 1915, the US in 1917, and Russia drops out after its 1917 revolution. Entities exist once; their facts carry validity intervals, sources, and confidence, and are resolved for the selected year (e.g. France reads *“not involved”* in 1776 but *“active belligerent”* in 1778).
+**Data is fully separated from a war-agnostic engine.** Adding a war means dropping in another `app/data/<war>.js` file (and one `<script>` tag) shaped like `american-revolution.js` — no changes to the engine or the app. Each war supplies its own factions, side labels, map geometry, and projection, so the Civil War colors US *states* by allegiance while the Revolution and World War I color *world* polities, all through the same engine. A war can ship **multiple border snapshots** that swap as you cross a year boundary: scrubbing the WWI timeline shifts the alliances (Italy joins in 1915, the US in 1917, Russia drops out after its 1917 revolution) and, at 1918, swaps to the post-war boundaries so the empires' collapse is visible. Entities exist once; their facts carry validity intervals, sources, and confidence, and are resolved for the selected year (e.g. France reads *“not involved”* in 1776 but *“active belligerent”* in 1778).
 
 Rendering uses [D3-geo](https://github.com/d3/d3-geo) (Robinson projection by default) over period basemaps. The Civil War uses modern US-state outlines as a labeled teaching approximation.
 
 ## Status
 
-Phase 1 (reference implementation) — working: year-driven map, four layers, seven info tabs, “world at this time,” search, and quizzes. The **second and third conflicts (Civil War, World War I)** land the design doc's Phase 3 goal — wars added by data alone. Known simplifications (single period geometry per war reused across the window; modern US-state outlines for the Civil War; curated world-context; deferred mobile polish) are documented in the design document and surfaced in-app.
+Phase 1 (reference implementation) — working: year-driven map, four layers, seven info tabs, “world at this time,” search, and quizzes. The **second and third conflicts (Civil War, World War I)** land the design doc's Phase 3 goal — wars added by data alone. Known simplifications (sparse border snapshots — WWI uses 1914 borders through 1917 and the post-war 1920 boundaries for 1918; modern US-state outlines for the Civil War; curated world-context; deferred mobile polish) are documented in the design document and surfaced in-app.
 
 ## Credits & sources
 

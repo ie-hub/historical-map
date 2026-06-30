@@ -35,7 +35,10 @@
         'British Raj', 'British East Africa', 'British Somaliland', 'British Protectorate', 'Anglo-Egyption Sudan',
         'Egypt', 'Nigeria', 'Gold Coast', 'Sierra Leone', 'Gambia, The', 'Rhodesia', 'Uganda', 'Malawi',
         'Botswana', 'Lesotho', 'Swaziland', 'Ceylon', 'Malaya', 'Hong Kong', 'Malta', 'Brunei', 'Kuwait', 'Qatar',
-        'Guyana', 'Belize', 'Fiji', 'Papua New Guinea'],
+        'Guyana', 'Belize', 'Fiji', 'Papua New Guinea',
+        // post-war (1920 snapshot) names — incl. mandates over former German & Ottoman lands
+        'Union of South Africa', 'Dominion of Newfoundland', 'Sudan', 'Kenya', 'Ghana', 'Malaysia',
+        'Zambia', 'Zimbabwe', 'Tanzania, United Republic of', 'Mesopotamia (GB)', 'Mandatory Palestine (GB)'],
       geoSubjects: ['United Kingdom', 'United Kingdom of Great Britain and Ireland'],
       summary: 'The world’s largest empire entered the war when Germany invaded Belgium in August 1914. Its navy, finance, manpower and global dominions made it central to the Allied war effort on every front.',
       objectives: ['Honour the guarantee of Belgian neutrality', 'Preserve the balance of power against German hegemony', 'Protect the empire, sea lanes and trade'],
@@ -55,7 +58,9 @@
       capital: { name: 'Paris', lon: 2.35, lat: 48.85 },
       geoNames: ['France', 'Algeria', 'Tunisia', 'Morocco', 'French West Africa', 'French Equatorial Africa',
         'French Indochina', 'Madagascar (France)', 'French Guiana', 'Djibouti', 'Guadeloupe', 'Martinique',
-        'Wallis and Futuna Islands', 'Saint Barthelemy', 'Saint Martin'],
+        'Wallis and Futuna Islands', 'Saint Barthelemy', 'Saint Martin',
+        // post-war (1920 snapshot) names, incl. mandates over former German & Ottoman lands
+        'French Indo-China', 'French Somaliland', 'French Cameroons', 'Syria (France)'],
       geoSubjects: ['France'],
       summary: 'Invaded in 1914 and fighting on its own soil for the entire war, France bore the heaviest Western Front burden. Verdun became the symbol of its endurance, and Marshal Foch ended the war as supreme Allied commander.',
       objectives: ['Repel the German invasion and liberate occupied territory', 'Recover Alsace-Lorraine, lost in 1871', 'Break German military power'],
@@ -87,7 +92,7 @@
       id: 'nation:italy', type: 'nation', name: 'Kingdom of Italy', short: 'Italy',
       side: 'allied', entered: 1915, exited: 1918, factionKey: 'allied',
       capital: { name: 'Rome', lon: 12.50, lat: 41.90 },
-      geoNames: ['Kingfom of Italy', 'Libya', 'Eritrea', 'Italian Somaliland'],
+      geoNames: ['Kingfom of Italy', 'Libya', 'Eritrea', 'Italian Somaliland', 'Italy', 'Libya (IT)'],
       geoSubjects: ['Italy'],
       summary: 'Though nominally allied to the Central Powers before the war, Italy stayed neutral in 1914 and joined the Allies in 1915 under the Treaty of London, opening a brutal mountain front against Austria-Hungary.',
       objectives: ['Gain Italian-speaking lands from Austria-Hungary (Trentino, Trieste)', 'Expand influence in the Adriatic', 'Honour the 1915 Treaty of London'],
@@ -131,7 +136,7 @@
       id: 'nation:serbia', type: 'nation', name: 'Serbia', short: 'Serbia',
       side: 'allied', entered: 1914, exited: 1918, factionKey: 'allied',
       capital: { name: 'Belgrade', lon: 20.46, lat: 44.82 },
-      geoNames: ['Serbia'], geoSubjects: ['Serbia'],
+      geoNames: ['Serbia', 'Yugoslavia'], geoSubjects: ['Serbia'],
       summary: 'The war’s flashpoint: Austria-Hungary’s ultimatum after the Sarajevo assassination fell on Serbia. Invaded and overrun by 1915, Serbia suffered proportionally some of the war’s heaviest losses.',
       objectives: ['Resist Austro-Hungarian domination', 'Defend independence', 'Unite the South Slavs'],
       facts: [
@@ -143,7 +148,7 @@
       id: 'nation:belgium', type: 'nation', name: 'Belgium', short: 'Belgium',
       side: 'allied', entered: 1914, exited: 1918, factionKey: 'allied',
       capital: { name: 'Brussels', lon: 4.35, lat: 50.85 },
-      geoNames: ['Belgium', 'Belgian Congo'], geoSubjects: ['Belgium'],
+      geoNames: ['Belgium', 'Belgian Congo', 'Zaire (Belgium)', 'Rwanda (Belgium)'], geoSubjects: ['Belgium'],
       summary: 'Germany’s invasion of neutral Belgium in August 1914 brought Britain into the war. Most of the country was occupied for the duration, but a sliver behind the Yser held out beside the Allies.',
       objectives: ['Defend its guaranteed neutrality and independence', 'Resist occupation'],
       facts: [
@@ -191,7 +196,8 @@
       id: 'nation:german-empire', type: 'nation', name: 'German Empire', short: 'Germany',
       side: 'central', entered: 1914, exited: 1918, factionKey: 'central',
       capital: { name: 'Berlin', lon: 13.40, lat: 52.52 },
-      geoNames: ['German Empire', 'German E. Africa (Tanganyika)', 'German South-West Africa', 'Kamerun', 'Togoland'],
+      geoNames: ['German Empire', 'German E. Africa (Tanganyika)', 'German South-West Africa', 'Kamerun', 'Togoland',
+        'Germany', 'East Prussia'],
       geoSubjects: ['German Empire'],
       summary: 'The principal Central Power: Europe’s leading industrial and military state. It fought on two fronts, nearly won in 1914 and again in 1918, but was worn down by blockade, attrition and the arrival of American power.',
       objectives: ['Defeat France quickly, then Russia (the Schlieffen plan)', 'Break the British blockade', 'Secure German power on the continent'],
@@ -207,7 +213,7 @@
       id: 'nation:austria-hungary', type: 'nation', name: 'Austria-Hungary', short: 'Austria-Hungary',
       side: 'central', entered: 1914, exited: 1918, factionKey: 'central',
       capital: { name: 'Vienna', lon: 16.37, lat: 48.21 },
-      geoNames: ['Austro-Hungarian Empire'], geoSubjects: ['Austro-Hungarian Empire'],
+      geoNames: ['Austro-Hungarian Empire', 'Austria', 'Hungary'], geoSubjects: ['Austro-Hungarian Empire'],
       summary: 'The multi-ethnic Habsburg empire whose ultimatum to Serbia began the war. Strained by its many nationalities and repeated defeats, it disintegrated entirely in 1918.',
       objectives: ['Punish Serbia and curb Slav nationalism', 'Hold the empire together', 'Support its German ally'],
       facts: [
@@ -220,7 +226,7 @@
       id: 'nation:ottoman-empire', type: 'nation', name: 'Ottoman Empire', short: 'Ottoman Empire',
       side: 'central', entered: 1914, exited: 1918, factionKey: 'central',
       capital: { name: 'Constantinople', lon: 28.98, lat: 41.01 },
-      geoNames: ['Ottoman Empire'], geoSubjects: ['Ottoman Empire'],
+      geoNames: ['Ottoman Empire', 'Ottoman Sultanate'], geoSubjects: ['Ottoman Empire'],
       summary: 'The Ottoman Empire joined the Central Powers in late 1914, fighting at Gallipoli, in the Caucasus and across the Middle East. Defeat ended six centuries of Ottoman rule and partitioned its Arab lands.',
       objectives: ['Recover ground lost to Russia and the Balkan states', 'Defend the empire and the Straits', 'Proclaim jihad against the Allies'],
       facts: [
@@ -388,9 +394,17 @@
       central: { label: 'Central Powers', factionKey: 'central' }
     },
     sources: S, nations, leaders, battles, treaties, cities, timeline, worldContext, quizzes,
+    /* Two border snapshots: 1914 borders for 1914–1917, then the post-war (1920)
+       boundaries from 1918 — the nearest available snapshot — so the empires'
+       collapse (Austria-Hungary, the Ottomans and Russia fragmenting) becomes
+       visible as you scrub to the war's end. */
     geo: {
-      borderSnapshots: { 1914: 'https://cdn.jsdelivr.net/gh/aourednik/historical-basemaps@master/geojson/world_1914.geojson' },
-      nameProp: 'NAME', subjectProp: 'SUBJECTO', fit: 'sphere', projection: 'robinson'
+      borderSnapshots: {
+        1914: 'https://cdn.jsdelivr.net/gh/aourednik/historical-basemaps@master/geojson/world_1914.geojson',
+        1918: 'https://cdn.jsdelivr.net/gh/aourednik/historical-basemaps@master/geojson/world_1920.geojson'
+      },
+      nameProp: 'NAME', subjectProp: 'SUBJECTO', fit: 'sphere', projection: 'robinson',
+      note: 'Borders: 1914 through 1917; the 1918 view uses post-war (1920) boundaries — the nearest snapshot — so the empires’ collapse is visible.'
     }
   };
 })();
