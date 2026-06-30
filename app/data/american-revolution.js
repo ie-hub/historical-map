@@ -262,10 +262,29 @@
       victor: 'american', peaceTreaty: 'treaty:paris-1783',
       territorialChanges: 'U.S. independence with territory to the Mississippi; Spain regained Florida and Minorca; the global balance of empire shifted.',
       significance: 'Created the United States, drained French finances toward revolution, and reshaped the European balance of power.',
+      humanCost: 'Total deaths are debated. Combined American military deaths are usually estimated at <strong>25,000–70,000</strong> <span class="conf low">low confidence</span>, the majority from disease rather than combat. Global figures (French, Spanish, British and Indian theatres) are far less certain.',
       consequences: ['Birth of the United States', 'Fiscal crisis contributing to the French Revolution (1789)', 'A reordered map of empire in the Americas']
+    },
+    /* Faction palette + side labels — presentation reads these, so nothing about
+       this war is hardcoded in the app. A new war supplies its own. */
+    factions: {
+      usa: { label: 'United States', colorVar: '--usa' },
+      france: { label: 'France & allies', colorVar: '--france' },
+      spain: { label: 'Spain & possessions', colorVar: '--spain' },
+      dutch: { label: 'Dutch Republic', colorVar: '--dutch' },
+      britain: { label: 'British Empire', colorVar: '--britain' },
+      neutral: { label: 'Uninvolved', colorVar: '--neutral' }
+    },
+    legendOrder: ['usa', 'france', 'spain', 'dutch', 'britain', 'neutral'],
+    sides: {
+      american: { label: 'American coalition', factionKey: 'usa' },
+      british: { label: 'British side', factionKey: 'britain' }
     },
     sources: S, nations, leaders, battles, treaties, cities, timeline, worldContext, quizzes,
     // geometry: one validated snapshot reused across the 1775–1783 window (see note in UI)
-    geo: { borderSnapshots: { 1783: 'https://cdn.jsdelivr.net/gh/aourednik/historical-basemaps@master/geojson/world_1783.geojson' } }
+    geo: {
+      borderSnapshots: { 1783: 'https://cdn.jsdelivr.net/gh/aourednik/historical-basemaps@master/geojson/world_1783.geojson' },
+      nameProp: 'NAME', subjectProp: 'SUBJECTO', fit: 'sphere', projection: 'robinson'
+    }
   };
 })();

@@ -39,9 +39,15 @@
       return Engine.isActive(nation, year) ? nation.factionKey : 'neutral';
     },
 
+    /* Property keys the loaded geometry uses to name a polygon and (optionally)
+       its parent polity. Each war declares these so the same matching logic works
+       over a world basemap (NAME/SUBJECTO) or a US-states file (name). */
+    geoNameProp(war) { return (war.geo && war.geo.nameProp) || 'NAME'; },
+    geoSubjectProp(war) { return (war.geo && war.geo.subjectProp) || 'SUBJECTO'; },
+
     nationForGeo(war, props) {
-      const name = (props && props.NAME) || '';
-      const sub = (props && props.SUBJECTO) || '';
+      const name = (props && props[Engine.geoNameProp(war)]) || '';
+      const sub = (props && props[Engine.geoSubjectProp(war)]) || '';
       // British is pinned by name first (basemap mis-tags some British colonies).
       for (const n of war.nations) {
         if (n.factionKey === 'britain') {
@@ -65,6 +71,18 @@
 
     /* Timeline events up to and including a year. */
     eventsUpTo(war, year) { return war.timeline.filter(e => e.date.y <= year); },
+
+    /* Border geometry URL for a year: the nearest snapshot whose year is <= the
+       requested year (falls back to the earliest available). A war ships one or
+       more snapshots keyed by year under `geo.borderSnapshots`. */
+    geoSourceFor(war, year) {
+      const snaps = (war.geo && war.geo.borderSnapshots) || {};
+      const years = Object.keys(snaps).map(Number).sort((a, b) => a - b);
+      if (!years.length) return null;
+      let pick = years[0];
+      for (const y of years) { if (y <= year) pick = y; }
+      return snaps[pick];
+    },
 
     /* World-at-this-time: merge the per-year overrides onto the default. */
     worldAt(war, year) {

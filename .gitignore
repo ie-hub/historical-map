@@ -6,6 +6,7 @@
 # Editor / tooling
 .vscode/
 .idea/
+.claude/
 *.log
 
 # Node (in case tooling is added later)

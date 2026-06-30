@@ -11,12 +11,16 @@
 
   <!-- TOP BAR -->
   <header id="topbar" class="ui">
-    <div class="brand"><small>Historical Wars Explorer</small>American Revolutionary War</div>
+    <div class="brand"><small>Historical Wars Explorer</small><span id="brand-title">American Revolutionary War</span></div>
     <div class="searchbox">
       <input id="search" type="text" placeholder="Search countries, battles, leaders, years…" aria-label="Search" autocomplete="off">
       <div id="results" class="results"></div>
     </div>
     <div class="spacer"></div>
+    <div class="tb-menu">
+      <button class="tb-btn" id="war-btn" title="Choose a war">War ▾</button>
+      <div class="menu-pop" id="war-pop"></div>
+    </div>
     <button class="tb-btn" id="overview-btn" title="War overview">Overview</button>
     <button class="tb-btn" id="world-btn">World at this time</button>
     <button class="tb-btn" id="quiz-btn">Quiz</button>
@@ -95,9 +99,10 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-geo-projection/4.0.0/d3-geo-projection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4.0.0/dist/d3-geo-projection.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script src="app/data/american-revolution.js"></script>
+<script src="app/data/american-civil-war.js"></script>
 <script src="app/engine.js"></script>
 <script src="app/app.js"></script>
 </body>

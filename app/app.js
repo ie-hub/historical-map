@@ -1,25 +1,38 @@
 /* Historical Wars Explorer — application boot + presentation.
-   Talks to the war-agnostic Engine; holds the single synchronized state. */
+   Talks to the war-agnostic Engine; holds the single synchronized state.
+   Everything war-specific (factions, side labels, geometry, projection, timeline
+   bounds, title) is read from the active `war` object, so switching wars — or
+   adding a new one as a data file — needs no change here.                      */
 (function () {
   const E = window.HWE.Engine;
-  const war = window.HWE.wars['american-revolution'];
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
-  const FACTION = () => ({
-    britain: { label: 'British Empire', color: css('--britain') },
-    usa: { label: 'United States', color: css('--usa') },
-    france: { label: 'France & allies', color: css('--france') },
-    spain: { label: 'Spain & possessions', color: css('--spain') },
-    dutch: { label: 'Dutch Republic', color: css('--dutch') },
-    neutral: { label: 'Uninvolved', color: css('--neutral') }
-  });
+  /* The registered wars, in declared order. Adding a data file (and its <script>
+     tag) makes a new war appear in the switcher automatically. */
+  const WARS = Object.values(window.HWE.wars);
+  let war = WARS[0];
+
+  /* Faction descriptors for the active war: key -> { label, color }. */
+  function FACTION() {
+    const out = {};
+    Object.entries(war.factions || {}).forEach(([k, f]) => { out[k] = { label: f.label, color: css(f.colorVar) }; });
+    if (!out.neutral) out.neutral = { label: 'Uninvolved', color: css('--neutral') };
+    return out;
+  }
+  function factionColor(key) {
+    const f = (war.factions || {})[key];
+    return css(f ? f.colorVar : '--' + key);
+  }
+  function side(s) { return (war.sides && war.sides[s]) || { label: s, factionKey: 'neutral' }; }
+  function sideLabel(s) { return side(s).label; }
+  function sideColor(s) { return factionColor(side(s).factionKey); }
 
   const state = {
     year: war.meta.defaultYear,
     selectedEntityId: null, selectedType: null,
     activeTab: 'overview',
     layers: { political: true, borders: true, cities: true, battles: true },
-    projection: 'robinson',
+    projection: (war.geo && war.geo.projection) || 'robinson',
     railPinned: false,
     geo: null,
     quiz: null, chosenOption: null
@@ -56,23 +69,38 @@
     setProjection(state.projection, true);
   }
 
+  /* Fit to the loaded geometry's bounds for a regional map (Civil War), or to the
+     whole globe for a world map (Revolution). */
+  function fitProjection() {
+    const dataFit = war.geo && war.geo.fit === 'data' && state.geo;
+    const target = dataFit ? state.geo : { type: 'Sphere' };
+    proj.fitExtent([[14, 14], [W - 14, H - 14]], target);
+    path = d3.geoPath(proj);
+  }
+
   function setProjection(name, skipRender) {
     state.projection = name;
     proj = projections[name]();
-    proj.fitExtent([[12, 12], [W - 12, H - 12]], { type: 'Sphere' });
-    path = d3.geoPath(proj);
+    fitProjection();
     if (!skipRender) renderGeometry();
-    else renderGeometry();
+  }
+
+  function drawBackdrop() {
+    // A world map gets the styled ocean sphere + graticule; a data-fit regional
+    // map sits on the stage's ocean tone (no global sphere to blow up the view).
+    const showGlobe = !(war.geo && war.geo.fit === 'data');
+    gRoot.select('.sphere').attr('d', showGlobe ? path({ type: 'Sphere' }) : null)
+      .attr('fill', css('--ocean')).attr('stroke', css('--sphere')).attr('stroke-width', 0.8);
+    gRoot.select('.grat').attr('d', showGlobe ? path(d3.geoGraticule10()) : null)
+      .attr('fill', 'none').attr('stroke', css('--grat')).attr('stroke-width', 0.4);
   }
 
   function renderGeometry() {
     if (!state.geo) return;
-    gRoot.select('.sphere').attr('d', path({ type: 'Sphere' })).attr('fill', css('--ocean'))
-      .attr('stroke', css('--sphere')).attr('stroke-width', 0.8);
-    gRoot.select('.grat').attr('d', path(d3.geoGraticule10())).attr('fill', 'none')
-      .attr('stroke', css('--grat')).attr('stroke-width', 0.4);
+    drawBackdrop();
 
     const tip = document.getElementById('maptip');
+    const nameProp = E.geoNameProp(war);
     const sel = gLand.selectAll('path').data(state.geo.features, (d, i) => i);
     sel.join(
       enter => enter.append('path')
@@ -81,7 +109,7 @@
         .on('mousemove', function (ev, d) {
           if (this !== selectedNode) { d3.select(this).attr('stroke', css('--ink')).attr('stroke-width', 0.9).raise(); }
           const n = E.nationForGeo(war, d.properties);
-          tip.textContent = (d.properties.NAME || 'Territory') + (n ? ' · ' + FACTION()[E.factionForFeature(war, d.properties, state.year)].label : '');
+          tip.textContent = (d.properties[nameProp] || 'Territory') + (n ? ' · ' + FACTION()[E.factionForFeature(war, d.properties, state.year)].label : '');
           showTip(ev);
         })
         .on('mouseout', function () { if (this !== selectedNode) d3.select(this).attr('stroke', css('--neutral-stroke')).attr('stroke-width', 0.35); hideTip(); })
@@ -121,6 +149,7 @@
     en.append('circle').attr('class', 'ring').attr('r', 9).attr('fill', 'none').attr('stroke', css('--battle')).attr('stroke-width', 1).attr('opacity', 0);
     en.append('circle').attr('class', 'core').attr('r', 4).attr('fill', css('--battle')).attr('stroke', css('--page')).attr('stroke-width', 1.2);
     g.exit().remove();
+    gBattle.selectAll('g.b').attr('transform', d => { const p = proj([d.location.lon, d.location.lat]); return p ? `translate(${p[0]},${p[1]})` : 'translate(-99,-99)'; });
     gBattle.selectAll('g.b').select('.ring').attr('opacity', d => d.date.y === state.year ? 0.7 : 0);
     gBattle.selectAll('g.b').select('.core').attr('r', d => d.date.y === state.year ? 5 : 3.4)
       .attr('fill-opacity', d => d.date.y === state.year ? 1 : 0.72);
@@ -130,7 +159,6 @@
     const data = state.layers.cities ? war.cities : [];
     const g = gCity.selectAll('g.c').data(data, d => d.id);
     const en = g.enter().append('g').attr('class', 'c').style('cursor', 'pointer')
-      .attr('transform', d => { const p = proj([d.lon, d.lat]); return p ? `translate(${p[0]},${p[1]})` : 'translate(-99,-99)'; })
       .on('click', (ev, d) => { ev.stopPropagation(); selectEntity(d.id, 'city'); flyTo([d.lon, d.lat], 3); })
       .on('mousemove', (ev, d) => { const tip = document.getElementById('maptip'); tip.textContent = d.name + (d.capitalOf ? ' · capital' : ''); showTip(ev); })
       .on('mouseout', hideTip);
@@ -141,6 +169,7 @@
       else s.append('circle').attr('r', 2.6).attr('fill', css('--ink')).attr('stroke', css('--page')).attr('stroke-width', 0.7);
     });
     g.exit().remove();
+    gCity.selectAll('g.c').attr('transform', d => { const p = proj([d.lon, d.lat]); return p ? `translate(${p[0]},${p[1]})` : 'translate(-99,-99)'; });
   }
 
   let selectedNode = null;
@@ -186,8 +215,12 @@
     if (state.quiz && state.quiz.type === 'click-map') return; // clicks during quiz are answers
     state.selectedEntityId = null; state.selectedType = null; selectedNode = null;
     gSel.selectAll('*').remove();
-    document.getElementById('rail').classList.remove('open');
     if (!state.railPinned) document.getElementById('rail').classList.remove('open');
+  }
+  /* Drop the current entity but keep the rail open — returns a section tab to its list. */
+  function clearRailSelection() {
+    state.selectedEntityId = null; state.selectedType = null; selectedNode = null;
+    gSel.selectAll('*').remove();
   }
 
   function setYear(y) {
@@ -208,10 +241,12 @@
 
   /* ---------------- RAIL ---------------- */
   const TABS = [['overview', 'Overview'], ['countries', 'Countries'], ['battles', 'Battles'], ['leaders', 'Leaders'], ['timeline', 'Timeline'], ['statistics', 'Statistics'], ['sources', 'Sources']];
+  /* The list tab each selectable entity belongs to; clicking that tab's header
+     while its detail is open jumps back to the full list. */
+  const LIST_TAB = { nation: 'countries', city: 'countries', battle: 'battles', leader: 'leaders' };
   function openRail() { document.getElementById('rail').classList.add('open'); }
 
   function renderRail() {
-    const rail = document.getElementById('rail');
     // head
     let title = war.meta.name, kind = 'War';
     const ent = state.selectedEntityId ? E.entity(war, state.selectedEntityId) : null;
@@ -227,7 +262,12 @@
     const tabsEl = document.getElementById('tabs'); tabsEl.innerHTML = '';
     TABS.forEach(([id, label]) => {
       const b = document.createElement('button'); b.textContent = label; b.className = state.activeTab === id ? 'active' : '';
-      b.onclick = () => { state.activeTab = id; renderRail(); }; tabsEl.appendChild(b);
+      b.onclick = () => {
+        // re-clicking a section header with its detail open returns to the list
+        if (state.selectedEntityId && LIST_TAB[state.selectedType] === id) clearRailSelection();
+        state.activeTab = id; renderRail();
+      };
+      tabsEl.appendChild(b);
     });
     document.getElementById('railbody').innerHTML = renderTab(state.activeTab);
     wireRailLinks();
@@ -244,14 +284,14 @@
     return '';
   }
 
-  const m = war.meta;
   function tabOverview() {
+    const m = war.meta;
     return `
       <p class="lead">${m.summary}</p>
       <dl class="kv">
         <dt>Dates</dt><dd>${m.duration}</dd>
         <dt>Outcome</dt><dd>${cap(m.victor)} victory</dd>
-        <dt>Peace</dt><dd>${linkChip(m.peaceTreaty, E.entity(war, m.peaceTreaty).name)}</dd>
+        <dt>Peace</dt><dd>${m.peaceTreaty ? linkChip(m.peaceTreaty, E.entity(war, m.peaceTreaty).name) : '—'}</dd>
       </dl>
       <h3>Background</h3><p>${m.background}</p>
       <h3>Long-term causes</h3><ul>${m.causesLong.map(li).join('')}</ul>
@@ -265,11 +305,10 @@
   function tabCountries() {
     if (state.selectedType === 'nation') return nationDetail(E.entity(war, state.selectedEntityId));
     if (state.selectedType === 'city') return cityDetail(E.entity(war, state.selectedEntityId));
-    const active = war.nations.filter(n => E.isActive(n, state.year));
-    return `<p class="note">Participants active in ${state.year}. Click one — or click it on the map.</p>` +
+    return `<p class="note">Participants and their allegiance in ${state.year}. Click one — or click it on the map.</p>` +
       war.nations.map(n => {
         const on = E.isActive(n, state.year);
-        return listItem(n.id, 'nation', FACTION()[n.factionKey] ? css('--' + n.factionKey) : css('--neutral'),
+        return listItem(n.id, 'nation', factionColor(n.factionKey),
           n.name, (on ? sideLabel(n.side) : 'Not yet involved in ' + state.year));
       }).join('');
   }
@@ -282,8 +321,8 @@
     const enemies = war.nations.filter(o => o.side !== n.side && E.isActive(o, state.year));
     const active = E.isActive(n, state.year);
     return `
-      <div class="chips"><span class="chip" style="border-color:${css('--' + n.factionKey)}">${sideLabel(n.side)}</span>
-        <span class="chip">${active ? 'Active belligerent · ' + state.year : 'Not involved in ' + state.year}</span></div>
+      <div class="chips"><span class="chip" style="border-color:${factionColor(n.factionKey)}">${sideLabel(n.side)}</span>
+        <span class="chip">${active ? 'Active · ' + state.year : 'Not involved in ' + state.year}</span></div>
       <p class="lead">${n.summary}</p>
       <dl class="kv">
         <dt>Capital</dt><dd>${n.capital.name}</dd>
@@ -295,7 +334,7 @@
         ${factRow('Population', 'population')}
         ${factRow('Army', 'army')}
         ${factRow('Navy', 'navy')}
-        ${factRow('Entered war', 'entryEvent') || factRow('Entered', 'entryEvent')}
+        ${factRow('Entered war', 'entryEvent')}
       </dl>
       ${(f('population') && f('population').note) ? `<p class="note">${f('population').note}</p>` : ''}
       <h3>War objectives</h3><ul>${n.objectives.map(li).join('')}</ul>
@@ -311,29 +350,38 @@
   function tabBattles() {
     if (state.selectedType === 'battle') return battleDetail(E.entity(war, state.selectedEntityId));
     const occurred = E.battlesUpTo(war, state.year);
-    return `<p class="note">${occurred.length} of ${war.battles.length} battles have occurred by ${state.year}. Selecting one zooms the map.</p>` +
-      war.battles.map(b => {
+    return `<p class="note">${occurred.length} of ${war.battles.length} battles have occurred by ${state.year}. Selecting one zooms the map; use ‹ › inside a battle to step through them.</p>` +
+      battlesChrono().map(b => {
         const past = b.date.y <= state.year;
         return listItem(b.id, 'battle', css('--battle'), b.name + (past ? '' : ' <span class="li-sub">(later)</span>'),
           E.fmt.date(b.date) + ' · ' + b.location.place + ' · ' + b.victor);
       }).join('');
   }
   function battleDetail(b) {
+    const order = battlesChrono();
+    const idx = order.findIndex(x => x.id === b.id);
+    const prev = order[idx - 1], next = order[idx + 1];
+    const nav = `<div class="navrow">
+      <button class="nav-btn" ${prev ? `data-go-battle="${prev.id}"` : 'disabled'} title="${prev ? prev.name : ''}">‹ Prev</button>
+      <span class="nav-count">Battle ${idx + 1} of ${order.length}</span>
+      <button class="nav-btn" ${next ? `data-go-battle="${next.id}"` : 'disabled'} title="${next ? next.name : ''}">Next ›</button>
+    </div>`;
     const cdrs = (b.commanders || []).map(c => c.startsWith('person:') ? linkChip(c, E.entity(war, c).name, 'leader') : `<span class="chip">${c}</span>`).join('');
     const cas = b.casualties ? Object.entries(b.casualties).map(([k, val]) => `<dt>${cap(k)} losses</dt><dd>${E.fmt.number(val)}</dd>`).join('') : '';
-    return `
+    return `${nav}
       <div class="chips"><span class="chip">${E.fmt.date(b.date)}</span><span class="chip">${b.location.place}</span>${b.decisive ? '<span class="chip" style="border-color:var(--accent);color:var(--accent)">Decisive</span>' : ''}${b.naval ? '<span class="chip">Naval</span>' : ''}</div>
       <p class="lead">${b.significance}</p>
       <dl class="kv"><dt>Outcome</dt><dd>${b.victor}</dd>${cas}</dl>
       ${cdrs ? `<h3>Commanders</h3><div class="chips">${cdrs}</div>` : ''}
       <button class="chip" data-fly="${b.location.lon},${b.location.lat}">Zoom to location ↗</button>
+      <button class="chip" data-back-list="battles">← All battles</button>
       ${sourcesFor(b)}`;
   }
 
   function tabLeaders() {
     if (state.selectedType === 'leader') return leaderDetail(E.entity(war, state.selectedEntityId));
     return `<p class="note">Key figures on every side.</p>` + war.leaders.map(l =>
-      listItem(l.id, 'leader', css('--' + (sideKey(l.side))), l.name, l.role + ' · ' + l.years)).join('');
+      listItem(l.id, 'leader', sideColor(l.side), l.name, l.role + ' · ' + l.years)).join('');
   }
   function leaderDetail(l) {
     const nat = E.entity(war, l.nationId);
@@ -344,6 +392,7 @@
       <p><strong>${l.role}</strong></p><p class="lead">${l.bio}</p>
       ${rb ? `<h3>Related battles</h3><div class="chips">${rb}</div>` : ''}
       ${rt ? `<h3>Related treaties</h3><div class="chips">${rt}</div>` : ''}
+      <button class="chip" data-back-list="leaders">← All leaders</button>
       ${sourcesFor(l)}`;
   }
 
@@ -352,7 +401,7 @@
     return `<p class="note">Events through ${state.year} are highlighted; later events are dimmed. Click a battle or treaty to open it.</p>` +
       evs.map(ev => {
         const past = ev.date.y <= state.year;
-        const dot = ev.type === 'battle' ? css('--battle') : ev.type === 'treaty' ? css('--france') : css('--muted');
+        const dot = ev.type === 'battle' ? css('--battle') : ev.type === 'treaty' ? css('--accent') : css('--muted');
         const link = ev.type === 'battle' ? bestBattleId(ev) : (ev.type === 'treaty' ? bestTreatyId(ev) : null);
         return `<button class="list-item" ${link ? `data-id="${link.id}" data-type="${link.type}"` : ''} style="opacity:${past ? 1 : .45}">
           <span class="dot" style="background:${dot}"></span>
@@ -366,15 +415,15 @@
       const pop = (st.facts || []).find(f => f.attr === 'population');
       return `<tr><td>${n.short}</td><td>${E.isActive(n, state.year) ? sideLabel(n.side) : '—'}</td><td>${pop ? E.fmt.factValue(pop) : '—'}</td></tr>`;
     }).join('');
+    const m = war.meta;
     return `
-      <h3>The world in ${state.year}</h3>
+      <h3>The participants in ${state.year}</h3>
       <p class="note">Where historians give ranges, ranges are shown. Population figures are period estimates, not censuses.</p>
       <table style="width:100%;font-family:var(--ui);font-size:13px;border-collapse:collapse">
-        <tr style="text-align:left;color:var(--muted)"><th style="padding:6px 4px">Nation</th><th>Side (${state.year})</th><th>Population</th></tr>
+        <tr style="text-align:left;color:var(--muted)"><th style="padding:6px 4px">Side</th><th>Allegiance (${state.year})</th><th>Population</th></tr>
         ${rows}
       </table>
-      <h3>Human cost</h3>
-      <p>Total deaths are debated. Combined American military deaths are usually estimated at <strong>25,000–70,000</strong> <span class="conf low">low confidence</span>, the majority from disease rather than combat. Global figures (French, Spanish, British, Indian theatres) are far less certain.</p>
+      ${m.humanCost ? `<h3>Human cost</h3><p>${m.humanCost}</p>` : ''}
       <h3>Scale</h3><ul>${m.consequences.map(li).join('')}</ul>`;
   }
 
@@ -393,8 +442,7 @@
   /* link/list helpers */
   function li(x) { return `<li>${x}</li>`; }
   function cap(s) { return s ? s[0].toUpperCase() + s.slice(1) : s; }
-  function sideKey(side) { return side === 'british' ? 'britain' : 'usa'; }
-  function sideLabel(side) { return side === 'british' ? 'British side' : 'American coalition'; }
+  function battlesChrono() { return war.battles.slice().sort((a, b) => a.date.y - b.date.y || (a.date.m || 0) - (b.date.m || 0) || (a.date.d || 0) - (b.date.d || 0)); }
   function linkChip(id, label, type) { return `<button class="chip" data-id="${id}" data-type="${type || E.entity(war, id).type}">${label}</button>`; }
   function listItem(id, type, color, title, sub) {
     return `<button class="list-item" data-id="${id}" data-type="${type}"><span class="dot" style="background:${color}"></span><span class="li-main"><span class="li-title">${title}</span><span class="li-sub">${sub}</span></span></button>`;
@@ -406,7 +454,7 @@
     document.querySelectorAll('#railbody [data-id]').forEach(el => {
       el.addEventListener('click', () => {
         const id = el.getAttribute('data-id'), type = el.getAttribute('data-type');
-        if (type === 'treaty') { state.selectedEntityId = id; state.selectedType = 'treaty'; alert(E.entity(war, id).name + '\n\n' + E.entity(war, id).summary); return; }
+        if (type === 'treaty') { const t = E.entity(war, id); alert(t.name + '\n\n' + t.summary); return; }
         const ent = E.entity(war, id);
         selectEntity(id, type);
         if (type === 'battle') flyTo([ent.location.lon, ent.location.lat], 3.2);
@@ -415,6 +463,12 @@
     });
     document.querySelectorAll('#railbody [data-fly]').forEach(el => {
       el.addEventListener('click', () => { const [lon, lat] = el.getAttribute('data-fly').split(',').map(Number); flyTo([lon, lat], 3.4); });
+    });
+    document.querySelectorAll('#railbody [data-go-battle]').forEach(el => {
+      el.addEventListener('click', () => { const id = el.getAttribute('data-go-battle'); const ent = E.entity(war, id); selectEntity(id, 'battle'); flyTo([ent.location.lon, ent.location.lat], 3.2); });
+    });
+    document.querySelectorAll('#railbody [data-back-list]').forEach(el => {
+      el.addEventListener('click', () => { clearRailSelection(); state.activeTab = el.getAttribute('data-back-list'); renderRail(); });
     });
   }
 
@@ -426,7 +480,7 @@
     const ul = arr => `<ul>${(arr || []).map(li).join('')}</ul>`;
     document.getElementById('world-year').textContent = 'The world in ' + state.year;
     document.getElementById('world-cards').innerHTML =
-      card('World population', `${(pop.low / 1e6 | 0)}–${(pop.high / 1e6 | 0)} million <span class="conf low">est.</span>`) +
+      (pop ? card('World population', `${(pop.low / 1e6 | 0)}–${(pop.high / 1e6 | 0)} million <span class="conf low">est.</span>`) : '') +
       card('Largest empires', ul(w.largestEmpires)) +
       card('Largest cities', ul(w.largestCities)) +
       card('Other conflicts', ul(w.otherConflicts)) +
@@ -437,16 +491,20 @@
   /* ---------------- LEGEND ---------------- */
   function updateLegend() {
     const F = FACTION();
-    const order = ['usa', 'france', 'spain', 'dutch', 'britain', 'neutral'];
-    const active = new Set(war.nations.filter(n => E.isActive(n, state.year)).map(n => n.factionKey));
+    const order = war.legendOrder || Object.keys(F);
+    // which faction keys have a belligerent that hasn't entered yet?
+    const byFaction = {};
+    war.nations.forEach(n => { (byFaction[n.factionKey] = byFaction[n.factionKey] || []).push(n); });
     const rows = order.map(k => {
-      const dim = (k !== 'britain' && k !== 'usa' && k !== 'neutral' && !active.has(k));
+      const nats = byFaction[k];
+      const dim = nats && nats.length && !nats.some(n => E.isActive(n, state.year));
       return `<div class="row" style="opacity:${dim ? .4 : 1}"><span class="sw" style="background:${F[k].color}"></span>${F[k].label}${dim ? ' (not yet)' : ''}</div>`;
     }).join('');
     document.getElementById('legend').innerHTML =
       `<div class="ttl">Allegiance · ${state.year}</div>${rows}
        <div class="row" style="margin-top:5px"><span class="sw" style="background:${css('--battle')};border-radius:50%"></span>Battle</div>
-       <div class="row"><span class="sw" style="background:${css('--capital')}"></span>Capital</div>`;
+       <div class="row"><span class="sw" style="background:${css('--capital')}"></span>Capital</div>
+       ${war.geo && war.geo.note ? `<div class="row legnote">${war.geo.note}</div>` : ''}`;
   }
 
   /* ---------------- SEARCH ---------------- */
@@ -470,9 +528,9 @@
   }
 
   /* ---------------- QUIZ ---------------- */
-  let quizIdx = 0;
   function openQuiz(i) {
-    quizIdx = i; const q = war.quizzes[i]; state.quiz = q; state.chosenOption = null;
+    if (!war.quizzes || !war.quizzes.length) return;
+    const q = war.quizzes[i]; state.quiz = q; state.chosenOption = null;
     const card = document.getElementById('quizcard');
     document.getElementById('quiz').classList.add('open');
     let body = `<div class="kq">Quiz · ${i + 1} of ${war.quizzes.length}</div><h3>${q.prompt}</h3>`;
@@ -500,7 +558,6 @@
     document.getElementById('quiz').classList.add('open');
     const fb = document.getElementById('quiz-fb');
     if (fb) { fb.className = 'feedback show ' + (ok ? 'ok' : 'no'); fb.textContent = ok ? q.feedback.correct : q.feedback.incorrect; }
-    if (ok) state.quiz = state.quiz; // keep for review
   }
   function closeQuiz() { document.getElementById('quiz').classList.remove('open'); state.quiz = null; hideInstruction(); }
 
@@ -515,23 +572,30 @@
       else setYear(state.year + 1);
     }, 1100);
   }
+  function stopPlay() { if (playing) { clearInterval(playing); playing = null; document.getElementById('play').textContent = '▶'; } }
 
   /* ---------------- TOP BAR MENUS ---------------- */
   function wireMenus() {
+    const warBtn = document.getElementById('war-btn'), warPop = document.getElementById('war-pop');
     const layerBtn = document.getElementById('layers-btn'), layerPop = document.getElementById('layers-pop');
-    layerBtn.onclick = (e) => { e.stopPropagation(); layerPop.classList.toggle('open'); document.getElementById('proj-pop').classList.remove('open'); };
+    const projBtn = document.getElementById('proj-btn'), projPop = document.getElementById('proj-pop');
+    const closeAll = () => { warPop.classList.remove('open'); layerPop.classList.remove('open'); projPop.classList.remove('open'); };
+
+    buildWarMenu();
+    warBtn.onclick = (e) => { e.stopPropagation(); const open = warPop.classList.contains('open'); closeAll(); if (!open) warPop.classList.add('open'); };
+
+    layerBtn.onclick = (e) => { e.stopPropagation(); const open = layerPop.classList.contains('open'); closeAll(); if (!open) layerPop.classList.add('open'); };
     layerPop.querySelectorAll('input').forEach(cb => cb.onchange = () => {
       state.layers[cb.dataset.layer] = cb.checked;
       colorLand(); renderBattles(); renderCities(); updateLegend();
     });
-    const projBtn = document.getElementById('proj-btn'), projPop = document.getElementById('proj-pop');
-    projBtn.onclick = (e) => { e.stopPropagation(); projPop.classList.toggle('open'); layerPop.classList.remove('open'); };
+    projBtn.onclick = (e) => { e.stopPropagation(); const open = projPop.classList.contains('open'); closeAll(); if (!open) projPop.classList.add('open'); };
     projPop.querySelectorAll('button').forEach(b => b.onclick = () => {
       projPop.querySelectorAll('button').forEach(x => x.style.fontWeight = '400');
       b.style.fontWeight = '600'; projPop.classList.remove('open');
       resetZoom(); setProjection(b.dataset.proj); redrawSelection();
     });
-    document.body.addEventListener('click', () => { layerPop.classList.remove('open'); projPop.classList.remove('open'); });
+    document.body.addEventListener('click', closeAll);
 
     document.getElementById('pin').onclick = () => {
       state.railPinned = !state.railPinned;
@@ -546,6 +610,61 @@
     document.getElementById('quiz').addEventListener('click', (e) => { if (e.target.id === 'quiz') closeQuiz(); });
   }
 
+  function buildWarMenu() {
+    const warPop = document.getElementById('war-pop');
+    warPop.innerHTML = '<div class="head">Choose a war</div>' + WARS.map(w =>
+      `<button class="menu-war" data-war="${w.id}" style="display:block;width:100%;text-align:left;border:0;background:none;color:var(--ink);padding:7px 8px;border-radius:6px;font-weight:${w.id === war.id ? 600 : 400}">
+        ${w.meta.name}<span style="display:block;font-size:11px;color:var(--muted)">${w.meta.duration}</span></button>`).join('');
+    warPop.querySelectorAll('.menu-war').forEach(b => b.onclick = () => {
+      warPop.classList.remove('open');
+      switchWar(b.dataset.war);
+    });
+  }
+
+  /* ---------------- WAR SWITCHING ---------------- */
+  function switchWar(id) {
+    if (id === war.id) return;
+    const next = WARS.find(w => w.id === id); if (!next) return;
+    stopPlay();
+    war = next;
+    // reset synchronized state for the new war
+    state.year = war.meta.defaultYear;
+    state.selectedEntityId = null; state.selectedType = null; selectedNode = null;
+    state.activeTab = 'overview'; state.quiz = null; state.chosenOption = null;
+    state.projection = (war.geo && war.geo.projection) || 'robinson';
+    state.geo = null;
+    gSel.selectAll('*').remove(); gLand.selectAll('path').remove();
+    gBattle.selectAll('*').remove(); gCity.selectAll('*').remove();
+    closeQuiz();
+    applyWarChrome();
+    setProjection(state.projection, true);
+    buildWarMenu();
+    loadGeometryAndRender();
+  }
+
+  /* Update the parts of the shell that name or bound the active war. */
+  function applyWarChrome() {
+    document.title = 'Historical Wars Explorer — ' + war.meta.name;
+    document.getElementById('brand-title').textContent = war.meta.name;
+    // mark the projection menu's active entry
+    document.querySelectorAll('#proj-pop button').forEach(b => b.style.fontWeight = b.dataset.proj === state.projection ? '600' : '400');
+    // timeline bounds + ticks
+    const sl = document.getElementById('yearslider'), yi = document.getElementById('yearinput');
+    sl.min = yi.min = war.meta.years.start; sl.max = yi.max = war.meta.years.end;
+    sl.value = yi.value = state.year;
+    document.getElementById('yearbig').textContent = state.year;
+    document.querySelector('#timeline .tl-ticks').innerHTML = buildTicks(war.meta.years.start, war.meta.years.end).map(y => `<span>${y}</span>`).join('');
+    resetZoom();
+    document.getElementById('rail').classList.remove('open');
+  }
+
+  function buildTicks(start, end) {
+    const span = end - start; const n = Math.min(span, 5);
+    const out = [];
+    for (let i = 0; i <= n; i++) out.push(Math.round(start + (span * i) / n));
+    return [...new Set(out)];
+  }
+
   /* ---------------- BOOT ---------------- */
   function reTheme() {
     if (!state.geo) return;
@@ -554,29 +673,50 @@
     if (document.getElementById('rail').classList.contains('open')) renderRail();
   }
 
+  /* d3-geo treats polygons on the sphere and expects CLOCKWISE exterior rings;
+     a counter-clockwise ring is read as "everything except this area" and fills
+     the whole map. Some GeoJSON files (e.g. the US-states set) use the opposite
+     winding, so normalize per ring. Gated by `geo.rewind` to leave already-correct
+     basemaps untouched. */
+  function ringSignedArea(ring) { let a = 0; for (let i = 0; i < ring.length - 1; i++) a += ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1]; return a / 2; }
+  function rewindRing(ring, wantClockwise) { const isClockwise = ringSignedArea(ring) < 0; if (isClockwise !== wantClockwise) ring.reverse(); }
+  function rewindPolygon(poly) { rewindRing(poly[0], true); for (let i = 1; i < poly.length; i++) rewindRing(poly[i], false); }
+  function validRing(ring) { return ring && ring.length >= 4 && Math.abs(ringSignedArea(ring)) > 1e-9; }
+  function rewindGeometry(g) {
+    if (!g) return;
+    if (g.type === 'Polygon') { rewindPolygon(g.coordinates); }
+    else if (g.type === 'MultiPolygon') {
+      // drop degenerate sub-polygons (zero-area slivers read as a filled hemisphere)
+      g.coordinates = g.coordinates.filter(poly => validRing(poly[0]));
+      g.coordinates.forEach(rewindPolygon);
+    }
+  }
+
+  let geoLoadToken = 0;
+  function loadGeometryAndRender() {
+    const url = E.geoSourceFor(war, state.year);
+    const nameProp = E.geoNameProp(war);
+    const myToken = ++geoLoadToken;   // ignore a slow load if the war changed meanwhile
+    d3.json(url).then(geo => {
+      if (myToken !== geoLoadToken) return;
+      if (war.geo && war.geo.exclude) geo.features = geo.features.filter(f => !war.geo.exclude.includes(f.properties[nameProp]));
+      if (war.geo && war.geo.rewind) geo.features.forEach(f => rewindGeometry(f.geometry));
+      state.geo = geo;
+      fitProjection();
+      renderGeometry(); colorLand(); renderBattles(); renderCities();
+      updateLegend(); renderWorld();
+    }).catch(() => { if (myToken === geoLoadToken) document.getElementById('map').innerHTML = '<p style="font-family:var(--ui);padding:40px;color:var(--muted)">The map needs internet access to load the historical basemap (CDN).</p>'; });
+  }
+
   function boot() {
-    buildMapShellRefs();
     buildMap();
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', reTheme);
     wireSearch(); wireMenus(); wireTimeline();
-    syncYearStatic();
-    d3.json(war.geo.borderSnapshots[1783]).then(geo => {
-      state.geo = geo;
-      renderGeometry(); colorLand(); renderBattles(); renderCities();
-      updateLegend(); renderWorld();
-      // open rail to the overview by default (pinned-feel without covering map fully)
-      setTimeout(() => { document.getElementById('hint').style.opacity = 1; }, 200);
-    }).catch(() => { document.getElementById('map').innerHTML = '<p style="font-family:var(--ui);padding:40px;color:var(--muted)">The map needs internet access to load the historical basemap (CDN).</p>'; });
+    applyWarChrome();
+    loadGeometryAndRender();
+    setTimeout(() => { document.getElementById('hint').style.opacity = 1; }, 200);
   }
 
-  function buildMapShellRefs() { /* placeholder for symmetry */ }
-  function syncYearStatic() {
-    document.getElementById('yearbig').textContent = state.year;
-    document.getElementById('yearslider').min = war.meta.years.start;
-    document.getElementById('yearslider').max = war.meta.years.end;
-    document.getElementById('yearslider').value = state.year;
-    document.getElementById('yearinput').value = state.year;
-  }
   function wireTimeline() {
     document.getElementById('yearslider').addEventListener('input', e => setYear(+e.target.value));
     document.getElementById('yearinput').addEventListener('change', e => setYear(+e.target.value));
@@ -584,7 +724,7 @@
     document.getElementById('next').onclick = () => setYear(state.year + 1);
     document.getElementById('play').onclick = togglePlay;
     document.getElementById('reset').onclick = resetZoom;
-    document.getElementById('overview-btn').onclick = () => { state.selectedEntityId = null; state.selectedType = null; state.activeTab = 'overview'; gSel.selectAll('*').remove(); openRail(); renderRail(); };
+    document.getElementById('overview-btn').onclick = () => { clearRailSelection(); state.activeTab = 'overview'; openRail(); renderRail(); };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
