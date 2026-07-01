@@ -181,6 +181,31 @@
       signatories: ['nation:great-britain', 'nation:united-states'], summary: 'Britain recognized the independence of the United States and ceded territory east of the Mississippi. Companion treaties at Versailles settled accounts with France and Spain (which regained Florida and Minorca).', confidence: 'high', sources: ['src:loc'] }
   ];
 
+  /* ---- FOUNDING DOCUMENTS ----------------------------------------------- */
+  /* Charters the Revolution produced. The Constitution post-dates the fighting
+     (1787) but is the constitutional order the war made possible, so it is
+     included with a note to that effect.                                     */
+  const documents = [
+    {
+      id: 'doc:declaration', name: 'Declaration of Independence', date: { y: 1776, m: 7, d: 4 },
+      author: 'Drafted by Thomas Jefferson for the Second Continental Congress',
+      excerpt: '“We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness.”',
+      summary: 'Adopted on 4 July 1776, the Declaration announced that the thirteen colonies regarded themselves as free and independent states, no longer under British rule. It set out a philosophy of natural rights and government by consent, then listed the colonists’ grievances against King George III to justify the break.',
+      significance: 'It transformed a rebellion over taxation into a war for national independence and gave the cause a universal moral argument that would echo through later movements for liberty and equality worldwide.',
+      url: 'https://www.archives.gov/founding-docs/declaration-transcript',
+      confidence: 'high', sources: ['src:loc']
+    },
+    {
+      id: 'doc:constitution', name: 'United States Constitution', date: { y: 1787, m: 9, d: 17 },
+      author: 'Framed by the Constitutional Convention, Philadelphia',
+      excerpt: '“We the People of the United States, in Order to form a more perfect Union … do ordain and establish this Constitution for the United States of America.”',
+      summary: 'Signed on 17 September 1787 and effective in 1789, the Constitution replaced the weak Articles of Confederation with a federal government of three balanced branches. Ratified with the promise of a Bill of Rights (1791), it remains the framework of American government.',
+      significance: 'It came four years after the fighting ended, but it was the durable political order the Revolution made possible — turning the wartime confederation of states into a lasting national government.',
+      url: 'https://www.archives.gov/founding-docs/constitution-transcript',
+      confidence: 'high', sources: ['src:loc'], note: 'Ratified 1787–88; took effect 1789 — after the war, but its direct outcome.'
+    }
+  ];
+
   /* ---- CITIES ----------------------------------------------------------- */
   const cities = [
     { id: 'city:london', name: 'London', lon: -0.13, lat: 51.5, capitalOf: 'nation:great-britain', note: 'British imperial capital and largest European city of the era.' },
@@ -280,7 +305,7 @@
       american: { label: 'American coalition', factionKey: 'usa' },
       british: { label: 'British side', factionKey: 'britain' }
     },
-    sources: S, nations, leaders, battles, treaties, cities, timeline, worldContext, quizzes,
+    sources: S, nations, leaders, battles, treaties, documents, cities, timeline, worldContext, quizzes,
     // geometry: one validated snapshot reused across the 1775–1783 window (see note in UI)
     geo: {
       borderSnapshots: { 1783: 'https://cdn.jsdelivr.net/gh/aourednik/historical-basemaps@master/geojson/world_1783.geojson' },

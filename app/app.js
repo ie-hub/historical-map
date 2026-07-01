@@ -252,7 +252,13 @@
   }
 
   /* ---------------- RAIL ---------------- */
-  const TABS = [['overview', 'Overview'], ['countries', 'Countries'], ['battles', 'Battles'], ['leaders', 'Leaders'], ['timeline', 'Timeline'], ['statistics', 'Statistics'], ['sources', 'Sources']];
+  /* Base tabs shared by every war. A war that supplies a `documents` array
+     (e.g. founding documents) gets a Documents tab inserted after Timeline. */
+  function tabsFor(w) {
+    const t = [['overview', 'Overview'], ['countries', 'Countries'], ['battles', 'Battles'], ['leaders', 'Leaders'], ['timeline', 'Timeline'], ['statistics', 'Statistics'], ['sources', 'Sources']];
+    if (w.documents && w.documents.length) t.splice(5, 0, ['documents', 'Documents']);
+    return t;
+  }
   /* The list tab each selectable entity belongs to; clicking that tab's header
      while its detail is open jumps back to the full list. */
   const LIST_TAB = { nation: 'countries', city: 'countries', battle: 'battles', leader: 'leaders' };
@@ -272,7 +278,7 @@
     document.getElementById('rkind').textContent = kind;
     // tabs
     const tabsEl = document.getElementById('tabs'); tabsEl.innerHTML = '';
-    TABS.forEach(([id, label]) => {
+    tabsFor(war).forEach(([id, label]) => {
       const b = document.createElement('button'); b.textContent = label; b.className = state.activeTab === id ? 'active' : '';
       b.onclick = () => {
         // re-clicking a section header with its detail open returns to the list
@@ -291,6 +297,7 @@
     if (tab === 'battles') return tabBattles();
     if (tab === 'leaders') return tabLeaders();
     if (tab === 'timeline') return tabTimeline();
+    if (tab === 'documents') return tabDocuments();
     if (tab === 'statistics') return tabStatistics();
     if (tab === 'sources') return tabSources();
     return '';
@@ -419,6 +426,22 @@
           <span class="dot" style="background:${dot}"></span>
           <span class="li-main"><span class="li-title">${ev.title}</span><span class="li-sub">${E.fmt.date(ev.date)} — ${ev.desc}</span></span></button>`;
       }).join('');
+  }
+
+  function tabDocuments() {
+    const docs = (war.documents || []).slice().sort((a, b) =>
+      a.date.y - b.date.y || (a.date.m || 0) - (b.date.m || 0) || (a.date.d || 0) - (b.date.d || 0));
+    return `<p class="note">Founding documents of the era — click a link to read the full text at its archive.</p>` +
+      docs.map(d => `
+        <div class="doc">
+          <h3>${d.name}</h3>
+          <div class="doc-meta">${E.fmt.date(d.date)}${d.author ? ' · ' + d.author : ''}</div>
+          ${d.excerpt ? `<blockquote>${d.excerpt}</blockquote>` : ''}
+          <p>${d.summary}</p>
+          ${d.significance ? `<p class="doc-sig"><strong>Why it matters:</strong> ${d.significance}</p>` : ''}
+          ${d.url ? `<a class="doc-link" href="${d.url}" target="_blank" rel="noopener">Read the full text ↗</a>` : ''}
+        </div>`).join('') +
+      (docs.some(d => (d.sources || []).length) ? sourcesFor({ sources: [...new Set(docs.flatMap(d => d.sources || []))] }) : '');
   }
 
   function tabStatistics() {

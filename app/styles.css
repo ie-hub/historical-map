@@ -10,7 +10,7 @@
   --allied:#5f8a6a; --central:#bd6a45; --axis:#9c4a4a;
   --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-  --rail-w:360px;
+  --rail-w:440px;
 }
 @media (prefers-color-scheme: dark){
   :root{
@@ -116,11 +116,13 @@ button{font-family:var(--ui);cursor:pointer}
   border-bottom:2px solid transparent}
 .tabs button:hover{color:var(--ink)}
 .tabs button.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
-.rail-body{flex:1;overflow-y:auto;padding:16px 18px}
-.rail-body h3{font-size:15px;margin:18px 0 6px;font-family:var(--ui);font-weight:700}
+.rail-body{flex:1;overflow-y:auto;padding:18px 22px}
+.rail-body h3{font-size:15px;margin:20px 0 7px;font-family:var(--ui);font-weight:700}
 .rail-body h3:first-child{margin-top:0}
-.rail-body p{margin:0 0 12px;font-size:14.5px;line-height:1.6}
-.rail-body .lead{font-size:15.5px;color:var(--ink)}
+.rail-body p{margin:0 0 13px;font-size:15px;line-height:1.68}
+.rail-body ul{margin:0 0 13px;padding-left:20px}
+.rail-body li{margin:0 0 5px;line-height:1.6}
+.rail-body .lead{font-size:16px;line-height:1.62;color:var(--ink)}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-family:var(--ui);font-size:13px;margin:0 0 14px}
 .kv dt{color:var(--muted)}
 .kv dd{margin:0;text-align:right}
@@ -141,6 +143,17 @@ button{font-family:var(--ui);cursor:pointer}
 .src{font-family:var(--ui);font-size:12.5px;color:var(--muted);border-left:2px solid var(--rule2);padding:4px 0 4px 10px;margin:0 0 8px}
 .src .rel{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em}
 .note{font-family:var(--ui);font-size:12px;color:var(--muted);background:var(--panel2);border-radius:8px;padding:9px 11px;margin:0 0 12px}
+/* founding documents */
+.doc{border:1px solid var(--rule);border-radius:12px;padding:14px 16px;margin:0 0 16px;background:var(--panel2)}
+.doc h3{margin:0 0 3px;font-family:var(--serif);font-size:17px;font-weight:700}
+.doc .doc-meta{font-family:var(--ui);font-size:11.5px;letter-spacing:.03em;color:var(--muted);margin:0 0 10px}
+.doc blockquote{margin:0 0 11px;padding:8px 0 8px 14px;border-left:3px solid var(--accent);
+  font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.55;color:var(--ink)}
+.doc p{font-size:14.5px;line-height:1.62;margin:0 0 10px}
+.doc .doc-sig{font-size:13.5px;color:var(--muted);line-height:1.55}
+.doc .doc-sig strong{color:var(--ink)}
+.doc a.doc-link{display:inline-block;font-family:var(--ui);font-size:12.5px;color:var(--accent);text-decoration:none;margin-top:2px}
+.doc a.doc-link:hover{text-decoration:underline}
 /* battle prev/next navigation */
 .navrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 14px;font-family:var(--ui)}
 .navrow .nav-btn{border:1px solid var(--rule2);background:var(--page);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:12.5px}
