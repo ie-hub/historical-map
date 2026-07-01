@@ -241,6 +241,7 @@
     document.getElementById('yearbig').textContent = state.year;
     document.getElementById('yearslider').value = state.year;
     document.getElementById('yearinput').value = state.year;
+    updateSliderFill();
     // reload geometry only if this year falls under a different border snapshot
     if (E.geoSourceFor(war, state.year) !== state.geoUrl) {
       loadGeometryAndRender();   // handles colorLand / battles / cities / legend / world
@@ -700,16 +701,34 @@
     sl.min = yi.min = war.meta.years.start; sl.max = yi.max = war.meta.years.end;
     sl.value = yi.value = state.year;
     document.getElementById('yearbig').textContent = state.year;
-    document.querySelector('#timeline .tl-ticks').innerHTML = buildTicks(war.meta.years.start, war.meta.years.end).map(y => `<span>${y}</span>`).join('');
+    const ys = war.meta.years.start, ye = war.meta.years.end, yspan = ye - ys || 1;
+    document.querySelector('#timeline .tl-ticks').innerHTML = buildTicks(ys, ye)
+      .map(y => `<span style="left:${((y - ys) / yspan * 100).toFixed(3)}%">${y}</span>`).join('');
+    updateSliderFill();
     resetZoom();
     document.getElementById('rail').classList.remove('open');
   }
 
+  /* Evenly stepped integer year ticks (~5–6 of them), always including the end
+     year. Labels are positioned by their true fraction, so even an uneven final
+     step still sits exactly under the slider dot. */
   function buildTicks(start, end) {
-    const span = end - start; const n = Math.min(span, 5);
+    const span = end - start;
+    if (span <= 0) return [start];
+    const step = Math.max(1, Math.round(span / 5));
     const out = [];
-    for (let i = 0; i <= n; i++) out.push(Math.round(start + (span * i) / n));
+    for (let y = start; y < end; y += step) out.push(y);
+    out.push(end);
     return [...new Set(out)];
+  }
+
+  /* Paints the WebKit track fill up to the current year (Firefox uses
+     ::-moz-range-progress natively). */
+  function updateSliderFill() {
+    const s = document.getElementById('yearslider');
+    const span = war.meta.years.end - war.meta.years.start || 1;
+    const pct = (state.year - war.meta.years.start) / span * 100;
+    s.style.setProperty('--pct', pct.toFixed(3) + '%');
   }
 
   /* ---------------- BOOT ---------------- */
