@@ -16,6 +16,21 @@
   function renderCanvas() {
     const canvas = Atlas.el('canvas');
     const hintEl = Atlas.el('hint'); if (hintEl) hintEl.style.display = topic.kind === 'diagram' ? '' : 'none';
+    if (topic.kind === 'model3d') {
+      const hs = (topic.hotspots || []).map((h, i) => {
+        const p = partById(h.partId) || {};
+        return `<button class="mv-hotspot" slot="hotspot-${i}" data-part="${h.partId}"
+          data-position="${h.position}" data-normal="${h.normal || '0 0 1'}">
+          <span class="mv-dot"></span><span class="mv-label">${p.name || h.partId}</span></button>`;
+      }).join('');
+      canvas.innerHTML = `<model-viewer class="mv" src="${topic.modelSrc}" alt="${topic.name}"
+        camera-controls touch-action="pan-y" loading="eager" reveal="auto" ${topic.autoRotate === false ? '' : 'auto-rotate'}
+        shadow-intensity="1" exposure="1.05" interaction-prompt="none" ar>${hs}</model-viewer>
+        ${topic.credit && topic.credit.text ? `<p class="embed-credit"><a href="${topic.credit.modelUrl}" target="_blank" rel="noopener nofollow">${topic.credit.text}</a>${topic.credit.author ? ' · ' + topic.credit.author : ''}${topic.credit.license ? ' · ' + topic.credit.license : ''}</p>` : ''}`;
+      canvas.querySelectorAll('.mv-hotspot').forEach(b =>
+        b.addEventListener('click', e => { e.stopPropagation(); selectPart(b.getAttribute('data-part')); }));
+      return;
+    }
     if (topic.kind === 'embed') {
       const c = topic.credit || {};
       canvas.innerHTML = `<div class="embed3d">
