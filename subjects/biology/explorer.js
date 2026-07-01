@@ -12,9 +12,14 @@
   const partById = id => topic.parts.find(p => p.id === id);
   const catName = key => (topic.categories && topic.categories[key]) || key;
 
-  /* ---------------- diagram ---------------- */
-  function renderDiagram() {
+  /* ---------------- canvas (diagram or custom tool) ---------------- */
+  function renderCanvas() {
     const canvas = Atlas.el('canvas');
+    if (topic.kind === 'tool' && typeof topic.mount === 'function') {
+      canvas.innerHTML = '';
+      topic.mount(canvas, { el: Atlas.el, selectPart, openRail: () => rail.open() });
+      return;
+    }
     canvas.innerHTML = topic.svg || '<p class="note">This topic has no diagram yet.</p>';
     canvas.querySelectorAll('[data-part]').forEach(g => {
       g.addEventListener('click', e => {
@@ -59,9 +64,12 @@
   function overview() {
     const legend = Object.entries(topic.categories || {}).map(([k, label]) =>
       `<div class="chip" style="border-color:var(--bio-${k})">${label}</div>`).join('');
+    const hint = topic.kind === 'tool'
+      ? 'Use the tool on the left. Open the Parts tab for the key terms.'
+      : 'Click any labelled part on the diagram — or open the Parts tab — to see what it does.';
     return `<p class="lead">${topic.intro || ''}</p>
-      <h3>Parts by role</h3><div class="chips">${legend}</div>
-      <p class="note">Click any labelled part on the diagram — or open the Parts tab — to see what it does.</p>`;
+      <h3>${topic.kind === 'tool' ? 'Key terms' : 'Parts by role'}</h3><div class="chips">${legend}</div>
+      <p class="note">${hint}</p>`;
   }
   function partsList() {
     const groups = {};
@@ -77,7 +85,7 @@
     const fns = (p.functions || []).map(f => `<li>${f}</li>`).join('');
     const facts = (p.facts || []).map(([k, val]) => `<dt>${k}</dt><dd>${val}</dd>`).join('');
     const related = (p.related || []).map(id => { const r = partById(id); return r ? `<button class="chip" data-open="${id}">${r.name}</button>` : ''; }).join('');
-    return `<div class="chips"><span class="cat-tag ${p.category}">${catName(p.category)}</span></div>
+    return `<div class="chips"><span class="cat-tag" style="background:var(--bio-${p.category})">${catName(p.category)}</span></div>
       <p class="lead">${p.summary}</p>
       ${p.analogy ? `<p class="analogy">${p.analogy}</p>` : ''}
       ${fns ? `<h3>What it does</h3><ul>${fns}</ul>` : ''}
@@ -88,9 +96,12 @@
 
   /* ---------------- legend ---------------- */
   function renderLegend() {
+    const legend = Atlas.el('legend');
+    if (topic.hideLegend) { legend.style.display = 'none'; return; }
+    legend.style.display = '';
     const rows = Object.entries(topic.categories || {}).map(([k, label]) =>
       `<div class="row"><span class="sw" style="background:var(--bio-${k})"></span>${label}</div>`).join('');
-    Atlas.el('legend').innerHTML = `<div class="ttl">${topic.name}</div>${rows}`;
+    legend.innerHTML = `<div class="ttl">${topic.name}</div>${rows}`;
   }
 
   /* ---------------- topic switching ---------------- */
@@ -108,7 +119,7 @@
   function switchTopic(id) {
     if (!BIO.topics[id]) return;
     topic = BIO.topics[id]; state.partId = null; state.tab = 'overview';
-    setBrand(); buildTopicMenu(); renderDiagram(); renderLegend(); render();
+    setBrand(); buildTopicMenu(); renderCanvas(); renderLegend(); render();
   }
 
   /* ---------------- search ---------------- */
@@ -130,9 +141,13 @@
     Atlas.wireSearch(Atlas.el('search'), Atlas.el('results'), search, item => selectPart(item.id));
     Atlas.el('quiz-btn').onclick = () => quiz.run(topic.quizzes || []);
     Atlas.el('overview-btn').onclick = () => { state.tab = 'overview'; state.partId = null; rail.open(); render(); highlightSelected(); };
-    Atlas.el('canvas').addEventListener('click', () => { if (!quiz.isAwaitingClick()) clearSelection(); });
+    Atlas.el('canvas').addEventListener('click', e => {
+      if (topic.kind === 'tool') return;                 // tools manage their own clicks
+      if (e.target.closest('[data-part]')) return;       // a part handled it
+      if (!quiz.isAwaitingClick()) clearSelection();
+    });
 
-    setBrand(); buildTopicMenu(); renderDiagram(); renderLegend(); render();
+    setBrand(); buildTopicMenu(); renderCanvas(); renderLegend(); render();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

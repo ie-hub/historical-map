@@ -1,18 +1,30 @@
 /* Life Explorer — biology-specific styles (diagram canvas, organelle shapes,
    category colours, legend). Loaded after core/theme.css.                    */
 :root{
+  /* cell */
   --bio-control:#7a5ea8; --bio-energy:#c0574a; --bio-manufacturing:#3f6ea5;
   --bio-storage:#2f8f88; --bio-cleanup:#b5883a; --bio-structure:#8a8172;
+  /* tree of life */
+  --bio-root:#7a3b32; --bio-bacteria:#2f8f88; --bio-archaea:#7a5ea8; --bio-eukarya:#4e8a54;
+  /* body systems */
+  --bio-nervous:#7a5ea8; --bio-circulatory:#c0574a; --bio-respiratory:#3f6ea5;
+  --bio-digestive:#b5883a; --bio-excretory:#2f8f88; --bio-skeletal:#8a8172; --bio-muscular:#b05a7a;
+  /* genetics */
+  --bio-concept:#7a3b32; --bio-brown:#8a5a2b; --bio-blue:#3f6ea5;
 }
 @media (prefers-color-scheme: dark){
   :root{
     --bio-control:#a888d6; --bio-energy:#d1796d; --bio-manufacturing:#6f9bd0;
     --bio-storage:#5cb6ad; --bio-cleanup:#cfa64f; --bio-structure:#a59c8b;
+    --bio-root:#d99a8e; --bio-bacteria:#5cb6ad; --bio-archaea:#a888d6; --bio-eukarya:#72b578;
+    --bio-nervous:#a888d6; --bio-circulatory:#d1796d; --bio-respiratory:#6f9bd0;
+    --bio-digestive:#cfa64f; --bio-excretory:#5cb6ad; --bio-skeletal:#a59c8b; --bio-muscular:#cd85a3;
+    --bio-concept:#d99a8e; --bio-brown:#b58048; --bio-blue:#6f9bd0;
   }
 }
 
 #stage{background:var(--page)}
-#canvas{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;padding:22px 28px}
+#canvas{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;padding:22px 28px;overflow:auto}
 #canvas svg.bio-diagram{width:100%;height:100%;max-height:100%;display:block}
 
 /* organelle shapes, coloured by category */
@@ -24,6 +36,17 @@
 .cat-storage .shape{fill:var(--bio-storage);stroke:var(--bio-storage)}
 .cat-cleanup .shape{fill:var(--bio-cleanup);stroke:var(--bio-cleanup)}
 .cat-structure .shape{fill:var(--bio-structure);stroke:var(--bio-structure)}
+.cat-root .shape{fill:var(--bio-root);stroke:var(--bio-root)}
+.cat-bacteria .shape{fill:var(--bio-bacteria);stroke:var(--bio-bacteria)}
+.cat-archaea .shape{fill:var(--bio-archaea);stroke:var(--bio-archaea)}
+.cat-eukarya .shape{fill:var(--bio-eukarya);stroke:var(--bio-eukarya)}
+.cat-nervous .shape{fill:var(--bio-nervous);stroke:var(--bio-nervous)}
+.cat-circulatory .shape{fill:var(--bio-circulatory);stroke:var(--bio-circulatory)}
+.cat-respiratory .shape{fill:var(--bio-respiratory);stroke:var(--bio-respiratory)}
+.cat-digestive .shape{fill:var(--bio-digestive);stroke:var(--bio-digestive)}
+.cat-excretory .shape{fill:var(--bio-excretory);stroke:var(--bio-excretory)}
+.cat-skeletal .shape{fill:var(--bio-skeletal);stroke:var(--bio-skeletal)}
+.cat-muscular .shape{fill:var(--bio-muscular);stroke:var(--bio-muscular)}
 .part .shape{fill-opacity:.82}
 /* variants */
 .shape.hollow{fill:none !important;stroke-width:2.5}
@@ -48,6 +71,19 @@
 .plabel{font-family:var(--ui);font-size:15px;font-weight:600;fill:var(--ink);pointer-events:none;
   paint-order:stroke;stroke:var(--page);stroke-width:3.5px;stroke-linejoin:round}
 
+/* tree-of-life nodes + connectors */
+.shape.node{fill-opacity:.9}
+.part:hover .shape.node{fill-opacity:1}
+.connector{fill:none;stroke:var(--rule2);stroke-width:2.5}
+.node-label{fill:#fff;stroke:none}
+.tree-note{fill:var(--muted) !important;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  stroke:var(--page);stroke-width:3px}
+
+/* body-systems silhouette + label leaders */
+.body-bg *{fill:var(--neutral);opacity:.45;pointer-events:none}
+.leader{stroke:var(--rule2);stroke-width:1.5}
+.shape.intestine{stroke-width:9}
+
 /* legend (bottom-left, reuses core .legend look) */
 .legend{position:absolute;left:16px;bottom:16px;background:var(--panel);border:1px solid var(--rule);
   border-radius:10px;padding:10px 12px;font-family:var(--ui);font-size:12px;color:var(--muted);
@@ -70,6 +106,34 @@
 .parts-group{font-family:var(--ui);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
   color:var(--muted);margin:16px 0 4px}
 .parts-group:first-child{margin-top:0}
+
+/* genetics — Punnett square tool */
+.punnett{width:100%;max-width:560px;margin:0 auto;font-family:var(--ui)}
+.punnett h2{font-family:var(--serif);font-size:24px;margin:0 0 6px}
+.punnett .pnote{font-size:13.5px;color:var(--muted);line-height:1.55;margin:0 0 18px}
+.punnett .pnote b{color:var(--ink)}
+.parents{display:flex;gap:18px;margin-bottom:22px;flex-wrap:wrap}
+.parent{flex:1;min-width:170px}
+.parent .plab{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.seg{display:flex;gap:6px}
+.seg-btn{flex:1;border:1px solid var(--rule2);background:var(--panel);color:var(--ink);border-radius:9px;
+  padding:9px 0;font-size:15px;font-weight:600;letter-spacing:.02em}
+.seg-btn:hover{border-color:var(--accent)}
+.seg-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.square-wrap{display:flex;justify-content:center;margin-bottom:20px}
+table.square{border-collapse:separate;border-spacing:6px}
+table.square th{width:76px;height:40px;font-size:17px;font-weight:700;color:var(--muted)}
+table.square th.corner{background:none}
+table.square td{width:76px;height:76px;text-align:center;vertical-align:middle;font-size:22px;font-weight:700;
+  border-radius:12px;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+td.ph-brown{background:var(--bio-brown)} td.ph-blue{background:var(--bio-blue)}
+.results{max-width:420px;margin:0 auto}
+.rrow{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rule)}
+.rrow:last-child{border-bottom:0}
+.rlab{width:92px;flex:none;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rval{font-size:15px;color:var(--ink)}
+.ph-chip{display:inline-block;border-radius:14px;padding:3px 11px;color:#fff;font-size:13px;font-weight:600;margin-right:6px}
+.ph-chip.brown{background:var(--bio-brown)} .ph-chip.blue{background:var(--bio-blue)}
 
 /* quiz "click the diagram" peek mode: let clicks reach the canvas */
 #quiz.peek{background:transparent;pointer-events:none;align-items:flex-start}
