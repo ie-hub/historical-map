@@ -18,7 +18,7 @@
 
   function today() { return new Date().toISOString().slice(0, 10); }
   function blank() {
-    return { concepts: {}, activityCounts: {}, streak: { count: 0, lastDay: null }, totalTimeMs: 0, updated: null };
+    return { concepts: {}, activityCounts: {}, reflections: {}, streak: { count: 0, lastDay: null }, totalTimeMs: 0, updated: null };
   }
   function load() {
     try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(blank(), JSON.parse(raw)); }
@@ -60,6 +60,11 @@
       persist();
       return c;
     },
+    /* A learner's written reflection for a concept (from the Reflection step).
+       Kept per-concept so teachers/learners can revisit the latest thinking. */
+    saveReflection(id, text) { if (!id) return; (data.reflections = data.reflections || {})[id] = text; persist(); },
+    getReflection(id) { return (data.reflections || {})[id] || ''; },
+
     /* Count an interaction with a named reusable component (favourite activities). */
     countActivity(name) { if (!name) return; data.activityCounts[name] = (data.activityCounts[name] || 0) + 1; /* not persisted per-tick to avoid churn */ },
     flushActivity() { persist(); },

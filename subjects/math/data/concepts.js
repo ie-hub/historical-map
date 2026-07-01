@@ -11,11 +11,11 @@
   const G = window.MATH.Graph, add = G.add;
 
   // ---- Kindergarten ----
-  add({ id: 'count-10', name: 'Counting to 10', grade: 'K', strand: 'Number', lesson: true, prereqs: [], blurb: 'Count objects one by one.', components: ['counter'] });
-  add({ id: 'compare-qty', name: 'Comparing Quantities', grade: 'K', strand: 'Number', lesson: true, prereqs: ['count-10'], blurb: 'More, fewer or the same?', components: ['compare'] });
-  add({ id: 'patterns-k', name: 'Patterns', grade: 'K', strand: 'Number', lesson: true, prereqs: ['count-10'], blurb: 'Spot what comes next.', components: ['pattern'] });
-  add({ id: 'shapes-2d', name: '2D Shapes', grade: 'K', strand: 'Geometry', lesson: true, prereqs: [], blurb: 'Circles, squares, triangles.', components: ['shapeSort'] });
-  add({ id: 'add-10', name: 'Adding within 10', grade: 'K', strand: 'Operations', lesson: true, prereqs: ['count-10', 'compare-qty'], blurb: 'Put groups together.', components: ['tenFrame'] });
+  add({ id: 'count-10', name: 'Counting to 10', grade: 'K', strand: 'Number', lesson: true, prereqs: [], blurb: 'Count objects one by one.', components: ['counter'], standards: ['K.NS.4', 'K.NS.5'] });
+  add({ id: 'compare-qty', name: 'Comparing Quantities', grade: 'K', strand: 'Number', lesson: true, prereqs: ['count-10'], blurb: 'More, fewer or the same?', components: ['compare'], standards: ['K.NS.7', 'K.NS.9'] });
+  add({ id: 'patterns-k', name: 'Patterns', grade: 'K', strand: 'Number', lesson: true, prereqs: ['count-10'], blurb: 'Spot what comes next.', components: ['pattern'], standards: ['K.CA.5'] });
+  add({ id: 'shapes-2d', name: '2D Shapes', grade: 'K', strand: 'Geometry', lesson: true, prereqs: [], blurb: 'Circles, squares, triangles.', components: ['shapeSort'], standards: ['K.G.2'] });
+  add({ id: 'add-10', name: 'Adding within 10', grade: 'K', strand: 'Operations', lesson: true, prereqs: ['count-10', 'compare-qty'], blurb: 'Put groups together.', components: ['tenFrame'], standards: ['K.CA.1', 'K.CA.2'] });
 
   // ---- Grade 1 ----
   add({ id: 'numberline', name: 'Number Lines', grade: '1', strand: 'Number', lesson: true, prereqs: ['count-10'], blurb: 'Find numbers on a line.', components: ['numberLine'] });

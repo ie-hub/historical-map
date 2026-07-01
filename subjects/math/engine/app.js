@@ -7,6 +7,7 @@
 (function () {
   const MATH = window.MATH, Graph = MATH.Graph, Store = MATH.Store;
   const el = id => Atlas.el(id);
+  const esc = s => (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
   let rail, player, mapView, palette, shell;
   let view = 'map';           // 'map' | 'lesson'
@@ -96,6 +97,7 @@
     const pre = (c.prereqs || []).map(p => Graph.get(p)).filter(Boolean);
     const unlocks = Graph.all().filter(x => (x.prereqs || []).includes(id));
     const missing = pre.filter(p => !Store.isMastered(p.id));
+    const stds = (c.standards || []).map(code => MATH.Standards && MATH.Standards.get(code)).filter(Boolean);
     const canStart = (st === 'available' || st === 'mastered' || st === 'review') && c.lesson;
     const pct = st === 'mastered' ? 100 : rec.stars ? Math.round(rec.stars / 3 * 100) : 0;
     const body = `
@@ -103,6 +105,7 @@
       ${canStart ? `<button class="btn btn-primary btn-block" data-start="${id}" style="margin-bottom:16px">${st === 'mastered' ? 'Practise again' : 'Start lesson'} →</button>` : ''}
       ${st !== 'locked' && st !== 'ready-soon' ? `<div class="progress" style="margin-bottom:16px"><span style="width:${pct}%"></span></div>` : ''}
       <p class="lead">${c.blurb || ''}</p>
+      ${stds.length ? `<h3>Indiana standards</h3><div class="chips">${stds.map(s => `<span class="chip std" data-tooltip="${esc(s.statement)}" style="cursor:help">${s.code}</span>`).join('')}</div>` : ''}
       ${pre.length ? `<h3>Prerequisites</h3><div class="chips">${pre.map(p => `<button class="chip ${Store.isMastered(p.id) ? 'active' : ''}" data-go="${p.id}">${p.name}${Store.isMastered(p.id) ? ' ✓' : ''}</button>`).join('')}</div>` : ''}
       ${unlocks.length ? `<h3>Unlocks next</h3><div class="chips">${unlocks.map(u => `<button class="chip" data-go="${u.id}">${u.name}</button>`).join('')}</div>` : ''}
       ${st === 'locked' ? `<div class="alert alert-warn" style="margin-top:16px"><span class="alert-ic">🔒</span><span>Master ${missing.map(m => '<b>' + m.name + '</b>').join(' and ') || 'the prerequisites'} to unlock this.</span></div>` : ''}
@@ -158,6 +161,46 @@
     ];
   }
 
+  /* ---------------- standards coverage drawer ---------------- */
+  /* The seed of the teacher dashboard: for the focused grade, every official
+     Indiana standard with its coverage status (taught / coming soon / gap) and
+     the concepts that address it. Answers "is this grade fully covered?". */
+  function openStandards() { renderStandards(); openRail(); }
+  function renderStandards() {
+    const grade = mapView.grade();
+    const cov = MATH.Standards.coverage(grade);
+    const src = MATH.Standards.SOURCE;
+    let body;
+    if (!cov.total) {
+      body = `<div class="empty"><div class="empty-ic">🗺️</div><p>Standards for ${gradeLabel(grade)} haven't been mapped yet.</p>
+        <p class="ui" style="font-size:13px;color:var(--muted)">Kindergarten is the reference implementation — focus the map on Grade K to see full coverage.</p></div>`;
+    } else {
+      const pill = st => st === 'taught' ? '<span class="m-cov-pill taught">✓ taught</span>'
+        : st === 'soon' ? '<span class="m-cov-pill soon">◐ coming soon</span>'
+          : '<span class="m-cov-pill gap">○ gap</span>';
+      const strands = [];
+      cov.standards.forEach(s => { let g = strands.find(x => x.strand === s.strand); if (!g) { g = { strand: s.strand, items: [] }; strands.push(g); } g.items.push(s); });
+      body = `
+        <div class="m-cov-hero">
+          <div class="m-cov-ring" style="--pct:${cov.pct}"><b>${cov.pct}%</b></div>
+          <div class="m-cov-hero-txt"><b>${cov.taught} of ${cov.total}</b> standards addressed
+            <span>${cov.mastered} mastered · ${gradeLabel(grade)}</span></div>
+        </div>
+        ${strands.map(g => `<h3 class="m-cov-strand">${g.strand} <span>${g.items.filter(s => s.state === 'taught').length}/${g.items.length}</span></h3>
+          <div class="m-cov-list">${g.items.map(s => `
+            <div class="m-cov-row ${s.state}">
+              <div class="m-cov-top"><b>${s.code}</b>${pill(s.state)}${s.mastered ? '<span class="m-cov-star">★</span>' : ''}</div>
+              <p>${s.statement}</p>
+              ${s.concepts.length ? `<div class="chips">${s.concepts.map(c => `<button class="chip ${Store.isMastered(c.id) ? 'active' : ''}" data-go="${c.id}">${c.name}${Store.isMastered(c.id) ? ' ✓' : ''}</button>`).join('')}</div>`
+                : `<p class="m-cov-none">No lesson addresses this yet.</p>`}
+            </div>`).join('')}</div>`).join('')}
+        <p class="m-cov-src">Source: ${src.name} (${src.version}), ${src.org}.</p>`;
+    }
+    rail.update({ title: 'Standards coverage', kind: 'Indiana · ' + gradeLabel(grade), tabs: [], body, onBody(elm) {
+      elm.querySelectorAll('[data-go]').forEach(b => b.onclick = () => openConcept(b.dataset.go));
+    } });
+  }
+
   /* ---------------- view switching ---------------- */
   function openLesson(id) {
     const c = Graph.get(id); if (!c || !c.lesson) return;
@@ -202,7 +245,8 @@
 
     const actions = [
       { icon: '◱', label: 'Overview map', sub: 'V', onPick: () => mapView.setMode('overview') },
-      { icon: '★', label: 'Your progress', onPick: openProgress }
+      { icon: '★', label: 'Your progress', onPick: openProgress },
+      { icon: '◪', label: 'Standards coverage', sub: 'Indiana', onPick: openStandards }
     ];
     const fa = q ? actions.filter(a => a.label.toLowerCase().includes(q)) : actions;
     if (fa.length) groups.push({ sec: 'Actions', items: fa });
@@ -227,6 +271,7 @@
     el('open-cmd').onclick = palette.open;
     el('open-cmd2').onclick = palette.open;
     el('progress-btn').onclick = openProgress;
+    const sb = el('standards-btn'); if (sb) sb.onclick = openStandards;
     el('continue-btn').onclick = () => { const rec = Graph.recommended(); if (rec) openLesson(rec.id); };
     el('overview-btn').onclick = () => { if (view === 'lesson') showMap(); mapView.setMode(mapView.mode() === 'overview' ? 'focus' : 'overview'); };
 

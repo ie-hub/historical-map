@@ -25,8 +25,8 @@
   const U = MATH.util, Store = MATH.Store, Graph = MATH.Graph;
 
   const LESSONS = {};
-  const KIND_LABEL = { hook: 'Curiosity', explore: 'Explore', discover: 'Discovery', practice: 'Practice', challenge: 'Challenge', mastery: 'Mastery check' };
-  const KIND_ICON = { hook: '💡', explore: '🔎', discover: '✨', practice: '✏️', challenge: '🔥', mastery: '🏅' };
+  const KIND_LABEL = { hook: 'Curiosity', prior: 'Warm-up', explore: 'Explore', discover: 'Discovery', practice: 'Practice', challenge: 'Challenge', mastery: 'Mastery check', reflect: 'Reflection', extend: 'Go further' };
+  const KIND_ICON = { hook: '💡', prior: '🤔', explore: '🔎', discover: '✨', practice: '✏️', challenge: '🔥', mastery: '🏅', reflect: '🪞', extend: '🚀' };
 
   function register(lesson) { LESSONS[lesson.concept] = lesson; }
   function get(conceptId) { return LESSONS[conceptId]; }
@@ -107,6 +107,50 @@
         setNext(true, 'Got it →');
         return;
       }
+      if (step.kind === 'prior') {
+        // Activate prior knowledge — a no-stakes prediction to prime thinking.
+        const opts = step.options || [];
+        card.innerHTML = `<div class="m-kicker">${KIND_ICON.prior} ${KIND_LABEL.prior}</div>
+          ${step.title ? `<h2 class="m-step-title">${step.title}</h2>` : ''}
+          <p class="m-prompt">${step.prompt || ''}</p>
+          ${opts.length ? `<div class="m-prior-opts">${opts.map((o, i) => `<button class="m-prior-opt" data-i="${i}">${o}</button>`).join('')}</div>` : ''}
+          <p class="m-prior-note">No wrong answers here — this is just to get you thinking.</p>`;
+        if (opts.length) {
+          card.querySelectorAll('.m-prior-opt').forEach(b => b.onclick = () => {
+            card.querySelectorAll('.m-prior-opt').forEach(x => x.classList.remove('picked'));
+            b.classList.add('picked'); feedback('Good guess — let’s find out.', 'ok'); setNext(true, 'Continue →');
+          });
+          setNext(false, 'Continue →');
+        } else { setNext(true, 'Continue →'); }
+        return;
+      }
+      if (step.kind === 'reflect') {
+        // Reflection — a short written response; encouraged, never graded.
+        const saved = (Store.getReflection && Store.getReflection(concept.id)) || '';
+        const starters = step.starters || [];
+        card.innerHTML = `<div class="m-kicker">${KIND_ICON.reflect} ${KIND_LABEL.reflect}</div>
+          ${step.title ? `<h2 class="m-step-title">${step.title}</h2>` : ''}
+          <p class="m-prompt">${step.prompt || 'What did you learn?'}</p>
+          ${starters.length ? `<div class="m-starters">${starters.map(s => `<button class="m-starter" type="button">${s}…</button>`).join('')}</div>` : ''}
+          <textarea class="m-reflect-in" id="m-reflect" rows="4" placeholder="Type your thinking…">${saved}</textarea>`;
+        const ta = card.querySelector('#m-reflect');
+        card.querySelectorAll('.m-starter').forEach(b => b.onclick = () => { ta.value = (ta.value ? ta.value.replace(/\s*$/, ' ') : '') + b.textContent; ta.focus(); if (Store.saveReflection) Store.saveReflection(concept.id, ta.value); });
+        ta.addEventListener('input', () => { if (Store.saveReflection) Store.saveReflection(concept.id, ta.value); });
+        setNext(true, 'Continue →');
+        return;
+      }
+      if (step.kind === 'extend') {
+        // Extension — enrichment: primary sources, harder challenges, links out.
+        const items = step.items || [];
+        card.innerHTML = `<div class="m-kicker">${KIND_ICON.extend} ${KIND_LABEL.extend}</div>
+          ${step.title ? `<h2 class="m-step-title">${step.title}</h2>` : ''}
+          ${step.intro ? `<p class="m-step-intro">${step.intro}</p>` : ''}
+          <div class="m-extend-list">${items.map(it => (it.href
+            ? `<a class="m-extend-card" href="${it.href}" target="_blank" rel="noopener"><span class="m-ext-ic">${it.icon || '↗'}</span><span class="m-ext-txt"><b>${it.label}</b><small>${it.detail || ''}</small></span></a>`
+            : `<div class="m-extend-card"><span class="m-ext-ic">${it.icon || '✦'}</span><span class="m-ext-txt"><b>${it.label}</b><small>${it.detail || ''}</small></span></div>`)).join('')}</div>`;
+        setNext(true, 'Finish →');
+        return;
+      }
       if (step.kind === 'unlock') { renderUnlock(card); return; }
 
       // interactive step
@@ -166,6 +210,10 @@
       const unlocked = Graph.unlockedBy(concept.id).map(id => Graph.get(id)).filter(Boolean);
       const remediate = (!result.mastered) ? Graph.remediationFor(concept.id) : null;
       const starHtml = U.range(3).map(i => `<span class="m-star ${i < result.stars ? 'on' : ''}">★</span>`).join('');
+      const stds = (concept.standards || []).map(code => MATH.Standards && MATH.Standards.get(code)).filter(Boolean);
+      const stdBlock = stds.length ? `<div class="m-std-met">
+        <span class="m-std-h">Indiana standards ${result.mastered ? 'mastered' : 'practised'}</span>
+        <div class="m-std-chips">${stds.map(s => `<span class="badge" data-tooltip="${(s.statement || '').replace(/"/g, '&quot;')}">${s.code}</span>`).join('')}</div></div>` : '';
       card.innerHTML = `
         <div class="m-unlock">
           <div class="m-kicker">${KIND_ICON.mastery} Lesson complete</div>
@@ -176,6 +224,7 @@
             <div><b>${result.correct}/${result.attempts || 0}</b><span>correct</span></div>
             <div><b>${Math.max(1, Math.round(result.timeMs / 60000))}m</b><span>time</span></div>
           </div>
+          ${stdBlock}
           ${result.mastered
             ? (unlocked.length
               ? `<div class="m-unlock-list"><div class="m-unlock-h">🔓 New concepts unlocked</div>${unlocked.map(c => `<button class="m-unlock-card" data-go="${c.id}"><b>${c.name}</b><span>Grade ${c.grade} · ${c.strand}</span></button>`).join('')}</div>`

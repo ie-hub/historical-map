@@ -30,7 +30,7 @@
   const order = [];
 
   function add(concept) {
-    const c = Object.assign({ prereqs: [], related: [], components: [], masteryScore: 80, lesson: null }, concept);
+    const c = Object.assign({ prereqs: [], related: [], components: [], standards: [], masteryScore: 80, lesson: null }, concept);
     byId[c.id] = c;
     order.push(c.id);
     return c;
