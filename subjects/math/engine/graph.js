@@ -39,17 +39,18 @@
   function get(id) { return byId[id] || null; }
   function all() { return order.map(id => byId[id]); }
 
-  /* Dev/testing flag: "unlock all". When on, every concept's prerequisites are
-     treated as met, so nothing is 'locked' and any authored lesson can be opened
-     regardless of grade or progress. Off by default (normal learners keep the
-     prereq gating). Turn on by visiting the page with ?unlock (or #unlock) in the
-     URL, or from the console with MATH.Graph.setUnlockAll(true). It's persisted
-     in localStorage so it survives reloads until you setUnlockAll(false).       */
+  /* "Unlock all". When on, every concept's prerequisites are treated as met, so
+     nothing is 'locked' and every tile can be opened regardless of grade or
+     progress (authored lessons are playable; the rest open as "coming soon").
+     ON by default so the whole map is always accessible. Restore the gated,
+     prereq-driven path by visiting with ?lock in the URL, or from the console
+     with MATH.Graph.setUnlockAll(false); the choice is persisted in localStorage. */
   function readUnlockFlag() {
     try {
+      if (/[?&#]lock\b/i.test(location.href)) { localStorage.setItem('atlas.math.unlockAll', '0'); return false; }
       if (/[?&#]unlock(all)?\b/i.test(location.href)) { localStorage.setItem('atlas.math.unlockAll', '1'); return true; }
-      return localStorage.getItem('atlas.math.unlockAll') === '1';
-    } catch (e) { return /[?&#]unlock(all)?\b/i.test(location.href || ''); }
+      return localStorage.getItem('atlas.math.unlockAll') !== '0';   // default: unlocked
+    } catch (e) { return !/[?&#]lock\b/i.test(location.href || ''); }
   }
   let UNLOCK_ALL = readUnlockFlag();
   function setUnlockAll(on) {

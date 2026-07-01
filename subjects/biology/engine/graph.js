@@ -58,7 +58,28 @@
   function get(id) { return byId[id] || null; }
   function all() { return order.map(id => byId[id]); }
 
-  function prereqsMet(c) { return (c.prereqs || []).every(p => Store.isMastered(p)); }
+  /* "Unlock all". When on, every concept's prerequisites are treated as met, so
+     nothing is 'locked' and every tile can be opened regardless of unit or
+     progress (authored lessons are playable; the rest open as "coming soon").
+     ON by default so the whole map is always accessible. Restore the gated,
+     prereq-driven path by visiting with ?lock in the URL, or from the console
+     with BIO.Graph.setUnlockAll(false); the choice is persisted in localStorage. */
+  function readUnlockFlag() {
+    try {
+      if (/[?&#]lock\b/i.test(location.href)) { localStorage.setItem('atlas.bio.unlockAll', '0'); return false; }
+      if (/[?&#]unlock(all)?\b/i.test(location.href)) { localStorage.setItem('atlas.bio.unlockAll', '1'); return true; }
+      return localStorage.getItem('atlas.bio.unlockAll') !== '0';   // default: unlocked
+    } catch (e) { return !/[?&#]lock\b/i.test(location.href || ''); }
+  }
+  let UNLOCK_ALL = readUnlockFlag();
+  function setUnlockAll(on) {
+    UNLOCK_ALL = !!on;
+    try { localStorage.setItem('atlas.bio.unlockAll', on ? '1' : '0'); } catch (e) {}
+    if (Store && Store.flushActivity) Store.flushActivity();   // nudge the map to re-render
+    return UNLOCK_ALL;
+  }
+
+  function prereqsMet(c) { return UNLOCK_ALL || (c.prereqs || []).every(p => Store.isMastered(p)); }
 
   function status(id) {
     const c = byId[id]; if (!c) return 'locked';
@@ -102,5 +123,5 @@
       .map(c => ({ id: c.id, label: c.name, sub: 'Unit ' + c.unit + ' · ' + unitName(c.unit) }));
   }
 
-  BIO.Graph = { UNITS, UNIT_ORDER, unitName, add, get, all, status, prereqsMet, unlockedBy, children, recommended, remediationFor, search };
+  BIO.Graph = { UNITS, UNIT_ORDER, unitName, add, get, all, status, prereqsMet, unlockedBy, children, recommended, remediationFor, search, setUnlockAll };
 })();
