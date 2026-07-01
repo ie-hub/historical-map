@@ -2,12 +2,13 @@
 
 An interactive, museum-quality **educational hub**. Each subject is explored the way it's best understood — history as a living map you scrub through year by year, biology as diagrams and interactive models you click into — all sharing one design language and one set of reusable UI.
 
-Two subjects are live today:
+Three subjects are live today:
 
 - **🗺️ History — Historical Wars Explorer.** Six conflicts (French & Indian War → World War II) with animated borders, battles, leaders and treaties on an interactive world map. Answers *“what did the world look like in this year?”* rather than *“where was this battle?”*
 - **🧬 Biology — Life Explorer.** Four topics — the Animal Cell, the Tree of Life, the Human Body, and an interactive Genetics (Punnett square) tool — as clickable diagrams and models.
+- **➗ Mathematics — Math Explorer.** A *knowledge map* from Kindergarten to Calculus: 37 interconnected concepts where mastering one unlocks the next. 18 concepts have full interactive lessons (counting, comparing, patterns, shapes, ten-frame addition, number lines, place value, skip counting, arrays, fractions, multiplication, area, the coordinate plane, integers, function machines…), each following an *explore → discover → practice → challenge → master* flow with 12 reusable manipulatives, star-based mastery and progress tracking.
 
-More subjects (Mathematics, English, Chemistry, Geography) are scaffolded on the hub as *coming soon*.
+More subjects (English, Chemistry, Geography) are scaffolded on the hub as *coming soon*.
 
 ## Run it
 
@@ -41,6 +42,14 @@ subjects/
     explorer.js         Renders diagram + tool topics; composes the Atlas shell
     styles.css          Biology-specific styles (diagrams, Punnett tool)
     data/<topic>.js     cell, tree-of-life, body-systems, genetics
+  math/                 Math Explorer (self-contained learning engine)
+    index.html
+    engine/             store.js (progress), graph.js (knowledge graph),
+                        components.js (12 reusable manipulatives),
+                        player.js (the lesson flow), map.js (the learning map),
+                        app.js (boot + progress panel)
+    data/               concepts.js (the K–Calculus graph) + lessons-*.js
+    styles.css          Math palette, map, lesson flow, component styles
 DESIGN.md               Design & architecture of the History subject
 ```
 
@@ -50,7 +59,7 @@ DESIGN.md               Design & architecture of the History subject
 
 Everything subject-agnostic lives in [`core/`](core): the design tokens and the reusable UI (`core/theme.css`), and the framework-free widgets (`core/shell.js`) — a sliding info **Rail**, a **Quiz** modal, dropdown menus and search. Each subject under [`subjects/`](subjects) brings its own *canvas* (history's is a D3 map; biology's is a diagram/tool explorer) but composes those shared pieces, so every subject looks and behaves like part of one Atlas.
 
-Within a subject, **content is data, not code.** A war is a `subjects/history/app/data/<war>.js` file that registers on `window.HWE.wars`; a biology topic is a `subjects/biology/data/<topic>.js` file that registers on `window.BIO.topics`. Adding content is a data change — no engine edits.
+Within a subject, **content is data, not code.** A war is a `subjects/history/app/data/<war>.js` file that registers on `window.HWE.wars`; a biology topic is a `subjects/biology/data/<topic>.js` file that registers on `window.BIO.topics`. Maths goes one step further: a *concept* is a node registered on the knowledge graph (`MATH.Graph.add`) and a *lesson* is a step-list registered by concept id (`MATH.Player.register`), so both the curriculum map and its lessons are pure data over a shared engine. Adding content is a data change — no engine edits.
 
 ## One repo, on purpose
 
@@ -73,9 +82,15 @@ The whole Atlas lives in **a single repository (a monorepo).** For a buildless s
 - `kind:'diagram'` — supply an SVG whose elements carry `data-part` attributes plus a `parts` array; the explorer wires clicks to the info rail automatically.
 - `kind:'tool'` — supply a `mount(canvas, api)` function for a custom interactive (as the Genetics Punnett square does).
 
+**Add a concept or lesson to Mathematics** — the curriculum is a knowledge graph, so there are two independent data changes:
+
+- **A concept (map node):** call `MATH.Graph.add({ id, name, grade, strand, prereqs:[…], blurb, lesson:true })` in `subjects/math/data/concepts.js`. It appears on the map immediately; `prereqs` decide what unlocks it. Leave `lesson` off for a visible-but-coming-soon node.
+- **Its lesson:** call `MATH.Player.register({ concept:'<id>', title, hook, steps:[…] })` in a `data/lessons-*.js` file. Steps are ordered by the flow (`explore`/`discover`/`practice`/`challenge`/`mastery`); interactive steps name a reusable component (`counter`, `numberLine`, `arrayBuilder`, `fractionPizza`, `functionMachine`, `problemSet`, …) and pass a small `config`. Add a new manipulative once with `MATH.Components.register(name, { mount(host, config, ctx) })` and every lesson can use it.
+
 **Add a new subject** — create `subjects/<name>/` with an `index.html` that links `../../core/theme.css` and `../../core/shell.js`, build its explorer against the Atlas shell, then add an entry to [`subjects.json`](subjects.json) — the hub renders its cards from that manifest, so no HTML edits are needed. Use `"status": "live"` with an `"href"` to link it, or `"status": "soon"` for a coming-soon placeholder.
 
 ## Credits & sources
 
 - **History** basemap geometry: [Natural Earth](https://www.naturalearthdata.com/) (public domain) and [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps); US-state outlines (Civil War) from US Census-derived data. Historical content is sourced — see each war's **Sources** tab and [`DESIGN.md`](DESIGN.md). Where historians disagree, ranges and confidence levels are shown rather than invented precision.
 - **Biology** diagrams are original schematic illustrations built for clarity, not anatomical precision.
+- **Mathematics** is organised around a knowledge graph rather than a rigid grade ladder: grades are recommended paths, but mastery of a concept’s prerequisites is what unlocks it, so learners can accelerate, branch, or be sent back to a prerequisite for review. All progress is stored locally in the browser.

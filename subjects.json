@@ -23,9 +23,10 @@
       "id": "math",
       "name": "Mathematics",
       "icon": "➗",
-      "status": "soon",
-      "meta": "In planning",
-      "description": "Visual, interactive math — from the number line and geometry to functions and probability."
+      "status": "live",
+      "href": "subjects/math/",
+      "meta": "Math Explorer · K–Calculus knowledge map",
+      "description": "A knowledge map of interactive lessons — counting, fractions, arrays, the coordinate plane and function machines. Explore, discover and master; each concept unlocks the next."
     },
     {
       "id": "english",

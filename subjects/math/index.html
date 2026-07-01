@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math Explorer — Mathematics · Learning Atlas</title>
+<link rel="stylesheet" href="../../core/theme.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- TOP BAR -->
+  <header id="topbar" class="ui">
+    <a class="homelink" href="../../" title="Back to the Learning Atlas hub">← Atlas</a>
+    <div class="brand"><small>Math Explorer</small><span id="brand-title">Learning Map</span></div>
+    <div class="searchbox">
+      <input id="search" type="text" placeholder="Search concepts…" aria-label="Search concepts" autocomplete="off">
+      <div id="results" class="results"></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="tb-menu">
+      <button class="tb-btn" id="view-btn" title="Map legend">Legend ▾</button>
+      <div class="menu-pop" id="view-pop">
+        <div class="head">Node status</div>
+        <div class="m-legend-row"><span class="m-swatch st-mastered"></span> Mastered</div>
+        <div class="m-legend-row"><span class="m-swatch st-available"></span> Ready to learn</div>
+        <div class="m-legend-row"><span class="m-swatch st-ready-soon"></span> Unlocked · coming soon</div>
+        <div class="m-legend-row"><span class="m-swatch st-locked"></span> Locked (needs a prerequisite)</div>
+        <div class="head" style="margin-top:8px">How it works</div>
+        <p class="m-legend-note">Master a concept to unlock the ones that depend on it. Lines show prerequisites. You don't have to follow grades in order.</p>
+      </div>
+    </div>
+    <button class="tb-btn" id="map-btn">Map</button>
+    <button class="tb-btn" id="continue-btn" title="Jump to the recommended next lesson">Continue ▸</button>
+    <button class="tb-btn" id="progress-btn">Progress</button>
+  </header>
+
+  <!-- STAGE -->
+  <div id="stage">
+    <div id="m-map" class="m-view" role="region" aria-label="Learning map"></div>
+    <div id="m-lesson" class="m-view" role="region" aria-label="Lesson" style="display:none"></div>
+
+    <!-- RAIL (progress / info) -->
+    <aside id="rail" aria-label="Progress panel">
+      <div class="rail-head">
+        <div style="flex:1">
+          <div class="rkind ui" id="rkind">Explorer</div>
+          <div class="rtitle" id="rtitle">Your progress</div>
+        </div>
+        <button class="icon-btn" id="railclose" title="Close">✕</button>
+      </div>
+      <div class="tabs" id="tabs"></div>
+      <div class="rail-body" id="railbody"></div>
+    </aside>
+  </div>
+</div>
+
+<script src="../../core/shell.js"></script>
+<script src="engine/store.js"></script>
+<script src="engine/graph.js"></script>
+<script src="engine/components.js"></script>
+<script src="engine/player.js"></script>
+<script src="engine/map.js"></script>
+<script src="data/concepts.js"></script>
+<script src="data/lessons-k.js"></script>
+<script src="data/lessons-1-2.js"></script>
+<script src="data/lessons-3-plus.js"></script>
+<script src="engine/app.js"></script>
+</body>
+</html>
