@@ -24,6 +24,12 @@
     { name: 'Second Anglo-Mysore War', region: 'India', start: 1780, end: 1784, note: 'Mysore, allied with France, inflicted heavy defeats on the East India Company.' },
     { name: 'Fourth Anglo-Dutch War', region: 'Global (naval)', start: 1780, end: 1784, note: 'Dutch trade with the American rebels drew Britain and the Dutch Republic into war.' },
 
+    // ---- turn of the 19th century (Napoleonic era) ----
+    { name: 'Haitian Revolution', region: 'Caribbean', start: 1791, end: 1804, note: 'Enslaved Haitians overthrew French rule and founded the first Black republic.' },
+    { name: 'Russo-Turkish War', region: 'Eastern Europe', start: 1806, end: 1812, note: 'Russia and the Ottoman Empire fought over the Danube and the Black Sea.' },
+    { name: 'Spanish American wars of independence', region: 'Latin America', start: 1808, end: 1826, note: 'Colonies across Spanish America rose for independence as Spain reeled from French invasion.' },
+    { name: 'War of 1812', region: 'North America', start: 1812, end: 1815, note: 'The United States and Britain fought over trade, impressment and territory.' },
+
     // ---- mid-19th century (American Civil War era) ----
     { name: 'Taiping Rebellion', region: 'China', start: 1850, end: 1864, note: 'A vast civil war in Qing China — among the deadliest conflicts in all of history.' },
     { name: 'Crimean War', region: 'Black Sea & Russia', start: 1853, end: 1856, note: 'Britain, France and the Ottomans checked Russian expansion.' },
