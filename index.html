@@ -39,59 +39,39 @@
       <p>Explore subjects through maps, diagrams and interactive models — click anything to dig deeper, and test yourself as you go.</p>
     </header>
 
-    <section class="grid" aria-label="Subjects">
-      <a class="card" href="subjects/history/">
-        <span class="badge live">Live</span>
-        <span class="icon">🗺️</span>
-        <h2>History</h2>
-        <p>Six conflicts from the French &amp; Indian War to World War II — animated borders, battles, leaders and treaties on an interactive world map.</p>
-        <span class="meta">Historical Wars Explorer · 6 wars</span>
-        <span class="go">Open explorer →</span>
-      </a>
+    <section class="grid" id="grid" aria-label="Subjects"></section>
 
-      <a class="card" href="subjects/biology/">
-        <span class="badge live">Live</span>
-        <span class="icon">🧬</span>
-        <h2>Biology</h2>
-        <p>The living world in interactive diagrams — the cell, the human body, the tree of life and the rules of inheritance. Click to explore, quiz to learn.</p>
-        <span class="meta">Life Explorer · 4 topics</span>
-        <span class="go">Open explorer →</span>
-      </a>
-
-      <div class="card soon">
-        <span class="badge">Coming soon</span>
-        <span class="icon">➗</span>
-        <h2>Mathematics</h2>
-        <p>Visual, interactive math — from the number line and geometry to functions and probability.</p>
-        <span class="meta">In planning</span>
-      </div>
-
-      <div class="card soon">
-        <span class="badge">Coming soon</span>
-        <span class="icon">📖</span>
-        <h2>English</h2>
-        <p>Language and literature — grammar, rhetoric, poetic form and the stories that shaped them.</p>
-        <span class="meta">In planning</span>
-      </div>
-
-      <div class="card soon">
-        <span class="badge">Coming soon</span>
-        <span class="icon">⚗️</span>
-        <h2>Chemistry</h2>
-        <p>An interactive periodic table, bonding, reactions and the states of matter.</p>
-        <span class="meta">In planning</span>
-      </div>
-
-      <div class="card soon">
-        <span class="badge">Coming soon</span>
-        <span class="icon">🌍</span>
-        <h2>Geography</h2>
-        <p>Physical and human geography — climate, tectonics, biomes and the shape of nations.</p>
-        <span class="meta">In planning</span>
-      </div>
-    </section>
-
-    <footer class="hub-foot">Built as a data-driven, buildless web app · works offline from the file system</footer>
+    <footer class="hub-foot">Built as a data-driven, buildless web app</footer>
   </main>
+
+<script>
+  /* Render the subject cards from the manifest, so adding a subject is a data
+     change in subjects.json — no HTML edits. Served over HTTP (python http.server
+     / GitHub Pages), where fetch of a same-origin file works. */
+  (function () {
+    const grid = document.getElementById('grid');
+    const esc = s => String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    function card(s) {
+      const inner = `
+        <span class="badge${s.status === 'live' ? ' live' : ''}">${s.status === 'live' ? 'Live' : 'Coming soon'}</span>
+        <span class="icon">${esc(s.icon)}</span>
+        <h2>${esc(s.name)}</h2>
+        <p>${esc(s.description)}</p>
+        <span class="meta">${esc(s.meta)}</span>
+        ${s.status === 'live' ? '<span class="go">Open explorer →</span>' : ''}`;
+      if (s.status === 'live' && s.href) {
+        const a = document.createElement('a'); a.className = 'card'; a.href = s.href; a.innerHTML = inner; return a;
+      }
+      const d = document.createElement('div'); d.className = 'card soon'; d.innerHTML = inner; return d;
+    }
+    fetch('subjects.json')
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(data => (data.subjects || []).forEach(s => grid.appendChild(card(s))))
+      .catch(() => {
+        grid.innerHTML = '<p class="note" style="grid-column:1/-1">Couldn’t load subjects.json. ' +
+          'Serve this folder over HTTP (e.g. <code>python3 -m http.server</code>) rather than opening the file directly.</p>';
+      });
+  })();
+</script>
 </body>
 </html>

@@ -26,7 +26,8 @@ Opening an individual page directly from a clone over `file://` also works (e.g.
 ## Repository structure
 
 ```
-index.html              Hub home — the subject cards
+index.html              Hub home — renders subject cards from the manifest
+subjects.json           Manifest of subjects (drives the hub cards)
 core/
   theme.css             Shared design system: tokens (light/dark), top bar,
                         info rail, tabs, cards, quiz modal
@@ -72,7 +73,7 @@ The whole Atlas lives in **a single repository (a monorepo).** For a buildless s
 - `kind:'diagram'` — supply an SVG whose elements carry `data-part` attributes plus a `parts` array; the explorer wires clicks to the info rail automatically.
 - `kind:'tool'` — supply a `mount(canvas, api)` function for a custom interactive (as the Genetics Punnett square does).
 
-**Add a new subject** — create `subjects/<name>/` with an `index.html` that links `../../core/theme.css` and `../../core/shell.js`, build its explorer against the Atlas shell, and add a card on the hub home. (Once a third subject lands, the hub renders its cards from a `subjects.json` manifest, so this becomes a one-entry change.)
+**Add a new subject** — create `subjects/<name>/` with an `index.html` that links `../../core/theme.css` and `../../core/shell.js`, build its explorer against the Atlas shell, then add an entry to [`subjects.json`](subjects.json) — the hub renders its cards from that manifest, so no HTML edits are needed. Use `"status": "live"` with an `"href"` to link it, or `"status": "soon"` for a coming-soon placeholder.
 
 ## Credits & sources
 

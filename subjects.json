@@ -1,0 +1,55 @@
+{
+  "_comment": "Manifest of Learning Atlas subjects. The hub home (index.html) renders its cards from this file, so adding a subject is a data change here — no HTML edits. status: 'live' links to href; 'soon' renders a disabled Coming-soon card.",
+  "subjects": [
+    {
+      "id": "history",
+      "name": "History",
+      "icon": "🗺️",
+      "status": "live",
+      "href": "subjects/history/",
+      "meta": "Historical Wars Explorer · 6 wars",
+      "description": "Six conflicts from the French & Indian War to World War II — animated borders, battles, leaders and treaties on an interactive world map."
+    },
+    {
+      "id": "biology",
+      "name": "Biology",
+      "icon": "🧬",
+      "status": "live",
+      "href": "subjects/biology/",
+      "meta": "Life Explorer · 4 topics",
+      "description": "The living world in interactive diagrams — the cell, the human body, the tree of life and the rules of inheritance. Click to explore, quiz to learn."
+    },
+    {
+      "id": "math",
+      "name": "Mathematics",
+      "icon": "➗",
+      "status": "soon",
+      "meta": "In planning",
+      "description": "Visual, interactive math — from the number line and geometry to functions and probability."
+    },
+    {
+      "id": "english",
+      "name": "English",
+      "icon": "📖",
+      "status": "soon",
+      "meta": "In planning",
+      "description": "Language and literature — grammar, rhetoric, poetic form and the stories that shaped them."
+    },
+    {
+      "id": "chemistry",
+      "name": "Chemistry",
+      "icon": "⚗️",
+      "status": "soon",
+      "meta": "In planning",
+      "description": "An interactive periodic table, bonding, reactions and the states of matter."
+    },
+    {
+      "id": "geography",
+      "name": "Geography",
+      "icon": "🌍",
+      "status": "soon",
+      "meta": "In planning",
+      "description": "Physical and human geography — climate, tectonics, biomes and the shape of nations."
+    }
+  ]
+}
