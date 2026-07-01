@@ -1,6 +1,7 @@
 /* Life Explorer — topic: the Human Body Systems.
-   A `kind:'diagram'` topic. A simplified body silhouette with the major organs;
-   each organ is a data-part coloured by the body system it belongs to.         */
+   A `kind:'diagram'` topic: a shaded, textbook-style front-view figure. Each
+   organ is a <g class="part" data-part="id"> in its naturalistic colour; the
+   body *system* it belongs to is shown in the info rail and the legend.        */
 (function () {
   window.BIO = window.BIO || { topics: {} };
 
@@ -67,91 +68,123 @@
       analogy: 'The engines and cables that move the frame.', related: ['ribcage'] },
   ];
 
-  const label = (x, y, t, tx, ty, anchor) =>
-    `<line class="leader" x1="${x}" y1="${y}" x2="${tx}" y2="${ty}"/>` +
+  const lab = (x, y, t, tx, ty, anchor) =>
+    `<line class="lead-nat" x1="${x}" y1="${y}" x2="${tx}" y2="${ty}"/>` +
+    `<circle class="pin-nat" cx="${tx}" cy="${ty}" r="3.4"/>` +
     `<text class="plabel" x="${x}" y="${y + 4}" text-anchor="${anchor}">${t}</text>`;
 
   const svg = `
-  <svg viewBox="0 0 560 680" xmlns="http://www.w3.org/2000/svg" class="bio-diagram" role="img" aria-label="Human body systems diagram">
-    <!-- decorative silhouette -->
-    <g class="body-bg">
-      <circle cx="280" cy="70" r="44"/>
-      <rect x="266" y="108" width="28" height="26" rx="10"/>
-      <rect x="196" y="128" width="168" height="248" rx="52"/>
-      <rect x="150" y="150" width="30" height="176" rx="15"/>
-      <rect x="380" y="150" width="30" height="176" rx="15"/>
-      <rect x="214" y="360" width="42" height="256" rx="20"/>
-      <rect x="304" y="360" width="42" height="256" rx="20"/>
+  <svg viewBox="0 0 760 720" xmlns="http://www.w3.org/2000/svg" class="bio-diagram natural" role="img" aria-label="Human body systems diagram">
+    <defs>
+      <radialGradient id="b-skin" cx="42%" cy="26%" r="82%"><stop offset="0%" stop-color="#f7dcc2"/><stop offset="100%" stop-color="#e4b58e"/></radialGradient>
+      <radialGradient id="b-brain" cx="40%" cy="32%" r="74%"><stop offset="0%" stop-color="#f6c8cd"/><stop offset="100%" stop-color="#d47f89"/></radialGradient>
+      <radialGradient id="b-lung" cx="40%" cy="28%" r="80%"><stop offset="0%" stop-color="#f3aaa1"/><stop offset="100%" stop-color="#d56b60"/></radialGradient>
+      <radialGradient id="b-heart" cx="38%" cy="28%" r="80%"><stop offset="0%" stop-color="#e65b52"/><stop offset="100%" stop-color="#a52e2a"/></radialGradient>
+      <radialGradient id="b-liver" cx="38%" cy="28%" r="82%"><stop offset="0%" stop-color="#a25644"/><stop offset="100%" stop-color="#703426"/></radialGradient>
+      <radialGradient id="b-stom" cx="40%" cy="30%" r="80%"><stop offset="0%" stop-color="#ecabb9"/><stop offset="100%" stop-color="#c26d82"/></radialGradient>
+      <radialGradient id="b-intes" cx="42%" cy="30%" r="82%"><stop offset="0%" stop-color="#ebbf85"/><stop offset="100%" stop-color="#c8934c"/></radialGradient>
+      <radialGradient id="b-kid" cx="38%" cy="30%" r="80%"><stop offset="0%" stop-color="#9d6e85"/><stop offset="100%" stop-color="#6c4257"/></radialGradient>
+      <radialGradient id="b-blad" cx="40%" cy="30%" r="80%"><stop offset="0%" stop-color="#f0d97e"/><stop offset="100%" stop-color="#c9a836"/></radialGradient>
+      <linearGradient id="b-nerve" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f2dd82"/><stop offset="100%" stop-color="#d2b544"/></linearGradient>
+      <linearGradient id="b-bone" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f4ecd9"/><stop offset="100%" stop-color="#d9caa6"/></linearGradient>
+      <radialGradient id="b-mus" cx="40%" cy="30%" r="80%"><stop offset="0%" stop-color="#c95d53"/><stop offset="100%" stop-color="#8c332d"/></radialGradient>
+      <filter id="b-s" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#3a2418" flood-opacity="0.22"/></filter>
+    </defs>
+
+    <!-- silhouette (decorative, non-interactive) -->
+    <g class="nolabels" fill="url(#b-skin)" stroke="#d8a681" stroke-width="3">
+      <path d="M300 176 C300 150 460 150 460 176 L452 300 C450 340 442 372 434 404 L326 404 C318 372 310 340 308 300 Z"/>
+      <circle cx="380" cy="92" r="54"/>
+      <rect x="360" y="138" width="40" height="34" rx="12"/>
+      <path d="M300 182 C280 190 268 210 264 250 L256 360 C255 380 285 382 288 362 L300 260 Z"/>
+      <path d="M460 182 C480 190 492 210 496 250 L504 360 C505 380 475 382 472 362 L460 260 Z"/>
+      <path d="M330 404 L350 404 L346 660 C345 678 315 678 314 660 Z"/>
+      <path d="M410 404 L430 404 L446 660 C447 678 417 678 416 660 Z"/>
     </g>
 
     <!-- spinal cord (behind) -->
-    <g class="part cat-nervous" data-part="spinal-cord">
-      <rect class="shape" x="274" y="118" width="12" height="250" rx="6"/>
+    <g class="part" data-part="spinal-cord">
+      <path d="M380 150 L380 406" fill="none" stroke="url(#b-nerve)" stroke-width="10" stroke-linecap="round"/>
+      <g stroke="url(#b-nerve)" stroke-width="4" stroke-linecap="round"><path d="M380 360 l22 16"/><path d="M380 384 l-22 14"/></g>
     </g>
-    <!-- kidneys (behind intestines) -->
-    <g class="part cat-excretory" data-part="kidneys">
-      <path class="shape" d="M232 286 q-20 -4 -20 20 q0 24 20 20 q-6 -20 0 -40Z"/>
-      <path class="shape" d="M328 286 q20 -4 20 20 q0 24 -20 20 q6 -20 0 -40Z"/>
+
+    <!-- kidneys -->
+    <g class="part" data-part="kidneys" filter="url(#b-s)">
+      <path d="M336 330 C322 328 318 344 322 358 C326 370 340 368 342 356 C334 348 336 340 336 330Z" fill="url(#b-kid)"/>
+      <path d="M424 330 C438 328 442 344 438 358 C434 370 420 368 418 356 C426 348 424 340 424 330Z" fill="url(#b-kid)"/>
     </g>
-    <!-- ribcage (light overlay on chest) -->
-    <g class="part cat-skeletal" data-part="ribcage">
-      <path class="shape stroke" d="M214 170 q66 -22 132 0"/>
-      <path class="shape stroke" d="M212 192 q68 -22 136 0"/>
-      <path class="shape stroke" d="M214 214 q66 -20 132 0"/>
-      <path class="shape stroke" d="M218 236 q62 -18 124 0"/>
-    </g>
+
     <!-- lungs -->
-    <g class="part cat-respiratory" data-part="lungs">
-      <path class="shape" d="M262 150 q-46 6 -50 70 q-2 34 26 40 q22 4 24 -20 Z"/>
-      <path class="shape" d="M298 150 q46 6 50 70 q2 34 -26 40 q-22 4 -24 -20 Z"/>
+    <g class="part" data-part="lungs" filter="url(#b-s)">
+      <path d="M356 196 C316 200 300 240 302 286 C304 320 332 330 352 318 C366 310 366 250 362 214 Z" fill="url(#b-lung)"/>
+      <path d="M404 196 C444 200 460 240 458 286 C456 320 428 330 408 318 C394 310 394 250 398 214 Z" fill="url(#b-lung)"/>
     </g>
-    <!-- trachea -->
-    <g class="part cat-respiratory" data-part="trachea">
-      <rect class="shape" x="272" y="120" width="16" height="44" rx="7"/>
+
+    <!-- trachea + bronchi -->
+    <g class="part" data-part="trachea">
+      <path d="M380 150 L380 200 M380 200 q-4 20 -30 34 M380 200 q4 20 30 34" fill="none" stroke="#cf93a4" stroke-width="7" stroke-linecap="round"/>
     </g>
+
     <!-- heart -->
-    <g class="part cat-circulatory" data-part="heart">
-      <path class="shape" d="M280 178 q-16 -20 -32 -6 q-14 14 4 32 l28 28 l28 -28 q18 -18 4 -32 q-16 -14 -32 6Z"/>
+    <g class="part" data-part="heart" filter="url(#b-s)">
+      <path d="M380 236 C370 222 350 224 348 244 C346 262 370 276 382 292 C394 276 416 262 414 244 C412 224 392 222 380 236Z" fill="url(#b-heart)"/>
     </g>
+
+    <!-- ribcage (bone, over the chest) -->
+    <g class="part" data-part="ribcage" opacity=".9">
+      <g fill="none" stroke="url(#b-bone)" stroke-width="7" stroke-linecap="round">
+        <path d="M320 182 q60 -20 120 0"/><path d="M316 206 q64 -20 128 0"/>
+        <path d="M318 230 q62 -18 124 0"/><path d="M324 254 q56 -16 112 0"/>
+      </g>
+      <line x1="380" y1="176" x2="380" y2="262" stroke="url(#b-bone)" stroke-width="6" stroke-linecap="round"/>
+    </g>
+
     <!-- liver -->
-    <g class="part cat-digestive" data-part="liver">
-      <path class="shape" d="M210 250 q66 -16 120 0 q-4 34 -60 34 q-52 0 -60 -34Z"/>
+    <g class="part" data-part="liver" filter="url(#b-s)">
+      <path d="M312 306 C356 296 404 300 420 312 C420 336 396 350 356 350 C328 350 314 332 312 306Z" fill="url(#b-liver)"/>
     </g>
+
     <!-- stomach -->
-    <g class="part cat-digestive" data-part="stomach">
-      <path class="shape" d="M300 262 q34 4 30 42 q-4 34 -40 30 q22 -14 14 -40 q-6 -22 -4 -32Z"/>
+    <g class="part" data-part="stomach" filter="url(#b-s)">
+      <path d="M410 302 C440 300 448 330 438 352 C430 370 404 368 402 348 C420 342 418 320 410 302Z" fill="url(#b-stom)"/>
     </g>
+
     <!-- intestines -->
-    <g class="part cat-digestive" data-part="intestines">
-      <path class="shape stroke intestine" d="M240 316 q80 -10 80 26 q0 26 -60 20 q60 6 60 30 q0 28 -70 22"/>
+    <g class="part" data-part="intestines" filter="url(#b-s)">
+      <path d="M340 360 q40 -8 40 20 q0 24 -34 20 q40 4 40 26 q0 26 -38 22 q46 6 62 -6" fill="none" stroke="url(#b-intes)" stroke-width="18" stroke-linecap="round"/>
     </g>
+
     <!-- bladder -->
-    <g class="part cat-excretory" data-part="bladder">
-      <path class="shape" d="M280 360 q26 0 26 22 q0 22 -26 22 q-26 0 -26 -22 q0 -22 26 -22Z"/>
+    <g class="part" data-part="bladder" filter="url(#b-s)">
+      <path d="M380 396 C398 396 404 414 396 426 C388 436 372 436 364 426 C356 414 362 396 380 396Z" fill="url(#b-blad)"/>
     </g>
+
     <!-- brain -->
-    <g class="part cat-nervous" data-part="brain">
-      <path class="shape" d="M280 48 q-34 0 -34 26 q0 22 34 22 q34 0 34 -22 q0 -26 -34 -26Z"/>
+    <g class="part" data-part="brain" filter="url(#b-s)">
+      <path d="M380 58 C346 58 340 84 348 100 C336 112 352 130 372 126 C382 138 404 132 402 116 C420 110 416 80 398 72 C398 58 380 58 380 58Z" fill="url(#b-brain)"/>
+      <path d="M362 78 q10 8 0 18 M384 70 q8 12 -2 22 M372 104 q12 6 22 -2" fill="none" stroke="#b25f68" stroke-width="2" opacity=".55" stroke-linecap="round"/>
     </g>
-    <!-- muscles (upper arm) -->
-    <g class="part cat-muscular" data-part="muscles">
-      <ellipse class="shape" cx="395" cy="196" rx="16" ry="30"/>
+
+    <!-- muscle (right upper arm) -->
+    <g class="part" data-part="muscles" filter="url(#b-s)">
+      <ellipse cx="484" cy="232" rx="20" ry="34" fill="url(#b-mus)"/>
+      <path d="M474 214 q10 18 0 36 M492 214 q-10 18 0 36" fill="none" stroke="#f0b3ac" stroke-width="2" opacity=".55" stroke-linecap="round"/>
     </g>
 
     <!-- labels -->
-    <g class="labels">
-      ${label(120, 62, 'Brain', 250, 66, 'end')}
-      ${label(120, 132, 'Trachea', 272, 140, 'end')}
-      ${label(120, 196, 'Lungs', 224, 196, 'end')}
-      ${label(120, 256, 'Liver', 214, 258, 'end')}
-      ${label(120, 320, 'Intestines', 244, 330, 'end')}
-      ${label(120, 388, 'Bladder', 258, 380, 'end')}
-      ${label(440, 120, 'Spinal cord', 288, 150, 'start')}
-      ${label(486, 168, 'Muscles', 412, 192, 'start')}
-      ${label(440, 205, 'Heart', 300, 198, 'start')}
-      ${label(440, 245, 'Ribcage', 346, 220, 'start')}
-      ${label(440, 285, 'Stomach', 326, 270, 'start')}
-      ${label(440, 325, 'Kidneys', 344, 300, 'start')}
+    <g class="nolabels">
+      ${lab(150, 92, 'Brain', 352, 92, 'end')}
+      ${lab(150, 200, 'Lungs', 336, 244, 'end')}
+      ${lab(150, 262, 'Ribcage', 322, 230, 'end')}
+      ${lab(150, 322, 'Liver', 330, 322, 'end')}
+      ${lab(150, 372, 'Kidney', 336, 346, 'end')}
+      ${lab(150, 430, 'Intestines', 356, 392, 'end')}
+      ${lab(610, 150, 'Trachea', 396, 170, 'start')}
+      ${lab(610, 214, 'Muscles', 500, 232, 'start')}
+      ${lab(610, 268, 'Heart', 396, 256, 'start')}
+      ${lab(610, 322, 'Stomach', 430, 330, 'start')}
+      ${lab(610, 376, 'Spinal cord', 388, 388, 'start')}
+      ${lab(610, 424, 'Bladder', 396, 414, 'start')}
     </g>
   </svg>`;
 
@@ -174,6 +207,6 @@
       nervous: 'Nervous', circulatory: 'Circulatory', respiratory: 'Respiratory',
       digestive: 'Digestive', excretory: 'Excretory', skeletal: 'Skeletal', muscular: 'Muscular'
     },
-    viewBox: '0 0 560 680', svg, parts, quizzes
+    viewBox: '0 0 760 720', svg, parts, quizzes
   };
 })();
