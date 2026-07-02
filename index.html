@@ -65,7 +65,7 @@
       flask: '<path d="M9.8 3.5v5.8L4.8 18.8a1.6 1.6 0 0 0 1.5 2.2h11.4a1.6 1.6 0 0 0 1.5-2.2L14.2 9.3V3.5"/><line x1="8.6" y1="3.5" x2="15.4" y2="3.5"/><line x1="7.4" y1="15" x2="16.6" y2="15"/>',
       globe: '<circle cx="12" cy="12" r="8.7"/><line x1="3.3" y1="12" x2="20.7" y2="12"/><path d="M12 3.3c3.3 3.6 3.3 13.8 0 17.4c-3.3-3.6-3.3-13.8 0-17.4z"/>'
     };
-    const glyph = b => `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${b}</svg>`;
+    const glyph = b => `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${b}</svg>`;
     const icon = v => GLYPHS[v] ? glyph(GLYPHS[v]) : esc(v);
     function card(s) {
       const inner = `
