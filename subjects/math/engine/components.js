@@ -832,4 +832,121 @@
     ({ explore, read, system }[cfg.mode] || explore)();
   } });
 
+  /* ========================================================= PARABOLA EXPLORER ===
+     A live grid for quadratics in vertex form y = a(x−h)² + k. Modes:
+       'explore' — step a, h and k to match a dashed target parabola (feel what
+                   each parameter does: a flips/stretches, h slides, k lifts)
+       'vertex'  — a parabola is drawn; click its vertex, then say min or max
+       'zeros'   — a parabola with integer roots is drawn; click BOTH zeros
+     config: { mode, rounds, G }                                                 */
+  R('parabolaExplorer', { title: 'Parabola explorer', mount(host, cfg, ctx) {
+    cfg = Object.assign({ mode: 'explore', rounds: 3, G: 6 }, cfg);
+    const G = cfg.G, size = 320, pad = 22, scale = (size - 2 * pad) / (2 * G);
+    const px = x => pad + (x + G) * scale, py = y => size - pad - (y + G) * scale;
+    let round = 0;
+    const info = U.el('p', 'm-prompt'); host.appendChild(info);
+    const stage = U.el('div', 'm-lg-stage'); host.appendChild(stage);
+
+    function grid(extra) {
+      const L = [];
+      for (let i = -G; i <= G; i++) { L.push(`<line x1="${px(i)}" y1="${py(-G)}" x2="${px(i)}" y2="${py(G)}" class="m-lg-grid"/>`); L.push(`<line x1="${px(-G)}" y1="${py(i)}" x2="${px(G)}" y2="${py(i)}" class="m-lg-grid"/>`); }
+      L.push(`<line x1="${px(-G)}" y1="${py(0)}" x2="${px(G)}" y2="${py(0)}" class="m-lg-axis"/>`);
+      L.push(`<line x1="${px(0)}" y1="${py(-G)}" x2="${px(0)}" y2="${py(G)}" class="m-lg-axis"/>`);
+      for (let i = -G; i <= G; i += 2) { if (!i) continue; L.push(`<text x="${px(i)}" y="${py(0) + 13}" class="m-lg-t">${i}</text>`); L.push(`<text x="${px(0) - 12}" y="${py(i) + 4}" class="m-lg-t">${i}</text>`); }
+      const clip = `<clipPath id="pbclip"><rect x="${px(-G)}" y="${py(G)}" width="${2 * G * scale}" height="${2 * G * scale}"/></clipPath>`;
+      return `<svg viewBox="0 0 ${size} ${size}" class="m-lg"><defs>${clip}</defs>${L.join('')}${extra || ''}</svg>`;
+    }
+    function curve(a, h, k, cls) {
+      const pts = [];
+      for (let x = -G; x <= G + 0.001; x += 0.2) { const y = a * (x - h) * (x - h) + k; pts.push(`${px(x).toFixed(1)},${py(y).toFixed(1)}`); }
+      return `<polyline points="${pts.join(' ')}" class="m-lg-line m-pb-curve ${cls || ''}" clip-path="url(#pbclip)"/>`;
+    }
+    const pt = (x, y, cls) => `<circle cx="${px(x)}" cy="${py(y)}" r="5" class="m-lg-pt ${cls || ''}"/>`;
+    const vertexEq = (a, h, k) => {
+      const A = a === 1 ? '' : a === -1 ? '−' : a < 0 ? '−' + (-a) : a;
+      const H = h === 0 ? 'x²' : `(x ${h > 0 ? '− ' + h : '+ ' + (-h)})²`;
+      const K = k > 0 ? ` + ${k}` : k < 0 ? ` − ${-k}` : '';
+      return `y = ${A}${H}${K}`;
+    };
+    const hits = () => { const L = []; for (let x = -G; x <= G; x++) for (let y = -G; y <= G; y++) L.push(`<circle cx="${px(x)}" cy="${py(y)}" r="9" class="m-lg-hit" data-x="${x}" data-y="${y}"/>`); return L.join(''); };
+    function mark(svg, x, y, ok) { svg.querySelectorAll('.m-lg-guess').forEach(n => n.remove()); const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); c.setAttribute('cx', px(x)); c.setAttribute('cy', py(y)); c.setAttribute('r', 6); c.setAttribute('class', 'm-lg-guess ' + (ok ? 'ok' : 'no')); svg.appendChild(c); }
+
+    function explore() {
+      const ta = U.pick([-2, -1, 1, 2]), th = U.rand(-3, 3), tk = U.rand(-4, 4);
+      let a = 1, h = 0, k = 0;
+      if (ctx.reveal) ctx.reveal(vertexEq(ta, th, tk));
+      info.innerHTML = `Match the dashed parabola: build <b>${vertexEq(ta, th, tk)}</b>.`;
+      (function render() {
+        stage.innerHTML = grid(curve(ta, th, tk, 'target') + curve(a, h, k, 'live') + pt(h, k, 'int')) + `
+          <div class="m-lg-ctrls">
+            <div class="m-lg-ctrl"><span>a (width/flip)</span><button data-d="a-">−</button><b>${a}</b><button data-d="a+">+</button></div>
+            <div class="m-lg-ctrl"><span>h (left/right)</span><button data-d="h-">−</button><b>${h}</b><button data-d="h+">+</button></div>
+            <div class="m-lg-ctrl"><span>k (up/down)</span><button data-d="k-">−</button><b>${k}</b><button data-d="k+">+</button></div>
+          </div><div class="m-lg-eq">${vertexEq(a, h, k)}</div>`;
+        stage.querySelectorAll('[data-d]').forEach(btn => btn.onclick = () => {
+          const d = btn.dataset.d;
+          if (d === 'a-') { a = a === 1 ? -1 : Math.max(-3, a - 1); } else if (d === 'a+') { a = a === -1 ? 1 : Math.min(3, a + 1); }
+          else if (d === 'h-' && h > -5) h--; else if (d === 'h+' && h < 5) h++;
+          else if (d === 'k-' && k > -5) k--; else if (d === 'k+' && k < 5) k++;
+          ctx.count('parabolaExplorer');
+          if (a === ta && h === th && k === tk) { ctx.attempt(true); ctx.feedback(`Matched! Vertex (${th}, ${tk}) — a stretches, h slides, k lifts.`, 'ok'); round++; ctx.progress(round, cfg.rounds); if (round >= cfg.rounds) setTimeout(ctx.solved, 850); else setTimeout(explore, 1000); }
+          else render();
+        });
+      })();
+    }
+
+    function vertex() {
+      const a = U.pick([-2, -1, 1, 2]), h = U.rand(-3, 3), k = U.rand(-3, 3);
+      if (ctx.reveal) ctx.reveal(`vertex (${h}, ${k})`);
+      info.innerHTML = `This is <b>${vertexEq(a, h, k)}</b>. <b>Click its vertex</b> — the turning point.`;
+      stage.innerHTML = grid(curve(a, h, k, 'live') + hits());
+      const svg = stage.querySelector('svg');
+      svg.addEventListener('click', e => {
+        const t = e.target.closest('.m-lg-hit'); if (!t) return;
+        const x = +t.dataset.x, y = +t.dataset.y, ok = x === h && y === k;
+        const mis = (!ok && x === -h && h !== 0 && y === k) ? { misconception: 'Vertex sign flipped — y = a(x − h)² + k turns at x = +h, not −h' } : null;
+        ctx.attempt(ok, mis); ctx.count('parabolaExplorer'); mark(svg, x, y, ok);
+        ctx.feedback(ok ? `Yes — vertex (${h}, ${k}). Now: minimum or maximum?` : `Not the turning point. In ${vertexEq(a, h, k)}, the vertex is where the square is zero.`, ok ? 'ok' : 'no');
+        if (ok) {
+          const bar = U.el('div', 'm-pb-minmax');
+          bar.innerHTML = `<button class="m-btn" data-mm="min">a minimum</button><button class="m-btn" data-mm="max">a maximum</button>`;
+          stage.appendChild(bar);
+          bar.querySelectorAll('[data-mm]').forEach(b => b.onclick = () => {
+            const right = (a > 0 ? 'min' : 'max') === b.dataset.mm;
+            ctx.attempt(right, right ? null : { misconception: 'Opens-up vs opens-down — a > 0 opens up (minimum), a < 0 opens down (maximum)' });
+            ctx.feedback(right ? `Right — a = ${a} ${a > 0 ? '> 0 opens up: a minimum' : '< 0 opens down: a maximum'}.` : `Look at the cup: a = ${a} ${a > 0 ? 'opens up, so the vertex is its lowest point' : 'opens down, so the vertex is its highest point'}.`, right ? 'ok' : 'no');
+            if (right) { round++; ctx.progress(round, cfg.rounds); if (round >= cfg.rounds) setTimeout(ctx.solved, 800); else setTimeout(vertex, 1000); }
+          });
+        }
+      });
+    }
+
+    function zeros() {
+      let r1 = U.rand(-4, 2), r2 = r1 + U.rand(1, Math.min(5, 4 - r1));
+      const a = U.pick([1, -1]);
+      const h = (r1 + r2) / 2, k = a * (h - r1) * (h - r2);   // vertex form of a(x−r1)(x−r2)
+      if (ctx.reveal) ctx.reveal(`x = ${r1} and x = ${r2}`);
+      info.innerHTML = `Click <b>both zeros</b> — the points where the parabola crosses the x-axis (y = 0).`;
+      stage.innerHTML = grid(curve(a, h, k, 'live') + hits());
+      const svg = stage.querySelector('svg');
+      const found = new Set();
+      svg.addEventListener('click', e => {
+        const t = e.target.closest('.m-lg-hit'); if (!t) return;
+        const x = +t.dataset.x, y = +t.dataset.y;
+        const ok = y === 0 && (x === r1 || x === r2) && !found.has(x);
+        const mis = (!ok && x === 0) ? { misconception: 'Zeros vs y-intercept — zeros sit on the x-axis (y = 0), not where the curve meets the y-axis' } : null;
+        ctx.attempt(ok, mis); ctx.count('parabolaExplorer');
+        if (ok) {
+          found.add(x);
+          const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); c.setAttribute('cx', px(x)); c.setAttribute('cy', py(0)); c.setAttribute('r', 6); c.setAttribute('class', 'm-lg-guess ok'); svg.appendChild(c);
+          ctx.feedback(found.size === 2 ? `Both zeros: x = ${r1} and x = ${r2} — the factors are (x ${r1 < 0 ? '+ ' + (-r1) : '− ' + r1}) and (x ${r2 < 0 ? '+ ' + (-r2) : '− ' + r2}).` : `One zero at x = ${x}. Find the other crossing.`, 'ok');
+          if (found.size === 2) { round++; ctx.progress(round, cfg.rounds); if (round >= cfg.rounds) setTimeout(ctx.solved, 900); else setTimeout(zeros, 1100); }
+        } else { mark(svg, x, y, false); ctx.feedback('The zeros are ON the x-axis, where y = 0.', 'no'); }
+      });
+    }
+
+    ctx.progress(0, cfg.rounds);
+    ({ explore, vertex, zeros }[cfg.mode] || explore)();
+  } });
+
 })();

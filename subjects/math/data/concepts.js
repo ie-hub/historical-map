@@ -82,15 +82,15 @@
   add({ id: 'exponent-rules', name: 'Exponent Rules', grade: 'Algebra I', strand: 'Number', lesson: true, prereqs: ['multiply'], blurb: 'Multiply, divide and power up.', components: ['problemSet'], standards: ['AI.NE.2'] });
   add({ id: 'radicals', name: 'Simplifying Radicals', grade: 'Algebra I', strand: 'Number', prereqs: ['exponent-rules'], blurb: 'Tame the square root.', standards: ['AI.NE.3'] });
   add({ id: 'polynomials', name: 'Polynomials', grade: 'Algebra I', strand: 'Number', prereqs: ['exponent-rules'], blurb: 'Add, subtract and multiply.', standards: ['AI.NE.5'] });
-  add({ id: 'factoring', name: 'Factoring Quadratics', grade: 'Algebra I', strand: 'Number', prereqs: ['polynomials'], blurb: 'Un-multiply a quadratic.', standards: ['AI.NE.4'] });
+  add({ id: 'factoring', name: 'Factoring Quadratics', grade: 'Algebra I', strand: 'Number', lesson: true, prereqs: ['polynomials'], blurb: 'Un-multiply a quadratic.', components: ['problemSet'], standards: ['AI.NE.4'] });
   add({ id: 'complex-numbers', name: 'The Complex Number System', grade: 'Algebra I', strand: 'Number', prereqs: ['radicals'], blurb: 'Meet i = √−1.', standards: ['AI.NE.1'] });
   // Quadratic & exponential
-  add({ id: 'linear-vs-exp', name: 'Linear vs. Exponential', grade: 'Algebra I', strand: 'Functions', prereqs: ['slope-intercept'], blurb: 'Equal differences vs. equal factors.', standards: ['AI.QE.1'] });
-  add({ id: 'exponential-fn', name: 'Exponential Functions', grade: 'Algebra I', strand: 'Functions', prereqs: ['linear-vs-exp', 'exponent-rules'], blurb: 'y = ab^x growth & decay.', standards: ['AI.QE.2'] });
-  add({ id: 'quadratic-graphs', name: 'Graphing Parabolas', grade: 'Algebra I', strand: 'Functions', prereqs: ['function-basics'], blurb: 'The shape of x².', standards: ['AI.QE.6'] });
-  add({ id: 'solve-quadratics', name: 'Solving Quadratics', grade: 'Algebra I', strand: 'Algebra', prereqs: ['factoring', 'quadratic-graphs'], blurb: 'Roots by factoring & formula.', standards: ['AI.QE.4'] });
+  add({ id: 'linear-vs-exp', name: 'Linear vs. Exponential', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['slope-intercept'], blurb: 'Equal differences vs. equal factors.', components: ['problemSet'], standards: ['AI.QE.1'] });
+  add({ id: 'exponential-fn', name: 'Exponential Functions', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['linear-vs-exp', 'exponent-rules'], blurb: 'y = ab^x growth & decay.', components: ['problemSet'], standards: ['AI.QE.2'] });
+  add({ id: 'quadratic-graphs', name: 'Graphing Parabolas', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['function-basics'], blurb: 'The shape of x².', components: ['parabolaExplorer'], standards: ['AI.QE.6'] });
+  add({ id: 'solve-quadratics', name: 'Solving Quadratics', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['factoring', 'quadratic-graphs'], blurb: 'Roots by factoring & formula.', components: ['problemSet'], standards: ['AI.QE.4'] });
   add({ id: 'completing-square', name: 'Completing the Square', grade: 'Algebra I', strand: 'Algebra', prereqs: ['solve-quadratics'], blurb: 'Build a perfect square.', standards: ['AI.QE.3'] });
-  add({ id: 'quadratic-zeros', name: 'Zeros, Roots & Factors', grade: 'Algebra I', strand: 'Algebra', prereqs: ['solve-quadratics'], blurb: 'Where the parabola meets zero.', standards: ['AI.QE.7'] });
+  add({ id: 'quadratic-zeros', name: 'Zeros, Roots & Factors', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['solve-quadratics'], blurb: 'Where the parabola meets zero.', components: ['parabolaExplorer', 'problemSet'], standards: ['AI.QE.7'] });
   add({ id: 'quadratic-modeling', name: 'Modeling with Quadratics', grade: 'Algebra I', strand: 'Algebra', prereqs: ['solve-quadratics'], blurb: 'Projectiles and areas.', standards: ['AI.QE.5'] });
   // Data & statistics
   add({ id: 'scatter-plots', name: 'Scatter Plots & Trend Lines', grade: 'Algebra I', strand: 'Data', prereqs: ['slope-intercept'], blurb: 'Fit a line to a cloud of points.', standards: ['AI.DS.3'] });
