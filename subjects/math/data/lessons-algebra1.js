@@ -1,10 +1,11 @@
 /* Learning Atlas — Mathematics · Algebra I lessons.
-   Seven concepts carry the full 9-stage arc (Hook → Warm-up → Explore → Discover →
-   Practice → Challenge → Mastery → Reflect → Extend), each aligned to Indiana
-   Algebra I standards and using a real manipulative as the teaching tool — the
-   equationBalance scale and the lineGrapher, plus the function machine. Summative
-   checks tag their distractors with the misconception each reveals. Registered on
-   MATH.Player by concept id.                                                      */
+   Seven concepts carry the full teaching arc (Warm-up → Explore → Discover →
+   Worked examples → Practice → Challenge → Mastery → Reflect → Extend), each
+   aligned to Indiana Algebra I standards. Manipulatives (equationBalance,
+   lineGrapher, functionMachine) build intuition; workedExample steps then model
+   the full written method line by line — with the learner supplying key steps —
+   before any graded practice. Summative checks tag their distractors with the
+   misconception each reveals. Registered on MATH.Player by concept id.           */
 (function () {
   const P = window.MATH.Player, U = window.MATH.util;
   const reg = P.register;
@@ -39,6 +40,49 @@
         options: ['Add 5 to both sides', 'Subtract 5 from both sides', 'Move the 5 across and flip its sign'] },
       { kind: 'explore', title: 'Balance the scale', intro: 'Do the same inverse operation to both sides until x is alone.', component: 'equationBalance', config: { rounds: 3 } },
       { kind: 'discover', title: 'Keep it balanced', text: 'An equation is a balance. To undo <b>+ b</b> you subtract b <b>from both sides</b>; to undo <b>× a</b> you divide both sides by a. Do the same thing to each side and the two sides stay equal — that is how x gets alone.', rule: 'Whatever you do to one side, do to the other' },
+
+      { kind: 'example', title: 'Solve one, start to finish', component: 'workedExample',
+        intro: 'The written version of the balance scale. Every solve is the same routine: undo what’s been done to x, one operation at a time.',
+        config: {
+          problem: 'Solve 3x + 5 = 17',
+          steps: [
+            { text: 'Read what happened to x: it was multiplied by 3, THEN 5 was added. To free it, undo in reverse order — the + 5 goes first.',
+              math: 'undo + 5, then undo × 3' },
+            { ask: 'What’s the first move?',
+              choices: ['Subtract 5 from both sides', 'Divide both sides by 3', 'Move the 5 across and flip its sign'], answer: 'Subtract 5 from both sides',
+              why: 'Subtracting 5 from BOTH sides keeps the balance — and “moving it across with a flipped sign” is just this move in disguise.',
+              hint: 'Undo the last thing done to x first.',
+              misconceptions: { 'Divide both sides by 3': 'Dividing now splits the 5 too: (3x + 5)/3 is messy. Clear the + 5 first', 'Move the 5 across and flip its sign': 'That shortcut WORKS, but know why: it’s “subtract 5 from both sides” wearing a costume' },
+              math: '3x + 5 − 5 = 17 − 5  →  3x = 12' },
+            { text: 'Now undo the × 3 — divide both sides by 3:', math: '3x ÷ 3 = 12 ÷ 3  →  x = 4' },
+            { text: 'Check by putting 4 back in the ORIGINAL equation:', math: '3(4) + 5 = 12 + 5 = 17 ✓' }
+          ],
+          done: 'Undo in reverse order, same move on both sides, check at the end. Every linear equation falls to this.'
+        } },
+
+      { kind: 'discover', title: 'Undo in reverse order',
+        text: 'x was dressed in layers: ×3 first, then +5 on top. Undressing goes in <b>reverse</b> — the last layer on is the first layer off. That’s why you clear the <b>+ or −</b> before the <b>× or ÷</b>. And the “move it across, flip the sign” trick? It’s not a separate rule — it’s literally “do the inverse to both sides”, abbreviated.',
+        rule: 'last operation on → first operation undone' },
+
+      { kind: 'example', title: 'x on both sides', component: 'workedExample',
+        intro: 'When x appears on BOTH sides, add one move to the front of the routine: herd the x’s together first.',
+        config: {
+          problem: 'Solve 5x + 2 = 2x + 14',
+          steps: [
+            { text: 'Two flocks of x’s. Collect them on one side — subtract 2x from both sides (choosing the smaller flock keeps things positive):',
+              math: '5x − 2x + 2 = 14  →  3x + 2 = 14' },
+            { ask: 'Now it’s the routine you know. What next?',
+              choices: ['Subtract 2 from both sides', 'Divide both sides by 3', 'Subtract 14 from both sides'], answer: 'Subtract 2 from both sides',
+              why: 'Clear the + 2 first, then the × 3 — reverse order, as always.',
+              hint: 'Plus and minus clear before times and divide.',
+              misconceptions: { 'Divide both sides by 3': 'The + 2 is still stuck to the 3x — clear it first' },
+              math: '3x = 12' },
+            { text: 'Divide both sides by 3:', math: 'x = 4' },
+            { text: 'Check in BOTH original sides:', math: '5(4) + 2 = 22 · 2(4) + 14 = 22 ✓ — both sides agree' }
+          ],
+          done: 'Collect the x’s → clear the constant → divide. The check works both sides now.'
+        } },
+
       { kind: 'practice', difficulty: 'easy', title: 'Solve for x', component: 'problemSet',
         config: { generate() { return U.range(3).map(() => { const a = U.rand(2, 5), x = U.rand(1, 8), b = U.rand(1, 9), c = a * x + b; return { prompt: `Solve: <b class="m-big">${a}x + ${b} = ${c}</b>`, answer: x, hint: `First subtract ${b} from both sides, then divide by ${a}.` }; }); } } },
       { kind: 'challenge', difficulty: 'challenge', title: 'Variables on both sides', component: 'problemSet',
@@ -73,6 +117,31 @@
         options: ['3', '8', '12'] },
       { kind: 'explore', title: 'Feel the slope', intro: 'Build each target line — watch how the slope tilts it.', component: 'lineGrapher', config: { mode: 'explore', rounds: 3 } },
       { kind: 'discover', title: 'Rise over run', text: 'Slope measures steepness as <b>rise ÷ run</b> — how far the line goes <b>up</b> for each step to the <b>right</b>. A line going up has a <b>positive</b> slope; going down is <b>negative</b>; flat is <b>0</b>.', rule: 'slope = rise ÷ run' },
+
+      { kind: 'example', title: 'Slope from two points, start to finish', component: 'workedExample',
+        intro: 'No picture needed — two points are enough. The formula is rise ÷ run written with coordinates.',
+        config: {
+          problem: 'Find the slope through (−1, 2) and (3, 10)',
+          steps: [
+            { text: 'Rise is the change in y, run is the change in x. Subtract in the SAME order both times — second point minus first:',
+              math: 'm = (y₂ − y₁) / (x₂ − x₁)' },
+            { ask: 'The rise: y goes from 2 to 10, so y₂ − y₁ = ?',
+              choices: ['8', '12', '−8'], answer: '8',
+              why: '10 − 2 = 8 — the line climbs 8.',
+              hint: 'Second y minus first y.' },
+            { text: 'The run — careful, subtracting a negative: x₂ − x₁ = 3 − (−1).',
+              math: '3 − (−1) = 3 + 1 = 4', note: 'This is THE classic slip: 3 − (−1) is 4, not 2.' },
+            { text: 'Divide rise by run:', math: 'm = 8 / 4 = 2' },
+            { text: 'Sanity check: positive slope, and the points do climb left-to-right. Swap which point is “first” and you get −8/−4 = 2 — same answer, as long as you don’t mix the order.',
+              math: '(2 − 10)/(−1 − 3) = −8/−4 = 2 ✓' }
+          ],
+          done: 'Same order top and bottom, mind the negatives, then divide.'
+        } },
+
+      { kind: 'discover', title: 'The four slope personalities',
+        text: 'Every line is one of four: <b>positive</b> (climbs left-to-right), <b>negative</b> (falls), <b>zero</b> (flat — the rise is 0, and 0 ÷ run = 0), and <b>undefined</b> (vertical — the run is 0, and dividing by 0 is not allowed). Zero and undefined are opposites, not synonyms: flat has a slope, vertical doesn’t.',
+        rule: 'up + · down − · flat 0 · vertical undefined' },
+
       { kind: 'practice', difficulty: 'easy', title: 'Read the line', component: 'lineGrapher', config: { mode: 'read', rounds: 2 } },
       { kind: 'challenge', difficulty: 'challenge', title: 'Slope from two points', component: 'problemSet',
         config: { generate() { return U.range(3).map(() => { const x1 = U.rand(-4, 0), x2 = U.rand(1, 4), m = U.pick([-2, -1, 1, 2, 3]), y1 = U.rand(-3, 3), y2 = y1 + m * (x2 - x1); return { prompt: `Slope through <b>(${x1}, ${y1})</b> and <b>(${x2}, ${y2})</b>?`, answer: m, hint: '(change in y) ÷ (change in x).' }; }); } } },
@@ -106,6 +175,34 @@
         options: ['3', '2', 'x'] },
       { kind: 'explore', title: 'Build y = mx + b', intro: 'Change m and b and watch the line respond.', component: 'lineGrapher', config: { mode: 'explore', rounds: 3 } },
       { kind: 'discover', title: 'What m and b do', text: 'In <b>y = mx + b</b>, <b>m</b> is the <b>slope</b> (the tilt) and <b>b</b> is the <b>y-intercept</b> (where the line crosses the y-axis). Change m and the line pivots; change b and it slides up or down.', rule: 'y = mx + b  →  m = slope, b = y-intercept' },
+
+      { kind: 'example', title: 'From equation to graph by hand', component: 'workedExample',
+        intro: 'Two pieces of information, whole line drawn. Start where b says, step where m says.',
+        config: {
+          problem: 'Graph y = −2x + 4 without a table',
+          steps: [
+            { ask: 'Which point do you plot FIRST?',
+              choices: ['(0, 4) — the y-intercept', '(4, 0)', '(−2, 0)'], answer: '(0, 4) — the y-intercept',
+              why: 'b = 4 is where the line crosses the y-axis — the point with x = 0.',
+              hint: 'b lives on the y-axis.',
+              misconceptions: { '(4, 0)': 'That’s on the x-axis — the y-intercept has x = 0, so it’s (0, 4)', '(−2, 0)': '−2 is the slope, not a point' },
+              math: 'start at (0, 4)' },
+            { text: 'Now use the slope as marching orders. m = −2 means −2/1: every 1 step RIGHT, go 2 DOWN.',
+              math: '(0, 4) → right 1, down 2 → (1, 2)' },
+            { ask: 'March once more from (1, 2). Where do you land?',
+              choices: ['(2, 0)', '(2, 4)', '(0, 0)'], answer: '(2, 0)',
+              why: 'Right 1 to x = 2, down 2 to y = 0.',
+              hint: 'Same move again: right 1, down 2.',
+              misconceptions: { '(2, 4)': 'Negative slope goes DOWN as x increases' } },
+            { text: 'Three points in a row — rule them with one straight line, arrows both ways.', math: '(0,4) (1,2) (2,0) → the line' }
+          ],
+          done: 'Plot b, then step by m as many times as you like. Two numbers really do pin down the whole line.'
+        } },
+
+      { kind: 'discover', title: 'm is a rate, b is a start',
+        text: 'Out in the world, <b>b</b> is the <b>starting amount</b> and <b>m</b> is the <b>rate of change</b>. A phone plan “$30 up front plus $15 a month” IS y = 15x + 30: b = 30 (pay it before any months pass), m = 15 (each month adds 15). When a story says <i>per</i>, <i>each</i>, or <i>every</i> — that number is m. A one-time fee, deposit, or head start — that’s b.',
+        rule: '“per / each / every” → m · “to start / up front” → b' },
+
       { kind: 'practice', difficulty: 'easy', title: 'Name m and b', component: 'problemSet',
         config: { generate() { return U.range(4).map(() => { const m = U.pick([-3, -2, -1, 1, 2, 3]), b = U.rand(-5, 5); const ask = U.pick(['m', 'b']); return ask === 'm' ? { prompt: `In <b>y = ${m}x ${b < 0 ? '− ' + -b : '+ ' + b}</b>, the <b>slope</b> is…`, answer: m, hint: 'The number multiplied by x.' } : { prompt: `In <b>y = ${m}x ${b < 0 ? '− ' + -b : '+ ' + b}</b>, the <b>y-intercept</b> is…`, answer: b, hint: 'The constant on its own.' }; }); } } },
       { kind: 'challenge', difficulty: 'challenge', title: 'Match the line', component: 'lineGrapher', config: { mode: 'read', rounds: 2 } },
@@ -139,6 +236,31 @@
         options: ['7', '6', '5'] },
       { kind: 'explore', title: 'Run the machine', intro: 'Apply the rule to each input.', component: 'functionMachine', config: { mode: 'apply', rounds: 3 } },
       { kind: 'discover', title: 'What f(x) means', text: '<b>f(x)</b> is just a name for the output when the input is x. A relation is a <b>function</b> only if every input has <b>exactly one</b> output — put the same number in, you always get the same answer out.', rule: 'f(x) = the one output for input x' },
+
+      { kind: 'example', title: 'Read the notation, start to finish', component: 'workedExample',
+        intro: 'f(5) looks like multiplication but isn’t. Decode it once carefully and the notation never bites again.',
+        config: {
+          problem: 'If f(x) = x² − 2x, find f(5) — and say what it means',
+          steps: [
+            { text: 'f(5) asks one question: “what comes OUT of the machine when 5 goes in?” To answer, replace EVERY x with 5:',
+              math: 'f(5) = 5² − 2(5)' },
+            { ask: 'Compute it — powers before products:',
+              choices: ['15', '5', '35'], answer: '15',
+              why: '5² = 25, then 25 − 10 = 15.',
+              hint: 'Square the 5 first, then subtract 2 × 5.',
+              misconceptions: { '35': 'You ADDED the 2(5) — the rule subtracts it: 25 − 10 = 15', '5': 'Don’t solve anything — just substitute and compute' },
+              math: 'f(5) = 25 − 10 = 15' },
+            { text: 'Say it in words: “when the input is 5, the output is 15.” On the graph, that’s a point:', math: '(5, 15) is on the graph of f' },
+            { text: 'What f(5) is NOT: f times 5. The parentheses here mean “of” — the function f, fed the input 5.',
+              math: 'f(5) ≠ f · 5' }
+          ],
+          done: 'Substitute for every x, compute, and read the result as input → output.'
+        } },
+
+      { kind: 'discover', title: 'Spotting a non-function',
+        text: 'The test is always the same question: <b>does any input have two outputs?</b> In a set of pairs, hunt for a repeated FIRST number with different second numbers: {(1,2), (1,5)} fails. On a graph, the same idea becomes the <b>vertical line test</b> — a vertical line marks one input, so if it crosses the curve twice, that input has two outputs. Two inputs sharing one output is fine; one input with two outputs never is.',
+        rule: 'repeated input, different outputs → not a function' },
+
       { kind: 'practice', difficulty: 'easy', title: 'Find the rule', component: 'functionMachine', config: { mode: 'infer', rounds: 2 } },
       { kind: 'challenge', difficulty: 'challenge', title: 'Evaluate functions', component: 'problemSet',
         config: { generate() { return U.range(3).map(() => { const a = U.rand(2, 5), b = U.rand(-4, 4), x = U.rand(-3, 5); return { prompt: `If <b>f(x) = ${a}x ${b < 0 ? '− ' + -b : '+ ' + b}</b>, then <b>f(${x})</b> =`, answer: a * x + b, hint: `Multiply by ${a}, then ${b < 0 ? 'subtract ' + -b : 'add ' + b}.` }; }); } } },
@@ -172,6 +294,32 @@
         options: ['where the lines cross', 'where each line hits the y-axis', 'the steeper line'] },
       { kind: 'explore', title: 'Find the crossing', intro: 'Click the point that sits on both lines.', component: 'lineGrapher', config: { mode: 'system', rounds: 3 } },
       { kind: 'discover', title: 'One point, both rules', text: 'The <b>solution</b> of a system is the point that lies on <b>both</b> lines — the (x, y) that satisfies both equations. Lines that cross once have <b>one</b> solution; parallel lines have <b>none</b>; the same line drawn twice has <b>infinitely many</b>.', rule: 'Solution = the point on BOTH lines' },
+
+      { kind: 'example', title: 'Solve a system by graphing', component: 'workedExample',
+        intro: 'Graph each line the y = mx + b way, read the crossing, then PROVE it with substitution.',
+        config: {
+          problem: 'Solve the system: y = 2x − 1 and y = −x + 5',
+          steps: [
+            { text: 'Graph line 1 from its own m and b: start at (0, −1), step right 1 up 2.',
+              math: 'y = 2x − 1: (0,−1) → (1,1) → (2,3)' },
+            { text: 'Graph line 2 the same way: start at (0, 5), step right 1 down 1.',
+              math: 'y = −x + 5: (0,5) → (1,4) → (2,3)' },
+            { ask: 'Both lists just named the same point. Where do the lines cross?',
+              choices: ['(2, 3)', '(0, 5)', '(1, 1)'], answer: '(2, 3)',
+              why: '(2, 3) appears on BOTH lines — that’s the one (x, y) both rules accept.',
+              hint: 'Look for the point the two lists share.',
+              misconceptions: { '(0, 5)': 'That’s line 2’s y-intercept — only line 2 passes through it', '(1, 1)': 'That’s on line 1 only — check it in y = −x + 5: −1 + 5 = 4, not 1' } },
+            { text: 'Never trust the picture alone — verify in BOTH equations:',
+              math: '2(2) − 1 = 3 ✓ · −(2) + 5 = 3 ✓' },
+            { text: 'Answer as a point: the system’s solution is x = 2, y = 3.', math: '(2, 3)' }
+          ],
+          done: 'Graph both, read the crossing, substitute into both to confirm. The check is part of the method.'
+        } },
+
+      { kind: 'discover', title: 'Count solutions without graphing',
+        text: 'You can predict the answer count from the equations alone — compare <b>m</b> first, then <b>b</b>. <b>Different slopes</b> → the lines must cross somewhere → exactly <b>one</b> solution. <b>Same slope, different intercepts</b> → parallel forever → <b>none</b>. <b>Same slope AND same intercept</b> → the very same line → <b>infinitely many</b>. Slopes first, intercepts second.',
+        rule: 'm different → one · m same, b different → none · both same → infinite' },
+
       { kind: 'practice', difficulty: 'easy', title: 'Does the point fit?', component: 'problemSet',
         config: { problems: [
           { prompt: 'Is <b>(2, 5)</b> on <b>y = 2x + 1</b>?', answer: 'Yes', choices: ['Yes', 'No'], hint: '2(2)+1 = ?' },
@@ -219,6 +367,29 @@
           { prompt: '<b>x⁵ ÷ x²</b> = x to the power…?', answer: '3', choices: ['3', '7', '2.5'], hint: 'Cancel matching x’s: 5 − 2.' }
         ] } },
       { kind: 'discover', title: 'The exponent rules', text: 'Same base? <b>Multiply → add</b> exponents (xᵃ·xᵇ = xᵃ⁺ᵇ). <b>Divide → subtract</b> (xᵃ ÷ xᵇ = xᵃ⁻ᵇ). <b>Power of a power → multiply</b> ((xᵃ)ᵇ = xᵃᵇ). And anything (nonzero) to the <b>0</b> power is <b>1</b>.', rule: 'multiply → add · divide → subtract · power of power → multiply' },
+
+      { kind: 'example', title: 'The classic trap, dismantled', component: 'workedExample',
+        intro: '(2x²)³ breaks more tests than any other exponent expression. Expand it once by hand and you’ll never fall for it.',
+        config: {
+          problem: 'Simplify (2x²)³',
+          steps: [
+            { text: 'A cube means three copies of EVERYTHING inside the brackets:', math: '(2x²)³ = (2x²)(2x²)(2x²)' },
+            { ask: 'Collect the plain numbers first: 2 · 2 · 2 = ?',
+              choices: ['8', '6', '2'], answer: '8',
+              why: 'Three copies of 2 multiply to 8. The ³ hits the 2, not just the x.',
+              hint: 'It’s 2 cubed, not 2 × 3.',
+              misconceptions: { '6': '2 × 3 = 6 is the trap — the exponent means three COPIES multiplied: 2·2·2 = 8', '2': 'All three copies contribute a 2' },
+              math: '2 · 2 · 2 = 2³ = 8' },
+            { text: 'Now the x’s: x² · x² · x² — same base multiplied, so ADD the exponents:', math: 'x²⁺²⁺² = x⁶' },
+            { text: 'That addition is the shortcut rule in disguise: (x²)³ = x²·³ = x⁶. Assemble:', math: '(2x²)³ = 8x⁶' }
+          ],
+          done: 'The outside exponent hits every factor inside — cube the coefficient AND multiply the exponents.'
+        } },
+
+      { kind: 'discover', title: 'Zero and negatives, from the pattern',
+        text: 'Why is x⁰ = 1? Walk the ladder down and watch: x³ → x² → x¹, each step <b>divides by x</b>. Keep going: x¹ ÷ x = <b>x⁰ = 1</b>, and one more step gives <b>x⁻¹ = 1/x</b>. A negative exponent isn’t a negative number — it means “that many divisions”: x⁻² = 1/x². The rules didn’t change; the ladder just kept going.',
+        rule: 'each step down divides by x: … x¹, x⁰ = 1, x⁻¹ = 1/x …' },
+
       { kind: 'practice', difficulty: 'easy', title: 'Apply a rule', component: 'problemSet',
         config: { problems: [
           { prompt: '<b>x² · x³</b> =', answer: 'x⁵', choices: ['x⁵', 'x⁶', 'x¹'], hint: 'Add the exponents.' },
@@ -265,6 +436,34 @@
           { prompt: 'Shoe size ↔ reading level in kids. Most likely…', answer: 'Age drives both', choices: ['Age drives both', 'Big feet help reading'], hint: 'What grows with age?' }
         ] } },
       { kind: 'discover', title: 'Linked ≠ caused', text: 'Two things moving together are <b>correlated</b> — but that alone never proves one <b>causes</b> the other. There may be a hidden <b>lurking variable</b> driving both, the cause may run the <b>other way</b>, or it may be pure <b>coincidence</b>. Only a <b>controlled experiment</b> can really show cause.', rule: 'Correlation ≠ causation' },
+
+      { kind: 'example', title: 'Autopsy of a headline', component: 'workedExample',
+        intro: 'Run one real headline through the full checklist — this is the routine to reuse on every claim you meet.',
+        config: {
+          problem: '“Study: kids who eat breakfast get better grades”',
+          steps: [
+            { text: 'First, name what was actually MEASURED. Researchers observed two things rising together — breakfast eating and grades. That is a correlation, nothing more yet.',
+              math: 'measured: correlation only' },
+            { text: 'Now run the three rival explanations. Rival 1 — lurking variable: could some third thing drive BOTH?',
+              math: 'rival 1: a hidden common cause?' },
+            { ask: 'Which of these is a plausible lurking variable here?',
+              choices: ['Stable home routines — they produce breakfasts AND homework time', 'Breakfast chemically causes intelligence', 'Grades make kids hungry in the morning'], answer: 'Stable home routines — they produce breakfasts AND homework time',
+              why: 'A household with regular routines tends to produce both regular breakfasts and regular study — it could drive both numbers with no direct link between them.',
+              hint: 'What kind of home reliably produces both a breakfast AND good study habits?',
+              misconceptions: { 'Breakfast chemically causes intelligence': 'That’s assuming the conclusion — the question is whether something ELSE explains the link', 'Grades make kids hungry in the morning': 'That’s rival 2 (reverse causation), and not a very plausible one' } },
+            { text: 'Rival 2 — reverse causation (do good grades somehow cause breakfast?) — weak here. Rival 3 — coincidence — unlikely with a large sample, but possible. Neither rules the story out; they just have to be CHECKED.',
+              math: 'rival 2: direction? · rival 3: chance?' },
+            { ask: 'What evidence would actually settle whether breakfast CAUSES better grades?',
+              choices: ['Randomly assign breakfast to half the kids, compare grades', 'A much bigger survey', 'Interviews with straight-A students'], answer: 'Randomly assign breakfast to half the kids, compare grades',
+              why: 'Random assignment breaks the link with home routines — with groups alike in everything else, a grade gap can only come from the breakfast.',
+              hint: 'Which option CONTROLS the other variables instead of just observing more?',
+              misconceptions: { 'A much bigger survey': 'A bigger survey is just a bigger correlation — the lurking variable scales up with it', 'Interviews with straight-A students': 'That samples only successes — no comparison group, no cause' } },
+            { text: 'Verdict language matters: the honest headline is “breakfast is LINKED to better grades” — not “causes” — until an experiment says otherwise.',
+              math: '“linked to” ≠ “causes”' }
+          ],
+          done: 'Name what was measured → try all three rivals → ask what experiment would settle it. Run every headline through this.'
+        } },
+
       { kind: 'practice', difficulty: 'easy', title: 'Spot the lurking variable', component: 'problemSet',
         config: { problems: [
           { prompt: 'Towns with more churches have more crime. The lurking variable is likely…', answer: 'Population size', choices: ['Population size', 'Churches cause crime'], hint: 'Bigger towns have more of everything.' },
