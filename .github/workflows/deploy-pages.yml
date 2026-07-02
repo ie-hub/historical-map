@@ -1,37 +1,38 @@
 name: Deploy to GitHub Pages
 
+# Publishes the (buildless) site to a `gh-pages` branch, which GitHub's
+# branch-based Pages builder then serves. This deliberately avoids the
+# actions/deploy-pages "artifact" publish step, whose Deploy phase was
+# persistently timing out for this repo. Set Pages Source to:
+#   Settings -> Pages -> Deploy from a branch -> gh-pages -> / (root)
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
-  # Let deploys queue and finish rather than cancelling mid-publish — a
-  # cancelled Pages deploy can leave the backend in a stuck state that makes
-  # the next run time out on the Deploy step.
+  group: pages-branch
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-      - name: Upload the whole repo as the site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+
+      - name: Publish repo contents to gh-pages
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Build a fresh, history-free gh-pages branch from the current tree.
+          git checkout --orphan gh-pages
+          touch .nojekyll               # skip Jekyll processing
+          git add -A
+          git commit -m "Deploy ${GITHUB_SHA::7} to Pages"
+          git push --force origin gh-pages
