@@ -49,14 +49,16 @@
       if (opts.onFocusChange) opts.onFocusChange(focus, mode);
     }
 
-    /* ---- focus: one grade as a layered dependency graph -------------------- */
+    /* ---- focus: one grade as strand swim-lanes ------------------------------
+       One row per strand, cards ordered left→right by prerequisite depth (long
+       lanes wrap). The lane label carries the strand colour, so position and
+       colour both mean something. Intro concepts get their own unlabelled lane
+       at the very top.                                                          */
     function renderFocus() {
       const concepts = Graph.all().filter(c => c.grade === focus);
-      // intro/orientation concepts pin to the top of the first column
-      concepts.sort((a, b) => ((b.intro ? 1 : 0) - (a.intro ? 1 : 0)) || (a.strand || '').localeCompare(b.strand || ''));
       const inGrade = new Set(concepts.map(c => c.id));
 
-      // depth = longest prerequisite chain *within this grade* → column index
+      // depth = longest prerequisite chain *within this grade* → order in lane
       const depthCache = {};
       function depth(id, seen) {
         if (depthCache[id] != null) return depthCache[id];
@@ -66,25 +68,50 @@
         const d = pre.length ? 1 + Math.max.apply(null, pre.map(p => depth(p, seen))) : 0;
         return (depthCache[id] = d);
       }
-      const cols = {};
-      concepts.forEach(c => { const d = depth(c.id); (cols[d] = cols[d] || []).push(c); });
-      const colKeys = Object.keys(cols).map(Number).sort((a, b) => a - b);
 
+      // lanes: intro first, then strands in the order they appear in the data
+      const lanes = [], byKey = {};
+      concepts.forEach(c => {
+        const key = c.intro ? '__start' : (c.strand || 'General');
+        let lane = byKey[key];
+        if (!lane) { lane = byKey[key] = { key, label: c.intro ? '' : (c.strand || 'General'), items: [] }; lanes.push(lane); }
+        lane.items.push(c);
+      });
+      const si = lanes.findIndex(l => l.key === '__start');
+      if (si > 0) lanes.unshift(lanes.splice(si, 1)[0]);
+      lanes.forEach(l => l.items.sort((a, b) => depth(a.id) - depth(b.id)));
+
+      // wrap lanes to the stage width, so the map only ever scrolls vertically
+      const avail = scrollEl.clientWidth || 1400;
+      const MAXCOL = Math.max(3, Math.floor((avail - PAD * 2) / COL_W));
+      const LABEL_H = 24, LANE_GAP = 22;
       layout = {}; nodesEl.innerHTML = '';
-      let maxRows = 0;
-      colKeys.forEach((d, ci) => {
-        const list = cols[d];
-        const x = PAD + ci * COL_W;
-        list.forEach((c, ri) => {
-          const y = PAD + TOPGAP + ri * (NODE_H + GAP_Y);
-          layout[c.id] = { x: x + NODE_W / 2, y: y + NODE_H / 2, left: x, top: y };
-          nodesEl.appendChild(nodeEl(c, x, y));
+      let y = PAD, maxCols = 1;
+      lanes.forEach(lane => {
+        if (lane.label) {
+          const lab = document.createElement('div');
+          lab.className = 'm-lane-label';
+          lab.textContent = lane.label;
+          lab.style.cssText = `position:absolute;left:${PAD + 2}px;top:${y}px;` +
+            `font-family:var(--ui);font-size:11px;font-weight:700;letter-spacing:.09em;` +
+            `text-transform:uppercase;color:var(--s-${slug(lane.label)},var(--muted));pointer-events:none`;
+          nodesEl.appendChild(lab);
+          y += LABEL_H;
+        }
+        lane.items.forEach((c, i) => {
+          const col = i % MAXCOL, row = Math.floor(i / MAXCOL);
+          const x = PAD + col * COL_W;
+          const ny = y + row * (NODE_H + GAP_Y);
+          layout[c.id] = { x: x + NODE_W / 2, y: ny + NODE_H / 2, left: x, top: ny };
+          nodesEl.appendChild(nodeEl(c, x, ny));
+          maxCols = Math.max(maxCols, col + 1);
         });
-        maxRows = Math.max(maxRows, list.length);
+        const rows = Math.ceil(lane.items.length / MAXCOL);
+        y += rows * (NODE_H + GAP_Y) + LANE_GAP;
       });
 
-      const w = PAD * 2 + colKeys.length * COL_W;
-      const h = PAD * 2 + TOPGAP + maxRows * (NODE_H + GAP_Y);
+      const w = PAD * 2 + maxCols * COL_W - (COL_W - NODE_W);
+      const h = y - LANE_GAP + PAD;
       inner.style.width = w + 'px'; inner.style.height = h + 'px';
       edgesSvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
       edgesSvg.setAttribute('width', w); edgesSvg.setAttribute('height', h);
@@ -170,10 +197,14 @@
     function setMode(m) { mode = m; render(); }
 
     const off = Store.onChange(() => render());
+    // re-wrap the lanes when the stage width changes
+    let rsT = null;
+    const onResize = () => { clearTimeout(rsT); rsT = setTimeout(render, 150); };
+    window.addEventListener('resize', onResize);
     render();
     return {
       render, focusGrade, grade: () => focus, mode: () => mode, setMode,
-      grades, destroy() { off(); }
+      grades, destroy() { off(); window.removeEventListener('resize', onResize); }
     };
   }
 
