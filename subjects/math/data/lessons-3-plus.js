@@ -69,6 +69,7 @@
 
   reg({
     concept: 'coordinate-plane', title: 'The Coordinate Plane',
+    standards: ['5.AT.6'],
     hook: { emoji: '🗺️', text: 'How would you describe an exact spot on a map?', sub: 'Two numbers can pin down any point.' },
     steps: [
       { kind: 'explore', title: 'Plot the point', intro: 'Go across (x), then up (y).', component: 'coordinatePlane', config: { mode: 'plot', rounds: 4, max: 6 } },

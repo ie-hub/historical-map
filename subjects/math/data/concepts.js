@@ -38,10 +38,44 @@
   add({ id: 'decimals', name: 'Decimals', grade: '4', strand: 'Number', prereqs: ['place-value-1000', 'fractions-name'], blurb: 'Numbers past the point.' });
   add({ id: 'angles', name: 'Angles', grade: '4', strand: 'Geometry', prereqs: ['shapes-2d'], blurb: 'How far something turns.' });
 
-  // ---- Grade 5 ----
-  add({ id: 'coordinate-plane', name: 'Coordinate Plane', grade: '5', strand: 'Geometry', lesson: true, prereqs: ['numberline'], blurb: 'Plot points with (x, y).', components: ['coordinatePlane'] });
-  add({ id: 'order-ops', name: 'Order of Operations', grade: '5', strand: 'Operations', prereqs: ['multiply', 'division'], blurb: 'Which step comes first?' });
-  add({ id: 'volume', name: 'Volume', grade: '5', strand: 'Measurement', prereqs: ['area'], blurb: 'Space inside a solid.' });
+  // ---- Grade 5 ----  (a full Indiana-aligned course graph across six strands:
+  //   Number Sense, Computation, Algebraic Thinking, Geometry, Measurement, Data.
+  //   Concepts tagged with the 5.* standards they teach; ~18 have authored lessons,
+  //   the rest render "coming soon" so the whole course + its coverage is visible.)
+  // Number Sense
+  add({ id: 'decimal-place-value', name: 'Decimal Place Value', grade: '5', strand: 'Number', intro: true, lesson: true, prereqs: ['place-value-1000', 'decimals'], blurb: 'Each place is ×10 the next.', components: ['placeValue', 'workedExample', 'problemSet'], standards: ['5.NS.3'] });
+  add({ id: 'powers-of-ten', name: 'Powers of 10', grade: '5', strand: 'Number', lesson: true, prereqs: ['decimal-place-value'], blurb: 'Move the decimal point.', components: ['workedExample', 'problemSet'], standards: ['5.NS.4'] });
+  add({ id: 'round-decimals', name: 'Rounding Decimals', grade: '5', strand: 'Number', lesson: true, prereqs: ['decimal-place-value'], blurb: 'To the nearest tenth, hundredth…', components: ['workedExample', 'problemSet'], standards: ['5.NS.5'] });
+  add({ id: 'compare-order', name: 'Comparing & Ordering', grade: '5', strand: 'Number', lesson: true, prereqs: ['decimal-place-value', 'fractions-name'], blurb: 'Order decimals & fractions on a line.', components: ['workedExample', 'problemSet'], standards: ['5.NS.1'] });
+  add({ id: 'fraction-meanings', name: 'What Fractions Mean', grade: '5', strand: 'Fractions', prereqs: ['fractions-name'], blurb: 'Part of a whole, a set, or a ÷.', standards: ['5.NS.2'] });
+  add({ id: 'percents-intro', name: 'Percents as Part of 100', grade: '5', strand: 'Number', lesson: true, prereqs: ['decimal-place-value', 'fractions-name'], blurb: 'Out of a hundred.', components: ['fractionPizza', 'workedExample', 'problemSet'], standards: ['5.NS.6'] });
+  // Computation
+  add({ id: 'multiply-multidigit', name: 'Multi-Digit Multiplication', grade: '5', strand: 'Operations', lesson: true, prereqs: ['multiply', 'place-value-1000'], blurb: 'The standard algorithm, fluently.', components: ['workedExample', 'problemSet'], standards: ['5.C.1', '5.C.3'] });
+  add({ id: 'divide-multidigit', name: 'Long Division', grade: '5', strand: 'Operations', prereqs: ['division', 'multiply-multidigit'], blurb: 'Two-digit divisors & remainders.', standards: ['5.C.2'] });
+  add({ id: 'add-sub-fractions', name: 'Adding & Subtracting Fractions', grade: '5', strand: 'Fractions', lesson: true, prereqs: ['fractions-name', 'fraction-meanings'], blurb: 'Unlike denominators & mixed numbers.', components: ['workedExample', 'fractionPizza', 'problemSet'], standards: ['5.C.4'] });
+  add({ id: 'multiply-fractions', name: 'Multiplying Fractions', grade: '5', strand: 'Fractions', lesson: true, prereqs: ['add-sub-fractions'], blurb: 'A fraction of a fraction.', components: ['workedExample', 'fractionPizza', 'problemSet'], standards: ['5.C.5', '5.C.6'] });
+  add({ id: 'divide-unit-fractions', name: 'Dividing with Unit Fractions', grade: '5', strand: 'Fractions', prereqs: ['multiply-fractions'], blurb: 'Share ½ among 4; how many ⅓ in 2?', standards: ['5.C.7'] });
+  add({ id: 'decimal-operations', name: 'Decimal Operations', grade: '5', strand: 'Operations', lesson: true, prereqs: ['decimal-place-value'], blurb: '+ − × ÷ to hundredths.', components: ['workedExample', 'problemSet'], standards: ['5.C.8'] });
+  add({ id: 'order-ops', name: 'Order of Operations', grade: '5', strand: 'Operations', lesson: true, prereqs: ['multiply', 'division'], blurb: 'Which step comes first?', components: ['workedExample', 'problemSet'], standards: ['5.C.9'] });
+  // Algebraic Thinking
+  add({ id: 'whole-number-problems', name: 'Whole-Number Word Problems', grade: '5', strand: 'Algebra', prereqs: ['multiply-multidigit', 'divide-multidigit'], blurb: 'Model with equations; mind the remainder.', standards: ['5.AT.1'] });
+  add({ id: 'fraction-problems', name: 'Fraction Word Problems', grade: '5', strand: 'Fractions', prereqs: ['multiply-fractions'], blurb: 'Real situations with fractions.', standards: ['5.AT.2', '5.AT.3', '5.AT.4'] });
+  add({ id: 'decimal-problems', name: 'Decimal & Money Problems', grade: '5', strand: 'Algebra', prereqs: ['decimal-operations'], blurb: 'Everyday problems with money.', standards: ['5.AT.5'] });
+  add({ id: 'coordinate-plane', name: 'Coordinate Plane', grade: '5', strand: 'Geometry', lesson: true, prereqs: ['numberline'], blurb: 'Plot points with (x, y).', components: ['coordinatePlane'], standards: ['5.AT.6'] });
+  add({ id: 'coordinate-graphing', name: 'Graphing Real Situations', grade: '5', strand: 'Algebra', prereqs: ['coordinate-plane'], blurb: 'Ordered pairs that tell a story.', standards: ['5.AT.7'] });
+  add({ id: 'variable-expressions', name: 'Expressions with Variables', grade: '5', strand: 'Algebra', lesson: true, prereqs: ['order-ops'], blurb: 'Let a letter stand for a number.', components: ['workedExample', 'problemSet'], standards: ['5.AT.8'] });
+  // Geometry
+  add({ id: 'triangles-circles', name: 'Triangles & Circles', grade: '5', strand: 'Geometry', lesson: true, prereqs: ['angles', 'shapes-2d'], blurb: 'Right/acute/obtuse; radius & diameter.', components: ['workedExample', 'problemSet'], standards: ['5.G.1'] });
+  add({ id: 'classify-polygons', name: 'Classifying Polygons', grade: '5', strand: 'Geometry', lesson: true, prereqs: ['triangles-circles'], blurb: 'A hierarchy of shapes.', components: ['workedExample', 'problemSet'], standards: ['5.G.2'] });
+  // Measurement
+  add({ id: 'unit-conversions', name: 'Measurement Conversions', grade: '5', strand: 'Measurement', lesson: true, prereqs: ['decimals', 'multiply-multidigit'], blurb: 'km→m, kg→g, hours→minutes.', components: ['workedExample', 'problemSet'], standards: ['5.M.1'] });
+  add({ id: 'area-fractional-sides', name: 'Area with Fractional Sides', grade: '5', strand: 'Measurement', prereqs: ['area', 'multiply-fractions'], blurb: 'Tile a rectangle with unit fractions.', standards: ['5.M.2'] });
+  add({ id: 'area-formulas', name: 'Area of Triangles & Parallelograms', grade: '5', strand: 'Measurement', lesson: true, prereqs: ['area', 'classify-polygons'], blurb: 'Build the formulas from a rectangle.', components: ['workedExample', 'problemSet'], standards: ['5.M.3'] });
+  add({ id: 'volume', name: 'Volume', grade: '5', strand: 'Measurement', lesson: true, prereqs: ['area'], blurb: 'Space inside a solid.', components: ['workedExample', 'problemSet'], standards: ['5.M.4', '5.M.5'] });
+  add({ id: 'composite-volume', name: 'Volume of Combined Solids', grade: '5', strand: 'Measurement', prereqs: ['volume'], blurb: 'Add two boxes together.', standards: ['5.M.6'] });
+  // Data Analysis
+  add({ id: 'data-displays', name: 'Collecting & Displaying Data', grade: '5', strand: 'Data', prereqs: ['coordinate-plane'], blurb: 'Tables, line plots, bar & line graphs.', standards: ['5.DS.1'] });
+  add({ id: 'measures-of-center', name: 'Mean, Median & Mode', grade: '5', strand: 'Data', lesson: true, prereqs: ['divide-multidigit'], blurb: 'Describe a data set with one number.', components: ['workedExample', 'problemSet'], standards: ['5.DS.2'] });
 
   // ---- Grade 6 ----
   add({ id: 'integers', name: 'Integers & Negatives', grade: '6', strand: 'Number', lesson: true, prereqs: ['numberline'], blurb: 'Below zero on the line.', components: ['numberLine'] });
