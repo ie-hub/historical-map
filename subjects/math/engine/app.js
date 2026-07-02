@@ -99,6 +99,7 @@
     const pre = (c.prereqs || []).map(p => Graph.get(p)).filter(Boolean);
     const unlocks = Graph.all().filter(x => (x.prereqs || []).includes(id));
     const missing = pre.filter(p => !Store.isMastered(p.id));
+    const gLocked = Graph.gradeLocked && Graph.gradeLocked(c.grade);
     const stds = (c.standards || []).map(code => MATH.Standards && MATH.Standards.get(code)).filter(Boolean);
     const canStart = (st === 'available' || st === 'mastered' || st === 'review') && c.lesson;
     const pct = st === 'mastered' ? 100 : rec.stars ? Math.round(rec.stars / 3 * 100) : 0;
@@ -110,7 +111,9 @@
       ${stds.length ? `<h3>Indiana standards</h3><div class="chips">${stds.map(s => `<span class="chip std" data-tooltip="${esc(s.statement)}" style="cursor:help">${s.code}</span>`).join('')}</div>` : ''}
       ${pre.length ? `<h3>Prerequisites</h3><div class="chips">${pre.map(p => `<button class="chip ${Store.isMastered(p.id) ? 'active' : ''}" data-go="${p.id}">${p.name}${Store.isMastered(p.id) ? ' ✓' : ''}</button>`).join('')}</div>` : ''}
       ${unlocks.length ? `<h3>Unlocks next</h3><div class="chips">${unlocks.map(u => `<button class="chip" data-go="${u.id}">${u.name}</button>`).join('')}</div>` : ''}
-      ${st === 'locked' ? `<div class="alert alert-warn" style="margin-top:16px"><span class="alert-ic">🔒</span><span>Master ${missing.map(m => '<b>' + m.name + '</b>').join(' and ') || 'the prerequisites'} to unlock this.</span></div>` : ''}
+      ${st === 'locked' ? (gLocked
+        ? `<div class="alert alert-warn" style="margin-top:16px"><span class="alert-ic">🔒</span><span><b>${gradeLabel(c.grade)}</b> is locked while it's being built. Grade 3, Grade 5 and Algebra I are open right now.</span></div>`
+        : `<div class="alert alert-warn" style="margin-top:16px"><span class="alert-ic">🔒</span><span>Master ${missing.map(m => '<b>' + m.name + '</b>').join(' and ') || 'the prerequisites'} to unlock this.</span></div>`) : ''}
       ${st === 'ready-soon' ? `<div class="alert alert-info" style="margin-top:16px"><span class="alert-ic">ℹ</span><span>Unlocked — its interactive lesson is still being built.</span></div>` : ''}`;
     rail.update({
       title: c.name, kind: kindMap[st] || 'Concept', tabs: [], body,

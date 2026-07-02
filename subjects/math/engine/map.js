@@ -171,9 +171,10 @@
         const total = cs.length;
         const mastered = cs.filter(c => Store.isMastered(c.id)).length;
         const available = cs.some(c => Graph.status(c.id) === 'available');
+        const gLocked = Graph.gradeLocked && Graph.gradeLocked(g);
         const pct = total ? Math.round(mastered / total * 100) : 0;
         const strands = Array.from(new Set(cs.map(c => c.strand))).slice(0, 3).join(' · ');
-        const state = mastered === total ? 'done' : available || mastered ? 'now' : 'locked';
+        const state = gLocked ? 'locked' : mastered === total ? 'done' : available || mastered ? 'now' : 'locked';
         const badge = state === 'done' ? '<span class="badge badge-good">Complete</span>'
           : state === 'now' ? '<span class="badge badge-accent">In progress</span>'
             : '<span class="badge">Locked</span>';

@@ -64,40 +64,40 @@
   add({ id: 'algebra-intro', name: 'Algebra: Start Here', grade: 'Algebra I', strand: 'Number', intro: true, lesson: true, prereqs: [], blurb: 'What algebra is, and where it came from.' });
   // Linear equations & inequalities
   add({ id: 'solve-linear-eq', name: 'Solving Linear Equations', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['algebra-intro', 'equations1'], blurb: 'Isolate x, keep it balanced.', components: ['equationBalance', 'problemSet'], standards: ['AI.L.1'] });
-  add({ id: 'literal-equations', name: 'Rearranging Formulas', grade: 'Algebra I', strand: 'Algebra', prereqs: ['solve-linear-eq'], blurb: 'Solve for any variable.', standards: ['AI.L.7'] });
-  add({ id: 'compound-inequalities', name: 'Compound Inequalities', grade: 'Algebra I', strand: 'Algebra', prereqs: ['solve-linear-eq'], blurb: 'AND / OR on a number line.', standards: ['AI.L.2'] });
+  add({ id: 'literal-equations', name: 'Rearranging Formulas', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['solve-linear-eq'], blurb: 'Solve for any variable.', components: ['workedExample', 'problemSet'], standards: ['AI.L.7'] });
+  add({ id: 'compound-inequalities', name: 'Compound Inequalities', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['solve-linear-eq'], blurb: 'AND / OR on a number line.', components: ['workedExample', 'problemSet'], standards: ['AI.L.2'] });
   add({ id: 'slope', name: 'Slope', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['functions', 'linear-eq'], blurb: 'Steepness — rise over run.', components: ['lineGrapher'], standards: ['AI.L.3'] });
   add({ id: 'slope-intercept', name: 'Slope-Intercept Form', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['slope'], blurb: 'y = mx + b.', components: ['lineGrapher'], standards: ['AI.L.3', 'AI.L.5'] });
-  add({ id: 'linear-modeling', name: 'Modeling with Lines', grade: 'Algebra I', strand: 'Functions', prereqs: ['slope-intercept'], blurb: 'Fit a line to a real situation.', standards: ['AI.L.4'] });
-  add({ id: 'linear-inequalities-2', name: 'Linear Inequalities (2 vars)', grade: 'Algebra I', strand: 'Algebra', prereqs: ['slope-intercept'], blurb: 'Shade the half-plane.', standards: ['AI.L.6'] });
+  add({ id: 'linear-modeling', name: 'Modeling with Lines', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['slope-intercept'], blurb: 'Fit a line to a real situation.', components: ['lineGrapher', 'workedExample', 'problemSet'], standards: ['AI.L.4'] });
+  add({ id: 'linear-inequalities-2', name: 'Linear Inequalities (2 vars)', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['slope-intercept'], blurb: 'Shade the half-plane.', components: ['lineGrapher', 'workedExample', 'problemSet'], standards: ['AI.L.6'] });
   // Functions
   add({ id: 'function-basics', name: 'Functions & Notation', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['functions'], blurb: 'Inputs, outputs and f(x).', components: ['functionMachine', 'problemSet'], standards: ['AI.F.1', 'AI.F.2'] });
-  add({ id: 'domain-range', name: 'Domain & Range', grade: 'Algebra I', strand: 'Functions', prereqs: ['function-basics'], blurb: 'What can go in, what comes out.', standards: ['AI.F.3'] });
-  add({ id: 'interpret-graphs', name: 'Interpreting Graphs', grade: 'Algebra I', strand: 'Functions', prereqs: ['function-basics'], blurb: 'Read a story from a curve.', standards: ['AI.F.4'] });
+  add({ id: 'domain-range', name: 'Domain & Range', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['function-basics'], blurb: 'What can go in, what comes out.', components: ['functionMachine', 'workedExample', 'problemSet'], standards: ['AI.F.3'] });
+  add({ id: 'interpret-graphs', name: 'Interpreting Graphs', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['function-basics'], blurb: 'Read a story from a curve.', components: ['workedExample', 'problemSet'], standards: ['AI.F.4'] });
   // Systems
   add({ id: 'systems', name: 'Systems by Graphing', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['slope-intercept'], blurb: 'Two lines, one meeting point.', components: ['lineGrapher'], standards: ['AI.SEI.1'] });
-  add({ id: 'systems-algebra', name: 'Substitution & Elimination', grade: 'Algebra I', strand: 'Algebra', prereqs: ['systems'], blurb: 'Solve systems without a graph.', standards: ['AI.SEI.2', 'AI.SEI.3'] });
-  add({ id: 'systems-inequalities', name: 'Systems of Inequalities', grade: 'Algebra I', strand: 'Algebra', prereqs: ['systems', 'linear-inequalities-2'], blurb: 'Overlap of two shaded regions.', standards: ['AI.SEI.4'] });
+  add({ id: 'systems-algebra', name: 'Substitution & Elimination', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['systems'], blurb: 'Solve systems without a graph.', components: ['workedExample', 'problemSet'], standards: ['AI.SEI.2', 'AI.SEI.3'] });
+  add({ id: 'systems-inequalities', name: 'Systems of Inequalities', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['systems', 'linear-inequalities-2'], blurb: 'Overlap of two shaded regions.', components: ['lineGrapher', 'workedExample', 'problemSet'], standards: ['AI.SEI.4'] });
   // Number & expressions
   add({ id: 'exponent-rules', name: 'Exponent Rules', grade: 'Algebra I', strand: 'Number', lesson: true, prereqs: ['multiply'], blurb: 'Multiply, divide and power up.', components: ['problemSet'], standards: ['AI.NE.2'] });
-  add({ id: 'radicals', name: 'Simplifying Radicals', grade: 'Algebra I', strand: 'Number', prereqs: ['exponent-rules'], blurb: 'Tame the square root.', standards: ['AI.NE.3'] });
-  add({ id: 'polynomials', name: 'Polynomials', grade: 'Algebra I', strand: 'Number', prereqs: ['exponent-rules'], blurb: 'Add, subtract and multiply.', standards: ['AI.NE.5'] });
+  add({ id: 'radicals', name: 'Simplifying Radicals', grade: 'Algebra I', strand: 'Number', lesson: true, prereqs: ['exponent-rules'], blurb: 'Tame the square root.', components: ['workedExample', 'problemSet'], standards: ['AI.NE.3'] });
+  add({ id: 'polynomials', name: 'Polynomials', grade: 'Algebra I', strand: 'Number', lesson: true, prereqs: ['exponent-rules'], blurb: 'Add, subtract and multiply.', components: ['areaModel', 'workedExample', 'problemSet'], standards: ['AI.NE.5'] });
   add({ id: 'factoring', name: 'Factoring Quadratics', grade: 'Algebra I', strand: 'Number', lesson: true, prereqs: ['polynomials'], blurb: 'Un-multiply a quadratic.', components: ['problemSet'], standards: ['AI.NE.4'] });
-  add({ id: 'complex-numbers', name: 'The Complex Number System', grade: 'Algebra I', strand: 'Number', prereqs: ['radicals'], blurb: 'Meet i = √−1.', standards: ['AI.NE.1'] });
+  add({ id: 'complex-numbers', name: 'The Complex Number System', grade: 'Algebra I', strand: 'Number', lesson: true, prereqs: ['radicals'], blurb: 'Meet i = √−1.', components: ['workedExample', 'problemSet'], standards: ['AI.NE.1'] });
   // Quadratic & exponential
   add({ id: 'linear-vs-exp', name: 'Linear vs. Exponential', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['slope-intercept'], blurb: 'Equal differences vs. equal factors.', components: ['problemSet'], standards: ['AI.QE.1'] });
   add({ id: 'exponential-fn', name: 'Exponential Functions', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['linear-vs-exp', 'exponent-rules'], blurb: 'y = ab^x growth & decay.', components: ['problemSet'], standards: ['AI.QE.2'] });
   add({ id: 'quadratic-graphs', name: 'Graphing Parabolas', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['function-basics'], blurb: 'The shape of x².', components: ['parabolaExplorer'], standards: ['AI.QE.6'] });
   add({ id: 'solve-quadratics', name: 'Solving Quadratics', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['factoring', 'quadratic-graphs'], blurb: 'Roots by factoring & formula.', components: ['problemSet'], standards: ['AI.QE.4'] });
-  add({ id: 'completing-square', name: 'Completing the Square', grade: 'Algebra I', strand: 'Algebra', prereqs: ['solve-quadratics'], blurb: 'Build a perfect square.', standards: ['AI.QE.3'] });
+  add({ id: 'completing-square', name: 'Completing the Square', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['solve-quadratics'], blurb: 'Build a perfect square.', components: ['workedExample', 'problemSet'], standards: ['AI.QE.3'] });
   add({ id: 'quadratic-zeros', name: 'Zeros, Roots & Factors', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['solve-quadratics'], blurb: 'Where the parabola meets zero.', components: ['parabolaExplorer', 'problemSet'], standards: ['AI.QE.7'] });
-  add({ id: 'quadratic-modeling', name: 'Modeling with Quadratics', grade: 'Algebra I', strand: 'Algebra', prereqs: ['solve-quadratics'], blurb: 'Projectiles and areas.', standards: ['AI.QE.5'] });
+  add({ id: 'quadratic-modeling', name: 'Modeling with Quadratics', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['solve-quadratics'], blurb: 'Projectiles and areas.', components: ['parabolaExplorer', 'workedExample', 'problemSet'], standards: ['AI.QE.5'] });
   // Data & statistics
-  add({ id: 'scatter-plots', name: 'Scatter Plots & Trend Lines', grade: 'Algebra I', strand: 'Data', prereqs: ['slope-intercept'], blurb: 'Fit a line to a cloud of points.', standards: ['AI.DS.3'] });
+  add({ id: 'scatter-plots', name: 'Scatter Plots & Trend Lines', grade: 'Algebra I', strand: 'Data', lesson: true, prereqs: ['slope-intercept'], blurb: 'Fit a line to a cloud of points.', components: ['workedExample', 'problemSet'], standards: ['AI.DS.3'] });
   add({ id: 'correlation-causation', name: 'Correlation vs. Causation', grade: 'Algebra I', strand: 'Data', lesson: true, prereqs: [], blurb: 'Linked is not the same as caused.', components: ['problemSet'], standards: ['AI.DS.4'] });
-  add({ id: 'two-way-tables', name: 'Two-Way Tables', grade: 'Algebra I', strand: 'Data', prereqs: ['correlation-causation'], blurb: 'Joint & conditional frequencies.', standards: ['AI.DS.5'] });
-  add({ id: 'stats-process', name: 'Sampling & Studies', grade: 'Algebra I', strand: 'Data', prereqs: [], blurb: 'Surveys, experiments, observation.', standards: ['AI.DS.1'] });
-  add({ id: 'data-nonneutral', name: 'Misleading Data', grade: 'Algebra I', strand: 'Data', prereqs: ['stats-process'], blurb: 'Who does the chart serve?', standards: ['AI.DS.2'] });
+  add({ id: 'two-way-tables', name: 'Two-Way Tables', grade: 'Algebra I', strand: 'Data', lesson: true, prereqs: ['correlation-causation'], blurb: 'Joint & conditional frequencies.', components: ['workedExample', 'problemSet'], standards: ['AI.DS.5'] });
+  add({ id: 'stats-process', name: 'Sampling & Studies', grade: 'Algebra I', strand: 'Data', lesson: true, prereqs: [], blurb: 'Surveys, experiments, observation.', components: ['workedExample', 'problemSet'], standards: ['AI.DS.1'] });
+  add({ id: 'data-nonneutral', name: 'Misleading Data', grade: 'Algebra I', strand: 'Data', lesson: true, prereqs: ['stats-process'], blurb: 'Who does the chart serve?', components: ['workedExample', 'problemSet'], standards: ['AI.DS.2'] });
 
   // ---- Geometry ----
   add({ id: 'proofs', name: 'Proofs', grade: 'Geometry', strand: 'Geometry', prereqs: ['angles', 'pythagoras'], blurb: 'Reason step by step.' });

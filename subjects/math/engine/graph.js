@@ -39,6 +39,13 @@
   function get(id) { return byId[id] || null; }
   function all() { return order.map(id => byId[id]); }
 
+  /* Grade-level lockdown. Only these grades are open; every concept in any other
+     grade reports 'locked' regardless of progress or the unlock-all flag, so the
+     experience stays focused on the grades under active development. Set to null
+     to open the whole curriculum again. */
+  const OPEN_GRADES = ['3', '5', 'Algebra I'];
+  function gradeLocked(g) { return OPEN_GRADES != null && OPEN_GRADES.indexOf(g) === -1; }
+
   /* "Unlock all". When on, every concept's prerequisites are treated as met, so
      nothing is 'locked' and every tile can be opened regardless of grade or
      progress (authored lessons are playable; the rest open as "coming soon").
@@ -65,6 +72,7 @@
 
   function status(id) {
     const c = byId[id]; if (!c) return 'locked';
+    if (gradeLocked(c.grade)) return 'locked';   // grade lockdown overrides progress & prereqs
     if (Store.isMastered(id)) {
       const rec = Store.concept(id);
       return (rec && rec.plays && rec.accuracy < 70) ? 'review' : 'mastered';
@@ -105,5 +113,5 @@
       .map(c => ({ id: c.id, label: c.name, sub: 'Grade ' + c.grade + ' · ' + c.strand }));
   }
 
-  MATH.Graph = { GRADES, add, get, all, status, prereqsMet, unlockedBy, children, recommended, remediationFor, search, setUnlockAll };
+  MATH.Graph = { GRADES, add, get, all, status, prereqsMet, gradeLocked, unlockedBy, children, recommended, remediationFor, search, setUnlockAll };
 })();
