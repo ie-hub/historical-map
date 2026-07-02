@@ -25,10 +25,10 @@
   const U = MATH.util, Store = MATH.Store, Graph = MATH.Graph;
 
   const LESSONS = {};
-  const KIND_LABEL = { hook: 'Curiosity', prior: 'Warm-up', explore: 'Explore', discover: 'Discovery', practice: 'Practice', challenge: 'Challenge', mastery: 'Mastery check', reflect: 'Reflection', extend: 'Go further' };
+  const KIND_LABEL = { hook: 'Curiosity', prior: 'Warm-up', explore: 'Explore', discover: 'Discovery', example: 'Worked example', practice: 'Practice', challenge: 'Challenge', mastery: 'Mastery check', reflect: 'Reflection', extend: 'Go further' };
   /* crisp SVG chrome icons (Atlas.icon) — emoji stays only inside lesson content */
   const ic = (n, s) => (window.Atlas && Atlas.icon) ? Atlas.icon(n, s) : '•';
-  const KIND_ICON = { hook: ic('spark', 15), prior: ic('help', 15), explore: ic('search', 15), discover: ic('spark', 15), practice: ic('pencil', 15), challenge: ic('zap', 15), mastery: ic('award', 15), reflect: ic('message', 15), extend: ic('arrow-up-right', 15), unlock: ic('flag', 15) };
+  const KIND_ICON = { hook: ic('spark', 15), prior: ic('help', 15), explore: ic('search', 15), discover: ic('spark', 15), example: ic('book', 15), practice: ic('pencil', 15), challenge: ic('zap', 15), mastery: ic('award', 15), reflect: ic('message', 15), extend: ic('arrow-up-right', 15), unlock: ic('flag', 15) };
 
   function register(lesson) { LESSONS[lesson.concept] = lesson; }
   function get(conceptId) { return LESSONS[conceptId]; }

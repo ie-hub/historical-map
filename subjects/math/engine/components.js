@@ -949,4 +949,132 @@
     ({ explore, vertex, zeros }[cfg.mode] || explore)();
   } });
 
+  /* ========================================================== WORKED EXAMPLE ===
+     A problem solved one line at a time — the teaching backbone for symbolic
+     work. Lines accumulate on screen so the finished solution reads top to
+     bottom. Two line types:
+       { text, math?, note? }                      — revealed by "Show next step"
+       { ask, choices, answer, why?, math?, hint? } — the learner supplies this
+                                                      step before it's revealed
+     (a faded worked example: watch some steps, produce others). Asks record
+     formative attempts; two misses offer a "just show me" way forward.
+     config: { problem, intro?, steps:[…], done? }                            */
+  R('workedExample', { title: 'Worked example', mount(host, cfg, ctx) {
+    const steps = cfg.steps || []; if (!steps.length) { ctx.solved(); return; }
+    let i = 0, misses = 0;
+    const box = U.el('div', 'm-we'); host.appendChild(box);
+    box.innerHTML = `${cfg.problem ? `<div class="m-we-problem">${cfg.problem}</div>` : ''}
+      ${cfg.intro ? `<p class="m-we-intro">${cfg.intro}</p>` : ''}
+      <div class="m-we-lines"></div><div class="m-we-current"></div>`;
+    const lines = box.querySelector('.m-we-lines'), cur = box.querySelector('.m-we-current');
+
+    function revealLine(s, earned) {
+      const li = U.el('div', 'm-we-line' + (earned ? ' earned' : ''));
+      li.innerHTML = `<span class="m-we-n">${lines.children.length + 1}</span>
+        <div class="m-we-body">${s.text || s.ask || ''}
+          ${s.math ? `<div class="m-we-math">${s.math}</div>` : ''}
+          ${(earned && s.why) ? `<div class="m-we-why">${s.why}</div>` : ''}
+          ${s.note ? `<div class="m-we-why">${s.note}</div>` : ''}</div>`;
+      lines.appendChild(li);
+    }
+    function render() {
+      ctx.progress(i, steps.length); cur.innerHTML = ''; misses = 0;
+      if (i >= steps.length) {
+        cur.innerHTML = `<div class="m-we-done">${cfg.done || 'That’s the whole solution — read it back from the top.'}</div>`;
+        ctx.solved(); return;
+      }
+      const s = steps[i];
+      if (s.ask) {
+        if (ctx.reveal) ctx.reveal(String(s.answer));
+        const wrap = U.el('div', 'm-we-ask');
+        wrap.innerHTML = `<p class="m-we-ask-q">${s.ask}</p>
+          <div class="m-ps-opts">${U.shuffle(s.choices).map(c => `<button class="m-btn m-ps-opt">${c}</button>`).join('')}</div>
+          <div class="m-we-bail"></div>`;
+        cur.appendChild(wrap);
+        wrap.querySelectorAll('.m-ps-opt').forEach(b => b.onclick = () => {
+          const ok = b.textContent === String(s.answer);
+          const mis = (!ok && s.misconceptions && s.misconceptions[b.textContent]) ? { misconception: s.misconceptions[b.textContent] } : null;
+          ctx.attempt(ok, mis); ctx.count('workedExample');
+          wrap.querySelectorAll('.m-ps-opt').forEach(x => x.classList.remove('correct', 'wrong'));
+          b.classList.add(ok ? 'correct' : 'wrong');
+          if (ok) { ctx.feedback(s.why || 'Exactly right.', 'ok'); revealLine(s, true); i++; setTimeout(render, 600); }
+          else {
+            misses++;
+            ctx.feedback(s.hint || 'Not that one — look at the step above.', 'no');
+            if (misses >= 2 && !wrap.querySelector('.m-we-show')) {
+              const sh = U.el('button', 'm-reveal m-we-show', 'Just show me this step →');
+              sh.onclick = () => { ctx.feedback(`It’s ${s.answer}. ${s.why || ''}`, ''); revealLine(s, true); i++; render(); };
+              wrap.querySelector('.m-we-bail').appendChild(sh);
+            }
+          }
+        });
+      } else {
+        const btn = U.el('button', 'm-btn m-we-next', i === 0 ? 'Start the solution →' : 'Show next step →');
+        btn.onclick = () => { revealLine(s, false); i++; ctx.count('workedExample'); render(); };
+        cur.appendChild(btn);
+      }
+    }
+    render();
+  } });
+
+  /* ============================================================== AREA MODEL ===
+     WHY factoring works, as geometry. A rectangle of algebra tiles: one x² square,
+     x-strips along two sides, unit tiles in the corner. The learner steps p and q
+     (the side lengths x+p and x+q) until the tile count matches the target
+     trinomial — and sees that the middle term is p+q strips while the constant is
+     the p×q corner. The sides ARE the factors. config: { rounds, maxPQ }        */
+  R('areaModel', { title: 'Factoring as area', mount(host, cfg, ctx) {
+    cfg = Object.assign({ rounds: 3, maxPQ: 4 }, cfg);
+    let round = 0;
+    const info = U.el('p', 'm-prompt'); host.appendChild(info);
+    const stage = U.el('div', 'm-am-stage'); host.appendChild(stage);
+    const X = 104, Uu = 26, PADL = 46, PADT = 40, PADR = 14, PADB = 14;
+
+    const poly = (b, c) => `x² + ${b}x + ${c}`;
+    function newRound() {
+      const tp = U.rand(1, cfg.maxPQ), tq = U.rand(1, cfg.maxPQ);
+      const tb = tp + tq, tc = tp * tq;
+      let p = 1, q = 1;
+      if (ctx.reveal) ctx.reveal(`(x + ${Math.min(tp, tq)})(x + ${Math.max(tp, tq)})`);
+      info.innerHTML = `Build a rectangle whose area is <b>${poly(tb, tc)}</b> — one x² tile, ${tb} x-strips, ${tc} unit tiles.`;
+      function render() {
+        const W = PADL + X + p * Uu + PADR, H = PADT + X + q * Uu + PADB;
+        const t = [];
+        // the x² square
+        t.push(`<rect x="${PADL}" y="${PADT}" width="${X}" height="${X}" class="m-am-x2"/><text x="${PADL + X / 2}" y="${PADT + X / 2 + 5}" class="m-am-big">x²</text>`);
+        // p vertical x-strips (right of the square) and q horizontal (below)
+        for (let k = 0; k < p; k++) t.push(`<rect x="${PADL + X + k * Uu}" y="${PADT}" width="${Uu}" height="${X}" class="m-am-strip"/><text x="${PADL + X + k * Uu + Uu / 2}" y="${PADT + X / 2 + 4}" class="m-am-t">x</text>`);
+        for (let k = 0; k < q; k++) t.push(`<rect x="${PADL}" y="${PADT + X + k * Uu}" width="${X}" height="${Uu}" class="m-am-strip"/><text x="${PADL + X / 2}" y="${PADT + X + k * Uu + Uu / 2 + 4}" class="m-am-t">x</text>`);
+        // the p×q corner of unit tiles
+        for (let r = 0; r < q; r++) for (let ccol = 0; ccol < p; ccol++) t.push(`<rect x="${PADL + X + ccol * Uu}" y="${PADT + X + r * Uu}" width="${Uu}" height="${Uu}" class="m-am-unit"/>`);
+        // side-length labels: the factors
+        t.push(`<text x="${PADL + (X + p * Uu) / 2}" y="${PADT - 16}" class="m-am-lab">x + ${p}</text>`);
+        t.push(`<line x1="${PADL}" y1="${PADT - 8}" x2="${PADL + X + p * Uu}" y2="${PADT - 8}" class="m-am-brace"/>`);
+        t.push(`<text x="${PADL - 22}" y="${PADT + (X + q * Uu) / 2 + 4}" class="m-am-lab">x + ${q}</text>`);
+        t.push(`<line x1="${PADL - 8}" y1="${PADT}" x2="${PADL - 8}" y2="${PADT + X + q * Uu}" class="m-am-brace"/>`);
+        stage.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="m-am" style="max-width:${W}px">${t.join('')}</svg>
+          <div class="m-am-read">area = <b>x²</b> + <b>${p + q}</b>x + <b>${p * q}</b> &nbsp;·&nbsp; target: ${poly(tb, tc)}</div>
+          <div class="m-lg-ctrls">
+            <div class="m-lg-ctrl"><span>strips right (p)</span><button data-d="p-">−</button><b>${p}</b><button data-d="p+">+</button></div>
+            <div class="m-lg-ctrl"><span>strips below (q)</span><button data-d="q-">−</button><b>${q}</b><button data-d="q+">+</button></div>
+          </div>`;
+        stage.querySelectorAll('[data-d]').forEach(btn => btn.onclick = () => {
+          const d = btn.dataset.d;
+          if (d === 'p-' && p > 0) p--; else if (d === 'p+' && p < 6) p++;
+          else if (d === 'q-' && q > 0) q--; else if (d === 'q+' && q < 6) q++;
+          ctx.count('areaModel');
+          if (p + q === tb && p * q === tc) {
+            ctx.attempt(true);
+            ctx.feedback(`${poly(tb, tc)} = (x + ${p})(x + ${q}) — the SIDES of the rectangle are the factors!`, 'ok');
+            render();
+            round++; ctx.progress(round, cfg.rounds);
+            if (round >= cfg.rounds) setTimeout(ctx.solved, 1100); else setTimeout(newRound, 1400);
+          } else render();
+        });
+      }
+      render();
+    }
+    ctx.progress(0, cfg.rounds); newRound();
+  } });
+
 })();
