@@ -12,7 +12,7 @@
   const MATH = (window.MATH = window.MATH || {});
   const U = MATH.util, Graph = MATH.Graph, Store = MATH.Store;
 
-  const COL_W = 208, NODE_W = 176, NODE_H = 74, GAP_Y = 22, PAD = 40, TOPGAP = 20;
+  const COL_W = 228, NODE_W = 194, NODE_H = 84, GAP_Y = 24, PAD = 40, TOPGAP = 20;
 
   function mount(host, opts) {
     opts = opts || {};
@@ -101,7 +101,7 @@
       n.dataset.cid = c.id;
       n.style.left = x + 'px'; n.style.top = y + 'px';
       n.style.width = NODE_W + 'px'; n.style.height = NODE_H + 'px';
-      const lock = st === 'locked' ? '<span class="m-node-lock">🔒</span>' : '';
+      const lock = st === 'locked' ? '<span class="m-node-lock">' + ((window.Atlas && Atlas.icon) ? Atlas.icon('lock', 12) : '🔒') + '</span>' : '';
       const starRow = (st === 'mastered' || st === 'review')
         ? `<span class="m-node-stars">${U.range(3).map(i => `<span class="${i < stars ? 'on' : ''}">★</span>`).join('')}</span>` : '';
       const badge = st === 'mastered' ? '✓' : st === 'review' ? '↻' : st === 'available' ? '▶' : st === 'ready-soon' ? '…' : '';

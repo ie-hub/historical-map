@@ -64,7 +64,7 @@
           const dot = (st === 'mastered' || st === 'review') ? 'done' : st === 'available' ? 'now' : st === 'ready-soon' ? '' : 'locked';
           const it = document.createElement('button');
           it.className = 'la-navitem' + (view === 'lesson' && currentLesson === c.id ? ' active' : '');
-          it.innerHTML = `<span class="dot ${dot}"></span><span class="nm">${c.name}</span>${st === 'locked' ? '<span class="lk">🔒</span>' : ''}`;
+          it.innerHTML = `<span class="dot ${dot}"></span><span class="nm">${c.name}</span>${st === 'locked' ? '<span class="lk">' + Atlas.icon('lock', 11) + '</span>' : ''}`;
           it.onclick = () => { openConcept(c.id); if (shell) shell.closeNav(); };
           items.appendChild(it);
         });
@@ -76,7 +76,7 @@
 
   function renderStreak() {
     const s = Store.summary();
-    el('streak').innerHTML = `<span class="fire">${s.streakActive ? '🔥' : '☆'}</span> <b>${s.streak}</b><span>day streak · ${s.stars} ★</span>`;
+    el('streak').innerHTML = `<span class="fire ${s.streakActive ? 'on' : ''}">${Atlas.icon('flame', 15)}</span> <b>${s.streak}</b><span>day streak · ${s.stars} ★</span>`;
   }
 
   /* keep chrome in sync with the map's focus/mode (also fires on progress change) */
@@ -132,7 +132,7 @@
     const fav = s.favourite ? (MATH.Components.get(s.favourite) || {}).title || s.favourite : null;
     const body = `
       <div class="m-prog-hero">
-        <div class="m-prog-streak">${s.streakActive ? '🔥' : '☆'} <b>${s.streak}</b><span>day streak</span></div>
+        <div class="m-prog-streak"><span class="fire ${s.streakActive ? 'on' : ''}">${Atlas.icon('flame', 18)}</span> <b>${s.streak}</b><span>day streak</span></div>
         <div class="m-prog-stars">★ <b>${s.stars}</b><span>stars earned</span></div>
       </div>
       <div class="m-prog-grid">
@@ -259,6 +259,15 @@
 
   /* ---------------- boot ---------------- */
   function boot() {
+    // swap static chrome glyphs for the shared SVG icon set
+    el('menu-btn').innerHTML = Atlas.icon('menu', 18);
+    el('standards-btn').innerHTML = Atlas.icon('grid', 16);
+    el('progress-btn').innerHTML = Atlas.icon('star', 16);
+    el('open-cmd2').innerHTML = Atlas.icon('search', 16);
+    el('railclose').innerHTML = Atlas.icon('x', 15);
+    el('open-cmd').innerHTML = `${Atlas.icon('search', 15)}<span>Search concepts…</span><span class="kbd">⌘K</span>`;
+    const cmdIc = document.querySelector('.la-cmd-in > span:first-child'); if (cmdIc) cmdIc.innerHTML = Atlas.icon('search', 17);
+
     rail = Atlas.Rail(el('rail'));
     el('railclose').onclick = closeRail;
     player = MATH.Player.Player(el('m-lesson'), { onExit: showMap, onComplete: () => { /* store change re-syncs */ } });

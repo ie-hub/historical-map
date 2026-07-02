@@ -26,7 +26,9 @@
 
   const LESSONS = {};
   const KIND_LABEL = { hook: 'Curiosity', prior: 'Warm-up', explore: 'Explore', discover: 'Discovery', practice: 'Practice', challenge: 'Challenge', mastery: 'Mastery check', reflect: 'Reflection', extend: 'Go further' };
-  const KIND_ICON = { hook: '💡', prior: '🤔', explore: '🔎', discover: '✨', practice: '✏️', challenge: '🔥', mastery: '🏅', reflect: '🪞', extend: '🚀' };
+  /* crisp SVG chrome icons (Atlas.icon) — emoji stays only inside lesson content */
+  const ic = (n, s) => (window.Atlas && Atlas.icon) ? Atlas.icon(n, s) : '•';
+  const KIND_ICON = { hook: ic('spark', 15), prior: ic('help', 15), explore: ic('search', 15), discover: ic('spark', 15), practice: ic('pencil', 15), challenge: ic('zap', 15), mastery: ic('award', 15), reflect: ic('message', 15), extend: ic('arrow-up-right', 15), unlock: ic('flag', 15) };
 
   function register(lesson) { LESSONS[lesson.concept] = lesson; }
   function get(conceptId) { return LESSONS[conceptId]; }
@@ -279,6 +281,21 @@
             <button class="m-btn" id="m-tomap">Back to map →</button>
           </div>
         </div>`;
+      // a small celebration when the concept is actually mastered
+      if (result.mastered && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+        const conf = U.el('div', 'm-confetti');
+        const colors = ['var(--m-accent)', 'var(--m-2)', 'var(--m-3)', 'var(--m-4)', 'var(--m-good)'];
+        for (let i = 0; i < 26; i++) {
+          const p = U.el('i');
+          p.style.left = (4 + Math.random() * 92) + '%';
+          p.style.background = colors[i % colors.length];
+          p.style.animationDelay = (Math.random() * 0.4) + 's';
+          p.style.animationDuration = (1.2 + Math.random() * 0.9) + 's';
+          conf.appendChild(p);
+        }
+        card.appendChild(conf);
+        setTimeout(() => conf.remove(), 2800);
+      }
       setNext(false); host.querySelector('#m-roundpill').style.display = 'none';
       card.querySelector('#m-replay').onclick = () => start(concept.id);
       card.querySelector('#m-tomap').onclick = () => { cleanup(); opts.onExit && opts.onExit(); };

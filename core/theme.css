@@ -21,40 +21,44 @@
    Light + dark via prefers-color-scheme; high-contrast + reduced-motion honoured.
    ========================================================================== */
 
+/* Modern-scholarly type: Inter for UI/body, Fraunces (optical serif) for display. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap');
+
 /* ========================================================================== *
    1 · DESIGN TOKENS
    ========================================================================== */
 :root{
-  /* — Brand & surface palette (unchanged values; the atlas identity) — */
-  --page:#f6f1e6; --panel:#fffdf8; --panel2:#f1ead9;
-  --ink:#2b2620; --muted:#6f6657; --faint:#9a9588;
-  --rule:rgba(43,38,32,.14); --rule2:rgba(43,38,32,.26);
-  --accent:#7a3b32; --link:#3f5a82;
-  --neutral:#d6cfbf; --neutral-stroke:#bdb6a4;
-  --good:#5f8a6a; --bad:#b0504a;
+  /* — Brand & surface palette ("modern scholarly": clean warm neutrals,
+       a livelier terracotta accent; the parchment yellow is retired) — */
+  --page:#f7f6f3; --panel:#ffffff; --panel2:#efede8;
+  --ink:#211f1c; --muted:#6d6a63; --faint:#9b968c;
+  --rule:rgba(33,31,28,.10); --rule2:rgba(33,31,28,.20);
+  --accent:#9a4b3b; --link:#3e63a8;
+  --neutral:#dedbd3; --neutral-stroke:#c4c0b5;
+  --good:#3d9464; --bad:#c74f44;
 
-  /* — Semantic colour extensions (new) — */
-  --accent-ink:#fffdf8;                  /* text/icon on an accent fill       */
-  --accent-weak:rgba(122,59,50,.10);     /* accent tint background            */
-  --accent-ring:rgba(122,59,50,.28);     /* focus ring / selected glow        */
-  --info:#3f5a82;  --info-weak:rgba(63,90,130,.12);
-  --warn:#b07a2e;  --warn-weak:rgba(176,122,46,.14);
-  --good-weak:rgba(95,138,106,.16);
-  --bad-weak:rgba(176,80,74,.14);
-  --focus:#3f5a82;                        /* keyboard focus ring              */
-  --overlay:rgba(20,16,12,.45);           /* modal / scrim backdrop           */
-  --scrim:rgba(20,16,12,.14);             /* light scrim for non-blocking drawer */
+  /* — Semantic colour extensions — */
+  --accent-ink:#ffffff;                  /* text/icon on an accent fill       */
+  --accent-weak:rgba(154,75,59,.09);     /* accent tint background            */
+  --accent-ring:rgba(154,75,59,.25);     /* focus ring / selected glow        */
+  --info:#3e63a8;  --info-weak:rgba(62,99,168,.10);
+  --warn:#b07a22;  --warn-weak:rgba(176,122,34,.12);
+  --good-weak:rgba(61,148,100,.12);
+  --bad-weak:rgba(199,79,68,.10);
+  --focus:#3e63a8;                        /* keyboard focus ring              */
+  --overlay:rgba(18,17,15,.48);           /* modal / scrim backdrop           */
+  --scrim:rgba(18,17,15,.14);             /* light scrim for non-blocking drawer */
   /* --brand is the per-subject chrome accent. Defaults to the atlas brick;
      each subject may set it to its own hue (Math blue, Biology green, …). */
   --brand:var(--accent); --brand-ink:var(--accent-ink);
   --brand-weak:var(--accent-weak); --brand-ring:var(--accent-ring);
 
   /* — Typography — */
-  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --ui:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --serif:"Fraunces","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
-  --fs-2xs:10.5px; --fs-xs:11.5px; --fs-sm:12.5px; --fs-md:13.5px; --fs-base:15px;
-  --fs-lg:17px; --fs-xl:19px; --fs-2xl:22px; --fs-3xl:26px; --fs-4xl:34px; --fs-5xl:46px;
+  --fs-2xs:11px; --fs-xs:12px; --fs-sm:13px; --fs-md:14px; --fs-base:15.5px;
+  --fs-lg:17.5px; --fs-xl:20px; --fs-2xl:23px; --fs-3xl:28px; --fs-4xl:36px; --fs-5xl:48px;
   --lh-tight:1.15; --lh-snug:1.35; --lh-normal:1.55; --lh-relaxed:1.68;
   --fw-normal:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700;
   --tracking-wide:.08em; --tracking-wider:.12em; --tracking-caps:.1em;
@@ -64,15 +68,15 @@
   --sp-6:24px; --sp-7:28px; --sp-8:32px; --sp-10:40px; --sp-12:48px; --sp-16:64px;
 
   /* — Radius scale — */
-  --r-xs:6px; --r-sm:8px; --r-md:10px; --r-lg:12px; --r-xl:16px; --r-2xl:20px;
+  --r-xs:7px; --r-sm:9px; --r-md:11px; --r-lg:14px; --r-xl:18px; --r-2xl:24px;
   --r-pill:999px; --r-round:50%;
 
-  /* — Elevation (shadows) — */
-  --sh-1:0 1px 2px rgba(43,38,32,.06), 0 1px 3px rgba(43,38,32,.08);
-  --sh-2:0 2px 8px rgba(43,38,32,.08);
-  --sh-3:0 8px 28px rgba(43,38,32,.14);
-  --sh-4:0 18px 48px rgba(43,38,32,.20);
-  --sh-rail:-8px 0 28px rgba(0,0,0,.10);
+  /* — Elevation (shadows: soft, diffuse, neutral) — */
+  --sh-1:0 1px 2px rgba(20,18,15,.04), 0 1px 4px rgba(20,18,15,.06);
+  --sh-2:0 3px 12px rgba(20,18,15,.07);
+  --sh-3:0 10px 32px rgba(20,18,15,.11);
+  --sh-4:0 24px 64px rgba(20,18,15,.16);
+  --sh-rail:-8px 0 32px rgba(0,0,0,.09);
   --sh-focus:0 0 0 3px var(--accent-ring);
 
   /* — Motion — */
@@ -91,38 +95,39 @@
 
 @media (prefers-color-scheme: dark){
   :root{
-    --page:#1c1915; --panel:#252119; --panel2:#1f1c16;
-    --ink:#ece4d4; --muted:#a59c8b; --faint:#7c7466;
-    --rule:rgba(236,228,212,.14); --rule2:rgba(236,228,212,.26);
-    --accent:#d99a8e; --link:#9db4d8;
-    --neutral:#39342a; --neutral-stroke:#4a4436;
-    --good:#6f9b7a; --bad:#c06a6a;
+    /* neutral slate darks (the sepia dark mode is retired) */
+    --page:#141519; --panel:#1d1f24; --panel2:#181a1f;
+    --ink:#e9e9ec; --muted:#9d9fa6; --faint:#6f7178;
+    --rule:rgba(233,233,236,.10); --rule2:rgba(233,233,236,.20);
+    --accent:#e29385; --link:#94b4e8;
+    --neutral:#2a2d33; --neutral-stroke:#3a3e46;
+    --good:#66b586; --bad:#dd7a70;
 
-    --accent-ink:#1c1915;
-    --accent-weak:rgba(217,154,142,.14);
-    --accent-ring:rgba(217,154,142,.30);
-    --info:#9db4d8; --info-weak:rgba(157,180,216,.16);
-    --warn:#d8b878; --warn-weak:rgba(216,184,120,.16);
-    --good-weak:rgba(111,155,122,.20);
-    --bad-weak:rgba(192,106,106,.18);
-    --focus:#9db4d8;
-    --overlay:rgba(0,0,0,.58);
-    --scrim:rgba(0,0,0,.32);
+    --accent-ink:#17140f;
+    --accent-weak:rgba(226,147,133,.13);
+    --accent-ring:rgba(226,147,133,.28);
+    --info:#94b4e8; --info-weak:rgba(148,180,232,.14);
+    --warn:#d8b878; --warn-weak:rgba(216,184,120,.14);
+    --good-weak:rgba(102,181,134,.16);
+    --bad-weak:rgba(221,122,112,.15);
+    --focus:#94b4e8;
+    --overlay:rgba(0,0,0,.60);
+    --scrim:rgba(0,0,0,.34);
 
     --sh-1:0 1px 2px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.34);
-    --sh-2:0 2px 10px rgba(0,0,0,.38);
-    --sh-3:0 8px 28px rgba(0,0,0,.46);
-    --sh-4:0 18px 48px rgba(0,0,0,.55);
-    --sh-rail:-8px 0 28px rgba(0,0,0,.45);
+    --sh-2:0 3px 12px rgba(0,0,0,.38);
+    --sh-3:0 10px 32px rgba(0,0,0,.46);
+    --sh-4:0 24px 64px rgba(0,0,0,.55);
+    --sh-rail:-8px 0 32px rgba(0,0,0,.45);
   }
 }
 
 /* Stronger separators when the OS asks for more contrast. */
 @media (prefers-contrast: more){
-  :root{--rule:rgba(43,38,32,.34); --rule2:rgba(43,38,32,.52); --muted:#544c3f; --faint:#6b6355}
+  :root{--rule:rgba(33,31,28,.34); --rule2:rgba(33,31,28,.52); --muted:#54524b; --faint:#6b6961}
 }
 @media (prefers-contrast: more) and (prefers-color-scheme: dark){
-  :root{--rule:rgba(236,228,212,.34); --rule2:rgba(236,228,212,.55); --muted:#c3b9a6; --faint:#a79d8c}
+  :root{--rule:rgba(233,233,236,.34); --rule2:rgba(233,233,236,.55); --muted:#c6c7cc; --faint:#a5a6ad}
 }
 
 /* ========================================================================== *
@@ -130,9 +135,13 @@
    ========================================================================== */
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:var(--page);color:var(--ink);font-family:var(--serif);
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--ui);
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+/* Display headings carry the scholarly serif; body copy is the modern sans. */
+h1,h2,h3,h4{font-family:var(--serif);letter-spacing:-.01em}
 button{font-family:var(--ui);cursor:pointer;color:inherit}
+/* Inline SVG icons (Atlas.icon) inherit text colour and align to the text line. */
+.ic-svg{display:inline-block;vertical-align:-.15em;flex:none}
 a{color:var(--link)}
 .ui{font-family:var(--ui)}
 .serif{font-family:var(--serif)}
@@ -514,7 +523,8 @@ input[type=checkbox],input[type=radio],input[type=range]{accent-color:var(--acce
 .la-side-foot{flex:none;border-top:1px solid var(--rule);padding:var(--sp-3);display:flex;flex-direction:column;gap:var(--sp-2)}
 .la-streak{display:flex;align-items:center;gap:var(--sp-2);font-family:var(--ui);font-size:var(--fs-sm);color:var(--muted)}
 .la-streak b{color:var(--ink);font-size:var(--fs-base)}
-.la-streak .fire{font-size:16px}
+.la-streak .fire{display:inline-flex;color:var(--faint)}
+.la-streak .fire.on{color:var(--warn)}
 /* collapsed icon-rail: hide labels */
 .collapsed .la-brand-txt,.collapsed .la-subject .nm,.collapsed .la-navsearch span,.collapsed .la-navsearch .kbd,
 .collapsed .la-navitem .nm,.collapsed .la-navitem .lk,.collapsed .la-grouphead span,.collapsed .la-groupbar,
