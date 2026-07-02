@@ -27,20 +27,15 @@
   const BIO = (window.BIO = window.BIO || { topics: {} });
   const Store = BIO.Store;
 
-  /* Units are the layout columns. Each entry: { n:'1', name:'What Is Life?' } */
+  /* Units mirror the four Indiana / NGSS Biology Disciplinary Core Ideas (DCIs),
+     so the on-map structure matches how the standards are organized. Each concept's
+     `strand` (cells, processes, genetics, …) becomes a swim-lane within its DCI.
+     Each entry: { n:'1', name:'Molecules to Organisms' } (LS1..LS4). */
   const UNITS = [
-    { n: '1', name: 'What Is Life?' },
-    { n: '2', name: 'Cells' },
-    { n: '3', name: 'Cell Processes' },
-    { n: '4', name: 'Cell Division' },
-    { n: '5', name: 'Genetics' },
-    { n: '6', name: 'Evolution' },
-    { n: '7', name: 'Classification' },
-    { n: '8', name: 'Ecology' },
-    { n: '9', name: 'Human Body' },
-    { n: '10', name: 'Plants' },
-    { n: '11', name: 'Microbiology' },
-    { n: '12', name: 'Biotechnology' }
+    { n: '1', name: 'Molecules to Organisms' },   // LS1 — Structures & Processes
+    { n: '2', name: 'Ecosystems' },               // LS2 — Interactions, Energy & Dynamics
+    { n: '3', name: 'Heredity' },                 // LS3 — Inheritance & Variation of Traits
+    { n: '4', name: 'Evolution' }                 // LS4 — Unity & Diversity
   ];
   const UNIT_ORDER = UNITS.map(u => u.n);
   const unitName = n => (UNITS.find(u => u.n === n) || {}).name || '';
@@ -120,7 +115,7 @@
   function search(q) {
     q = q.toLowerCase();
     return all().filter(c => c.name.toLowerCase().includes(q) || (c.blurb || '').toLowerCase().includes(q) || (c.strand || '').toLowerCase().includes(q))
-      .map(c => ({ id: c.id, label: c.name, sub: 'Unit ' + c.unit + ' · ' + unitName(c.unit) }));
+      .map(c => ({ id: c.id, label: c.name, sub: unitName(c.unit) + ' · ' + c.strand }));
   }
 
   BIO.Graph = { UNITS, UNIT_ORDER, unitName, add, get, all, status, prereqsMet, unlockedBy, children, recommended, remediationFor, search, setUnlockAll };

@@ -146,7 +146,7 @@
         const dots = cs.map(c => `<i class="${Store.isMastered(c.id) ? 'on' : Graph.status(c.id) === 'available' ? 'cur' : ''}"></i>`).join('');
         return `<button class="m-ucard" data-unit="${u}">
           <div class="m-ucard-top"><h3>${unitTitle(u)}</h3>${badge}</div>
-          <div class="m-ucard-meta">Unit ${u} · ${total} concepts</div>
+          <div class="m-ucard-meta">LS${u} · ${total} concepts</div>
           <div class="m-ucard-mini">${dots}</div>
           <div class="m-ucard-foot"><span class="progress" style="flex:1"><span style="width:${pct}%"></span></span><b>${pct}%</b></div>
         </button>`;
