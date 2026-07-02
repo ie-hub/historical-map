@@ -14,6 +14,7 @@
   let mode = 'map';                       // 'map' | 'lesson' | 'browse'
   let currentLesson = null;
   let browseTopic = null, bstate = { partId: null, tab: 'overview' };
+  const openGroups = new Set();           // sidebar sections start collapsed; toggled by the user (matches Math/Sciences)
 
   const unitTitle = u => Graph.unitName(u) || ('Unit ' + u);
 
@@ -57,19 +58,22 @@
   function buildOutline() {
     const wrap = $('outline'); if (!wrap) return;
     wrap.innerHTML = '';
+    // Unit groups — collapsible accordion. Every section starts collapsed and
+    // toggles independently (openGroups tracks which are open). Expanding a unit
+    // also focuses it on the map; collapsing just closes it. Matches Math/Sciences.
     mapView.units().forEach(u => {
       const cs = Graph.all().filter(c => c.unit === u).sort((a, b) => (a.strand || '').localeCompare(b.strand || ''));
       const mastered = cs.filter(c => Store.isMastered(c.id)).length;
       const pct = cs.length ? Math.round(mastered / cs.length * 100) : 0;
-      const isFocus = u === mapView.unit() && (mode === 'map' || mode === 'lesson');
+      const open = openGroups.has(u);
 
-      const group = document.createElement('div'); group.className = 'la-navgroup';
+      const group = document.createElement('div'); group.className = 'la-navgroup' + (open ? ' open' : '');
       const head = document.createElement('button');
-      head.className = 'la-grouphead'; head.setAttribute('aria-expanded', String(isFocus));
-      head.innerHTML = `<span class="tw">▾</span><span>${unitTitle(u)}</span><span class="cnt">${mastered}/${cs.length}</span>`;
-      head.onclick = () => mapView.focusUnit(u);
+      head.className = 'la-grouphead'; head.setAttribute('aria-expanded', String(open));
+      head.innerHTML = `<span class="tw">${open ? '▾' : '▸'}</span><span>${unitTitle(u)}</span><span class="cnt">${mastered}/${cs.length}</span>`;
+      head.onclick = () => { if (openGroups.has(u)) { openGroups.delete(u); buildOutline(); } else { openGroups.add(u); mapView.focusUnit(u); } };
       group.appendChild(head);
-      if (isFocus) {
+      if (open) {
         const bar = document.createElement('div'); bar.className = 'la-groupbar';
         bar.innerHTML = `<span style="width:${pct}%"></span>`; group.appendChild(bar);
         const items = document.createElement('div'); items.className = 'la-subgroup';
@@ -87,23 +91,29 @@
       wrap.appendChild(group);
     });
 
-    // Explore models group
+    // Explore models — same collapsible accordion behaviour, starts collapsed.
     const topics = Object.values(BIO.topics || {});
     if (topics.length) {
-      const group = document.createElement('div'); group.className = 'la-navgroup';
+      const ekey = '__explore';
+      const open = openGroups.has(ekey);
+      const group = document.createElement('div'); group.className = 'la-navgroup' + (open ? ' open' : '');
       const head = document.createElement('button');
-      head.className = 'la-grouphead'; head.setAttribute('aria-expanded', 'true');
-      head.innerHTML = `<span class="tw">▾</span><span>Explore models</span>`;
-      head.onclick = () => head.parentElement.querySelector('.la-subgroup').classList.toggle('collapsed');
-      const items = document.createElement('div'); items.className = 'la-subgroup';
-      topics.forEach(t => {
-        const it = document.createElement('button');
-        it.className = 'la-navitem' + (mode === 'browse' && browseTopic && browseTopic.id === t.id ? ' active' : '');
-        it.innerHTML = `<span class="dot" style="border:0;background:none;font-size:13px;width:auto;height:auto">${t.icon || '🔬'}</span><span class="nm">${t.name}</span>`;
-        it.onclick = () => { openBrowse(t.id); if (shell) shell.closeNav(); };
-        items.appendChild(it);
-      });
-      group.appendChild(head); group.appendChild(items); wrap.appendChild(group);
+      head.className = 'la-grouphead'; head.setAttribute('aria-expanded', String(open));
+      head.innerHTML = `<span class="tw">${open ? '▾' : '▸'}</span><span>Explore models</span><span class="cnt">${topics.length}</span>`;
+      head.onclick = () => { if (openGroups.has(ekey)) openGroups.delete(ekey); else openGroups.add(ekey); buildOutline(); };
+      group.appendChild(head);
+      if (open) {
+        const items = document.createElement('div'); items.className = 'la-subgroup';
+        topics.forEach(t => {
+          const it = document.createElement('button');
+          it.className = 'la-navitem' + (mode === 'browse' && browseTopic && browseTopic.id === t.id ? ' active' : '');
+          it.innerHTML = `<span class="dot" style="border:0;background:none;font-size:13px;width:auto;height:auto">${t.icon || '🔬'}</span><span class="nm">${t.name}</span>`;
+          it.onclick = () => { openBrowse(t.id); if (shell) shell.closeNav(); };
+          items.appendChild(it);
+        });
+        group.appendChild(items);
+      }
+      wrap.appendChild(group);
     }
   }
 
