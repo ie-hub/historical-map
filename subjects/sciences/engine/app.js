@@ -18,6 +18,20 @@
 
   const gradeLabel = g => (g.length <= 2 ? 'Grade ' + g : g);
 
+  /* The non-grade "courses": the kept HS Biology explorer (its own untouched
+     subject folder) plus the still-to-come HS courses. Shared by the course
+     picker (map overview) and the sidebar "Explorers" section so the two agree. */
+  const COURSES = [
+    { name: 'Biology', status: 'live', href: '../biology/', meta: 'High school · 12-unit explorer',
+      desc: 'The interactive Life Explorer — cells, DNA, ecosystems and the plant-cell 3-D model.' },
+    { name: 'Chemistry', status: 'soon', meta: 'High school · in planning',
+      desc: 'Atoms, bonding, reactions and the states of matter.' },
+    { name: 'Physics', status: 'soon', meta: 'High school · in planning',
+      desc: 'Forces, energy, waves and motion.' },
+    { name: 'Earth & Space', status: 'soon', meta: 'High school · in planning',
+      desc: 'Geology, weather, oceans and the universe.' }
+  ];
+
   /* ---------------- drawer open/close (rail + scrim) ---------------- */
   function openRail() { rail.open(); el('scrim').classList.add('open'); }
   function closeRail() { rail.close(); el('scrim').classList.remove('open'); }
@@ -74,6 +88,33 @@
       }
       wrap.appendChild(group);
     });
+
+    // After the grade courses: the non-grade "Explorers" — the kept HS Biology
+    // explorer + coming-soon HS courses — as one more collapsible group (starts
+    // collapsed, toggles, mirrors the picker's second section).
+    const ckey = '__courses';
+    const copen = openGroups.has(ckey);
+    const live = COURSES.filter(c => c.status === 'live').length;
+    const cgroup = document.createElement('div'); cgroup.className = 'la-navgroup' + (copen ? ' open' : '');
+    const chead = document.createElement('button');
+    chead.className = 'la-grouphead'; chead.setAttribute('aria-expanded', String(copen));
+    chead.innerHTML = `<span class="tw">${copen ? '▾' : '▸'}</span><span>Explorers</span><span class="cnt">${live}</span>`;
+    chead.onclick = () => { if (openGroups.has(ckey)) openGroups.delete(ckey); else openGroups.add(ckey); buildOutline(); };
+    cgroup.appendChild(chead);
+    if (copen) {
+      const items = document.createElement('div'); items.className = 'la-subgroup';
+      COURSES.forEach(c => {
+        const soon = c.status !== 'live';
+        const it = document.createElement('button');
+        it.className = 'la-navitem' + (soon ? ' is-soon' : '');
+        it.innerHTML = `<span class="dot ${soon ? 'locked' : 'now'}"></span><span class="nm">${c.name}</span>${soon ? '<span class="lk">' + Atlas.icon('lock', 11) + '</span>' : ''}`;
+        if (!soon && c.href) it.onclick = () => { location.href = c.href; };
+        else it.disabled = true;
+        items.appendChild(it);
+      });
+      cgroup.appendChild(items);
+    }
+    wrap.appendChild(cgroup);
   }
 
   function renderStreak() {
@@ -281,18 +322,7 @@
       onLocked: (c) => openConcept(c.id),
       onSoon: (c) => openConcept(c.id),
       onFocusChange: syncChrome,
-      // The course picker's "other courses" strip: the kept HS Biology explorer
-      // (its own subject folder, untouched) plus the still-to-come HS courses.
-      courses: [
-        { name: 'Biology', status: 'live', href: '../biology/', meta: 'High school · 12-unit explorer',
-          desc: 'The interactive Life Explorer — cells, DNA, ecosystems and the plant-cell 3-D model.' },
-        { name: 'Chemistry', status: 'soon', meta: 'High school · in planning',
-          desc: 'Atoms, bonding, reactions and the states of matter.' },
-        { name: 'Physics', status: 'soon', meta: 'High school · in planning',
-          desc: 'Forces, energy, waves and motion.' },
-        { name: 'Earth & Space', status: 'soon', meta: 'High school · in planning',
-          desc: 'Geology, weather, oceans and the universe.' }
-      ]
+      courses: COURSES   // the picker's "other courses" strip
     });
 
     palette = Atlas.CommandPalette(el('cmd'), { provider });
