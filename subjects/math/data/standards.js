@@ -71,13 +71,24 @@
        state: 'taught'  — an aligned concept has an authored lesson
               'soon'    — aligned to a concept, but its lesson isn't built yet
               'gap'     — no concept addresses it at all
-       mastered: the learner has mastered at least one aligned concept.        */
+       learner: 'mastered' | 'in-progress' | 'not-started' (across aligned concepts)
+       accuracy: summative accuracy % on aligned concepts (null if untried)
+       misconceptions: distinct misconception labels seen on aligned concepts.  */
   function status(code) {
     const cs = conceptsFor(code);
     const Store = MATH.Store;
-    const mastered = !!(Store && cs.some(c => Store.isMastered(c.id)));
-    if (!cs.length) return { state: 'gap', concepts: [], mastered: false };
-    return { state: cs.some(c => c.lesson) ? 'taught' : 'soon', concepts: cs, mastered };
+    let attempts = 0, correct = 0, plays = 0, mastered = false; const misc = {};
+    if (Store) cs.forEach(c => {
+      const rec = Store.concept(c.id);
+      if (rec) { attempts += rec.attempts || 0; correct += rec.correct || 0; plays += rec.plays || 0; if (rec.mastered) mastered = true; }
+      const m = Store.misconceptionsFor ? Store.misconceptionsFor(c.id) : {};
+      Object.keys(m).forEach(k => { misc[k] = (misc[k] || 0) + m[k]; });
+    });
+    const accuracy = attempts ? Math.round((correct / attempts) * 100) : null;
+    const learner = mastered ? 'mastered' : plays ? 'in-progress' : 'not-started';
+    const misconceptions = Object.keys(misc);
+    if (!cs.length) return { state: 'gap', concepts: [], mastered: false, learner: 'not-started', accuracy: null, misconceptions: [] };
+    return { state: cs.some(c => c.lesson) ? 'taught' : 'soon', concepts: cs, mastered, learner, accuracy, misconceptions };
   }
 
   /* Coverage report for a grade — the seed of the teacher dashboard. */

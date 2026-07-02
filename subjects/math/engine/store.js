@@ -18,7 +18,7 @@
 
   function today() { return new Date().toISOString().slice(0, 10); }
   function blank() {
-    return { concepts: {}, activityCounts: {}, reflections: {}, streak: { count: 0, lastDay: null }, totalTimeMs: 0, updated: null };
+    return { concepts: {}, activityCounts: {}, reflections: {}, misconceptions: {}, streak: { count: 0, lastDay: null }, totalTimeMs: 0, updated: null };
   }
   function load() {
     try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(blank(), JSON.parse(raw)); }
@@ -64,6 +64,12 @@
        Kept per-concept so teachers/learners can revisit the latest thinking. */
     saveReflection(id, text) { if (!id) return; (data.reflections = data.reflections || {})[id] = text; persist(); },
     getReflection(id) { return (data.reflections || {})[id] || ''; },
+
+    /* Log a misconception a learner revealed on a wrong answer (a labelled
+       distractor). Kept per-concept as label→count so assessment can report
+       which misunderstandings show up and drive targeted remediation. */
+    logMisconception(id, label) { if (!id || !label) return; const m = (data.misconceptions = data.misconceptions || {}); (m[id] = m[id] || {})[label] = (m[id][label] || 0) + 1; persist(); },
+    misconceptionsFor(id) { return (data.misconceptions || {})[id] || {}; },
 
     /* Count an interaction with a named reusable component (favourite activities). */
     countActivity(name) { if (!name) return; data.activityCounts[name] = (data.activityCounts[name] || 0) + 1; /* not persisted per-tick to avoid churn */ },

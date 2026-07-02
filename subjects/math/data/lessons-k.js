@@ -51,7 +51,7 @@
       { kind: 'practice', difficulty: 'easy', title: 'Pick the sign', component: 'compare', config: { rounds: 4, max: 9, emoji: '🐟' } },
       { kind: 'challenge', difficulty: 'challenge', title: 'Trickier groups', component: 'compare', config: { rounds: 5, max: 12, emoji: '🎈' } },
       { kind: 'mastery', title: 'Which sign?', component: 'problemSet',
-        config: { generate() { return U.range(4).map(() => { const a = U.rand(1, 12), b = U.rand(1, 12); const ans = a > b ? '>' : a < b ? '<' : '='; return { prompt: `Which sign makes it true?<br><b class="m-big">${a} &nbsp;?&nbsp; ${b}</b>`, answer: ans, choices: ['<', '=', '>'], hint: 'The open side points at the bigger number.' }; }); } } },
+        config: { generate() { return U.range(4).map(() => { const a = U.rand(1, 12), b = U.rand(1, 12); const ans = a > b ? '>' : a < b ? '<' : '='; const misc = {}; if (ans === '>') misc['<'] = 'Sign reversed — the open side must face the bigger number'; else if (ans === '<') misc['>'] = 'Sign reversed — the open side must face the bigger number'; return { prompt: `Which sign makes it true?<br><b class="m-big">${a} &nbsp;?&nbsp; ${b}</b>`, answer: ans, choices: ['<', '=', '>'], hint: 'The open side points at the bigger number.', misconceptions: misc }; }); } } },
       { kind: 'reflect', title: 'Think it over',
         prompt: 'How can you be sure which group has more, even when the things are different sizes?',
         starters: ['I can be sure by', 'The group with more has', 'Bigger things do not always'] },
@@ -103,10 +103,10 @@
       { kind: 'challenge', difficulty: 'challenge', title: 'Every shape', component: 'shapeSort', config: { kinds: ['circle', 'square', 'triangle', 'star', 'hexagon', 'diamond'], perKind: 2 } },
       { kind: 'mastery', title: 'Know your shapes', component: 'problemSet',
         config: { problems: [
-          { prompt: 'How many sides does a <b>triangle</b> have?', answer: '3', choices: ['2', '3', '4'], hint: 'Tri- means three.' },
-          { prompt: 'How many sides does a <b>square</b> have?', answer: '4', choices: ['3', '4', '5'], hint: 'Count the corners.' },
+          { prompt: 'How many sides does a <b>triangle</b> have?', answer: '3', choices: ['2', '3', '4'], hint: 'Tri- means three.', misconceptions: { '4': 'Counting a triangle like a square — a triangle has 3 sides', '2': 'A flat closed shape needs at least 3 sides' } },
+          { prompt: 'How many sides does a <b>square</b> have?', answer: '4', choices: ['3', '4', '5'], hint: 'Count the corners.', misconceptions: { '3': 'That would be a triangle — a square has 4 equal sides' } },
           { prompt: 'Which shape is perfectly round with no sides?', answer: 'circle', choices: ['circle', 'square', 'triangle'], hint: 'It has no corners.' },
-          { prompt: 'A shape with 6 sides is a…', answer: 'hexagon', choices: ['pentagon', 'hexagon', 'triangle'], hint: 'Hex- means six.' }
+          { prompt: 'A shape with 6 sides is a…', answer: 'hexagon', choices: ['pentagon', 'hexagon', 'triangle'], hint: 'Hex- means six.', misconceptions: { 'pentagon': 'A pentagon has 5 sides — hex- means six', 'triangle': 'A triangle has only 3 sides' } }
         ] } },
       { kind: 'reflect', title: 'Think it over',
         prompt: 'How can you tell two shapes apart, like a square and a triangle?',

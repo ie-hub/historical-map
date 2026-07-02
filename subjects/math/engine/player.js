@@ -51,7 +51,8 @@
       if (!lesson) { host.innerHTML = `<div class="m-lesson-empty note">This lesson isn't written yet — but the concept is on the map.</div>`; return; }
       flow = buildFlow(lesson);
       idx = 0; startTime = Date.now();
-      run = { attempts: 0, correct: 0, solvedSteps: {}, challengeCleared: false, everFailedChallenge: false };
+      run = { attempts: 0, correct: 0, solvedSteps: {}, challengeCleared: false, everFailedChallenge: false,
+              summative: { attempts: 0, correct: 0 }, formative: { attempts: 0, correct: 0 }, misconceptions: [] };
       renderShell(); renderStep();
     }
 
@@ -153,9 +154,15 @@
       }
       if (step.kind === 'unlock') { renderUnlock(card); return; }
 
-      // interactive step
+      // interactive step. Assessment role: the mastery check is summative (it's the
+      // graded demonstration); everything else is formative (low-stakes practice
+      // that guides learning but doesn't set the grade). Authors may override with
+      // step.assess.
+      const role = step.assess || (step.kind === 'mastery' ? 'summative' : 'formative');
       const diffTag = step.difficulty ? `<span class="m-diff ${step.difficulty}">${step.difficulty}</span>` : '';
-      card.innerHTML = `<div class="m-kicker">${KIND_ICON[step.kind] || '•'} ${KIND_LABEL[step.kind] || step.kind} ${diffTag}</div>
+      const roleTag = role === 'summative' ? `<span class="m-assess summative">summative</span>`
+        : step.kind === 'practice' ? `<span class="m-assess formative">formative</span>` : '';
+      card.innerHTML = `<div class="m-kicker">${KIND_ICON[step.kind] || '•'} ${KIND_LABEL[step.kind] || step.kind} ${diffTag}${roleTag}</div>
         ${step.title ? `<h2 class="m-step-title">${step.title}</h2>` : ''}
         ${step.intro ? `<p class="m-step-intro">${step.intro}</p>` : ''}
         <div class="m-mount" id="m-mount"></div>`;
@@ -164,7 +171,12 @@
       if (!def) { mount.innerHTML = `<p class="note">Missing component: ${step.component}</p>`; setNext(true); return; }
       const ctx = {
         difficulty: step.difficulty || 'easy',
-        attempt(ok) { run.attempts++; if (ok) run.correct++; },
+        attempt(ok, info) {
+          run.attempts++; if (ok) run.correct++;
+          const bucket = role === 'summative' ? run.summative : run.formative;
+          bucket.attempts++; if (ok) bucket.correct++;
+          if (!ok && info && info.misconception) { run.misconceptions.push(info.misconception); Store.logMisconception(concept.id, info.misconception); }
+        },
         feedback, progress,
         count(name) { Store.countActivity(name); },
         solved() {
@@ -189,7 +201,11 @@
     }
 
     function computeResult() {
-      const acc = run.attempts ? run.correct / run.attempts : 1;
+      // Mastery is judged on the SUMMATIVE assessment only. Fall back to overall
+      // attempts for older lessons that have no dedicated mastery step.
+      const s = run.summative;
+      const gradedA = s.attempts || run.attempts, gradedC = s.attempts ? s.correct : run.correct;
+      const acc = gradedA ? gradedC / gradedA : 1;
       const score = Math.round(acc * 100);
       const passed = score >= (concept.masteryScore || 80);
       let stars = 1;                              // finished the core path
@@ -197,7 +213,9 @@
       if (passed && run.challengeCleared) stars = 3;
       return {
         conceptId: concept.id, score, accuracy: score,
-        attempts: run.attempts, correct: run.correct,
+        attempts: gradedA, correct: gradedC,
+        formativeAttempts: run.formative.attempts,
+        misconceptions: [...new Set(run.misconceptions)],
         timeMs: Date.now() - startTime,
         stars, completed: true, mastered: passed,
         challengeCleared: run.challengeCleared
@@ -214,6 +232,10 @@
       const stdBlock = stds.length ? `<div class="m-std-met">
         <span class="m-std-h">Indiana standards ${result.mastered ? 'mastered' : 'practised'}</span>
         <div class="m-std-chips">${stds.map(s => `<span class="badge" data-tooltip="${(s.statement || '').replace(/"/g, '&quot;')}">${s.code}</span>`).join('')}</div></div>` : '';
+      const miscs = result.misconceptions || [];
+      const miscBlock = miscs.length ? `<div class="m-misc">
+        <span class="m-misc-h">⚠ Worth another look</span>
+        <ul>${miscs.map(m => `<li>${m}</li>`).join('')}</ul></div>` : '';
       card.innerHTML = `
         <div class="m-unlock">
           <div class="m-kicker">${KIND_ICON.mastery} Lesson complete</div>
@@ -225,6 +247,7 @@
             <div><b>${Math.max(1, Math.round(result.timeMs / 60000))}m</b><span>time</span></div>
           </div>
           ${stdBlock}
+          ${miscBlock}
           ${result.mastered
             ? (unlocked.length
               ? `<div class="m-unlock-list"><div class="m-unlock-h">🔓 New concepts unlocked</div>${unlocked.map(c => `<button class="m-unlock-card" data-go="${c.id}"><b>${c.name}</b><span>Grade ${c.grade} · ${c.strand}</span></button>`).join('')}</div>`

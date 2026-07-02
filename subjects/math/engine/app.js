@@ -191,6 +191,8 @@
             <div class="m-cov-row ${s.state}">
               <div class="m-cov-top"><b>${s.code}</b>${pill(s.state)}${s.mastered ? '<span class="m-cov-star">★</span>' : ''}</div>
               <p>${s.statement}</p>
+              ${s.state === 'taught' ? `<div class="m-cov-learn ${s.learner}">${s.learner === 'mastered' ? '★ mastered' : s.learner === 'in-progress' ? `◐ in progress${s.accuracy != null ? ' · ' + s.accuracy + '%' : ''}` : '· not started'}</div>` : ''}
+              ${s.misconceptions && s.misconceptions.length ? `<div class="m-cov-misc">⚠ ${s.misconceptions.map(esc).join('; ')}</div>` : ''}
               ${s.concepts.length ? `<div class="chips">${s.concepts.map(c => `<button class="chip ${Store.isMastered(c.id) ? 'active' : ''}" data-go="${c.id}">${c.name}${Store.isMastered(c.id) ? ' ✓' : ''}</button>`).join('')}</div>`
                 : `<p class="m-cov-none">No lesson addresses this yet.</p>`}
             </div>`).join('')}</div>`).join('')}

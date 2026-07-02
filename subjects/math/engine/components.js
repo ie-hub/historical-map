@@ -6,7 +6,8 @@
      MATH.Components.register(name, { title, mount(host, config, ctx) })
 
    ctx (provided by the lesson player):
-     ctx.attempt(ok)        record one try (drives accuracy + mastery)
+     ctx.attempt(ok, info?) record one try; info.misconception (a label) is logged
+                            when a wrong answer hits a tagged distractor
      ctx.solved()           the activity's goal is complete → learner may advance
      ctx.feedback(msg, kind) show a short line ('ok' | 'no' | '')
      ctx.progress(done,tot) optional round counter
@@ -556,16 +557,18 @@
       stage.innerHTML = '';
       if (p.choices) {
         const opts = U.el('div', 'm-ps-opts');
-        U.shuffle(p.choices).forEach(c => { const b = U.el('button', 'm-btn m-ps-opt', String(c)); b.onclick = () => judge(String(c) === String(p.answer), b); opts.appendChild(b); });
+        U.shuffle(p.choices).forEach(c => { const b = U.el('button', 'm-btn m-ps-opt', String(c)); b.onclick = () => judge(String(c) === String(p.answer), b, String(c)); opts.appendChild(b); });
         stage.appendChild(opts);
       } else {
-        answerField(stage, { label: 'Answer:', onCheck(v) { judge(String(v).replace(/\s/g, '') === String(p.answer).replace(/\s/g, '')); } });
+        answerField(stage, { label: 'Answer:', onCheck(v) { const val = String(v).replace(/\s/g, ''); judge(val === String(p.answer).replace(/\s/g, ''), null, val); } });
       }
     }
-    function judge(ok, btn) {
-      ctx.attempt(ok); ctx.count('problemSet');
-      if (btn) stage.querySelectorAll('.m-ps-opt').forEach(b => b.classList.toggle('picked', b === btn));
+    function judge(ok, btn, picked) {
       const p = problems[i];
+      // a wrong pick on a labelled distractor reveals a specific misconception
+      const info = (!ok && p.misconceptions && picked != null && p.misconceptions[picked]) ? { misconception: p.misconceptions[picked] } : null;
+      ctx.attempt(ok, info); ctx.count('problemSet');
+      if (btn) stage.querySelectorAll('.m-ps-opt').forEach(b => b.classList.toggle('picked', b === btn));
       ctx.feedback(ok ? U.pick(['Correct!', 'Nice work!', 'Exactly!', 'You got it!']) : (p.hint || 'Not quite — give it another go.'), ok ? 'ok' : 'no');
       if (ok) { i++; if (i >= problems.length) { ctx.progress(problems.length, problems.length); setTimeout(ctx.solved, 500); } else setTimeout(render, 700); }
     }
