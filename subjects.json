@@ -1,19 +1,21 @@
 {
-  "_comment": "Manifest of Learning Atlas subjects. The hub home (index.html) renders its cards from this file, so adding a subject is a data change here — no HTML edits. status: 'live' links to href; 'soon' renders a disabled Coming-soon card.",
+  "_comment": "Manifest of Learning Atlas subjects. The hub home (index.html) renders its cards from this file, so adding a subject is a data change here — no HTML edits. status: 'live' links to href; 'soon' renders a disabled Coming-soon card. icon: an Atlas.icon name (core/shell.js); tint: the card icon's colour.",
   "subjects": [
     {
       "id": "history",
       "name": "History",
-      "icon": "🗺️",
+      "icon": "compass",
+      "tint": "#9a4b3b",
       "status": "live",
       "href": "subjects/history/",
-      "meta": "Historical Wars Explorer · 6 wars",
-      "description": "Six conflicts from the French & Indian War to World War II — animated borders, battles, leaders and treaties on an interactive world map."
+      "meta": "Historical Wars Explorer · 8 wars",
+      "description": "Eight conflicts from the French & Indian War to the Cold War — animated borders, battles, leaders and treaties on an interactive world map."
     },
     {
       "id": "biology",
       "name": "Biology",
-      "icon": "🧬",
+      "icon": "dna",
+      "tint": "#3d9464",
       "status": "live",
       "href": "subjects/biology/",
       "meta": "Life Explorer · 12-unit knowledge map",
@@ -22,7 +24,8 @@
     {
       "id": "math",
       "name": "Mathematics",
-      "icon": "➗",
+      "icon": "divide",
+      "tint": "#4f6bed",
       "status": "live",
       "href": "subjects/math/",
       "meta": "Math Explorer · K–Calculus knowledge map",
@@ -31,7 +34,8 @@
     {
       "id": "english",
       "name": "English",
-      "icon": "📖",
+      "icon": "book-open",
+      "tint": "#8b5cd6",
       "status": "soon",
       "meta": "In planning",
       "description": "Language and literature — grammar, rhetoric, poetic form and the stories that shaped them."
@@ -39,7 +43,8 @@
     {
       "id": "chemistry",
       "name": "Chemistry",
-      "icon": "⚗️",
+      "icon": "flask",
+      "tint": "#e8912f",
       "status": "soon",
       "meta": "In planning",
       "description": "An interactive periodic table, bonding, reactions and the states of matter."
@@ -47,7 +52,8 @@
     {
       "id": "geography",
       "name": "Geography",
-      "icon": "🌍",
+      "icon": "globe",
+      "tint": "#2fa8c9",
       "status": "soon",
       "meta": "In planning",
       "description": "Physical and human geography — climate, tectonics, biomes and the shape of nations."
