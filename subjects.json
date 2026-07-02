@@ -11,13 +11,13 @@
       "description": "Eight conflicts from the French & Indian War to the Cold War — animated borders, battles, leaders and treaties on an interactive world map."
     },
     {
-      "id": "biology",
-      "name": "Biology",
-      "icon": "dna",
+      "id": "sciences",
+      "name": "Sciences",
+      "icon": "atom",
       "status": "live",
-      "href": "subjects/biology/",
-      "meta": "Life Explorer · 12-unit knowledge map",
-      "description": "A knowledge map of interactive lessons from “what is life?” to biotechnology — explore cells, drive photosynthesis and osmosis simulations, build DNA, cross traits and balance ecosystems. Explore, discover and master; each concept unlocks the next. The original clickable diagrams and 3-D models live on as the exploration surface inside lessons."
+      "href": "subjects/sciences/",
+      "meta": "Science Explorer · Grades 3, 5 & 7 + Biology",
+      "description": "Indiana-aligned science by grade (2023 standards) — matter and its particles, forces and energy, ecosystems and Earth’s systems, taught through models you can run. Includes the interactive Biology explorer with its cells, DNA and plant-cell 3-D model. Explore, discover and master; each concept unlocks the next."
     },
     {
       "id": "math",
@@ -35,14 +35,6 @@
       "status": "soon",
       "meta": "In planning",
       "description": "Language and literature — grammar, rhetoric, poetic form and the stories that shaped them."
-    },
-    {
-      "id": "chemistry",
-      "name": "Chemistry",
-      "icon": "flask",
-      "status": "soon",
-      "meta": "In planning",
-      "description": "An interactive periodic table, bonding, reactions and the states of matter."
     },
     {
       "id": "geography",
