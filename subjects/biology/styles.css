@@ -496,3 +496,40 @@ td.ph-brown{background:var(--bio-brown)} td.ph-blue{background:var(--bio-blue)}
   .m-mp-grid{gap:8px}
   .m-col-head{width:150px}
 }
+
+/* ============================================================================
+   STANDARDS COVERAGE PANEL — Indiana HS Biology alignment (◪ drawer) and the
+   standard-code chips on the concept drawer. Ported from the shared engine so
+   it reads identically to the Math/Sciences coverage view.
+   ========================================================================== */
+.chip.std{font-family:var(--ui);font-weight:700;letter-spacing:.02em}
+.m-cov-hero{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.m-cov-ring{--pct:0;width:58px;height:58px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:conic-gradient(var(--m-good) calc(var(--pct)*1%),var(--panel2) 0)}
+.m-cov-ring b{width:44px;height:44px;border-radius:50%;background:var(--panel);display:grid;place-items:center;
+  font-family:var(--ui);font-weight:700;font-size:13.5px;color:var(--ink)}
+.m-cov-hero-txt{font-family:var(--ui);font-size:15px;line-height:1.35}
+.m-cov-hero-txt b{color:var(--m-accent)}
+.m-cov-hero-txt span{display:block;font-size:12px;color:var(--muted)}
+.m-cov-strand{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.m-cov-strand span{font-family:var(--ui);font-size:12px;font-weight:700;color:var(--muted)}
+.m-cov-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.m-cov-row{border:1px solid var(--rule2);border-left-width:4px;border-radius:12px;padding:11px 13px;background:var(--panel)}
+.m-cov-row.taught{border-left-color:var(--m-good)}
+.m-cov-row.soon{border-left-color:var(--m-accent)}
+.m-cov-row.gap{border-left-color:var(--rule2);background:var(--panel2)}
+.m-cov-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.m-cov-top b{font-family:var(--ui);font-size:13.5px;font-weight:700}
+.m-cov-row p{font-family:var(--ui);font-size:12.5px;line-height:1.5;color:var(--ink);margin:0 0 8px}
+.m-cov-pill{font-family:var(--ui);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  border-radius:10px;padding:2px 8px;border:1px solid currentColor}
+.m-cov-pill.taught{color:var(--m-good)}
+.m-cov-pill.soon{color:var(--m-accent)}
+.m-cov-pill.gap{color:var(--muted)}
+.m-cov-star{color:var(--m-accent);font-size:13px;margin-left:auto}
+.m-cov-learn{font-family:var(--ui);font-size:11.5px;font-weight:700;margin:0 0 8px}
+.m-cov-learn.mastered{color:var(--m-good)}
+.m-cov-learn.in-progress{color:var(--m-accent)}
+.m-cov-learn.not-started{color:var(--muted)}
+.m-cov-none{font-style:italic;color:var(--muted)!important}
+.m-cov-src{font-family:var(--ui);font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5;border-top:1px solid var(--rule);padding-top:10px}

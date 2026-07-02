@@ -7,6 +7,7 @@
 (function () {
   const BIO = window.BIO, Graph = BIO.Graph, Store = BIO.Store, Explorer = BIO.Explorer;
   const $ = id => document.getElementById(id);
+  const esc = s => (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   const app = $('app');
   const mapEl = () => $('bio-map'), lessonEl = () => $('bio-lesson'), canvasEl = () => $('canvas');
 
@@ -138,6 +139,7 @@
     const pre = (c.prereqs || []).map(p => Graph.get(p)).filter(Boolean);
     const unlocks = Graph.all().filter(x => (x.prereqs || []).includes(id));
     const missing = pre.filter(p => !Store.isMastered(p.id));
+    const stds = (c.standards || []).map(code => BIO.Standards && BIO.Standards.get(code)).filter(Boolean);
     const canStart = (st === 'available' || st === 'mastered' || st === 'review') && c.lesson;
     const pct = st === 'mastered' ? 100 : rec.stars ? Math.round(rec.stars / 3 * 100) : 0;
     const body = `
@@ -145,6 +147,7 @@
       ${canStart ? `<button class="btn btn-primary btn-block" data-start="${id}" style="margin-bottom:16px">${st === 'mastered' ? 'Practise again' : 'Start lesson'} →</button>` : ''}
       ${st !== 'locked' && st !== 'ready-soon' ? `<div class="progress" style="margin-bottom:16px"><span style="width:${pct}%"></span></div>` : ''}
       <p class="lead">${c.blurb || ''}</p>
+      ${stds.length ? `<h3>Indiana standards</h3><div class="chips">${stds.map(s => `<span class="chip std" data-tooltip="${esc(s.statement)}" style="cursor:help">${s.code}</span>`).join('')}</div>` : ''}
       ${pre.length ? `<h3>Prerequisites</h3><div class="chips">${pre.map(p => `<button class="chip ${Store.isMastered(p.id) ? 'active' : ''}" data-go="${p.id}">${p.name}${Store.isMastered(p.id) ? ' ✓' : ''}</button>`).join('')}</div>` : ''}
       ${unlocks.length ? `<h3>Unlocks next</h3><div class="chips">${unlocks.map(u => `<button class="chip" data-go="${u.id}">${u.name}</button>`).join('')}</div>` : ''}
       ${st === 'locked' ? `<div class="alert alert-warn" style="margin-top:16px"><span class="alert-ic">🔒</span><span>Master ${missing.map(m => '<b>' + m.name + '</b>').join(' and ') || 'the prerequisites'} to unlock this.</span></div>` : ''}
@@ -293,7 +296,8 @@
 
     const actions = [
       { icon: '◱', label: 'Overview map', onPick: () => { if (mode !== 'map') showMap(); mapView.setMode('overview'); } },
-      { icon: '★', label: 'Your progress', onPick: openProgress }
+      { icon: '★', label: 'Your progress', onPick: openProgress },
+      { icon: '◪', label: 'Standards coverage', sub: 'Indiana', onPick: openStandards }
     ];
     const fa = q ? actions.filter(a => a.label.toLowerCase().includes(q)) : actions;
     if (fa.length) groups.push({ sec: 'Actions', items: fa });
@@ -301,6 +305,40 @@
   }
 
   /* ---------------- boot ---------------- */
+  /* ---------------- standards coverage drawer ---------------- */
+  /* For the HS Biology course, every Indiana 2023 Biology standard with its
+     coverage status (taught / coming soon / gap) and the concepts that address
+     it, grouped by disciplinary core idea. Answers "is the course covered?". */
+  function openStandards() { if (mode !== 'map') showMap(); renderStandards(); openDrawer(); }
+  function renderStandards() {
+    const cov = BIO.Standards.coverage();
+    const src = BIO.Standards.SOURCE;
+    const pill = st => st === 'taught' ? '<span class="m-cov-pill taught">✓ taught</span>'
+      : st === 'soon' ? '<span class="m-cov-pill soon">◐ coming soon</span>'
+        : '<span class="m-cov-pill gap">○ gap</span>';
+    const strands = [];
+    cov.standards.forEach(s => { let g = strands.find(x => x.strand === s.strand); if (!g) { g = { strand: s.strand, items: [] }; strands.push(g); } g.items.push(s); });
+    const body = `
+      <div class="m-cov-hero">
+        <div class="m-cov-ring" style="--pct:${cov.pct}"><b>${cov.pct}%</b></div>
+        <div class="m-cov-hero-txt"><b>${cov.taught} of ${cov.total}</b> standards addressed
+          <span>${cov.mastered} mastered · HS Biology</span></div>
+      </div>
+      ${strands.map(g => `<h3 class="m-cov-strand">${g.strand} <span>${g.items.filter(s => s.state === 'taught').length}/${g.items.length}</span></h3>
+        <div class="m-cov-list">${g.items.map(s => `
+          <div class="m-cov-row ${s.state}">
+            <div class="m-cov-top"><b>${s.code}</b>${pill(s.state)}${s.mastered ? '<span class="m-cov-star">★</span>' : ''}</div>
+            <p>${s.statement}</p>
+            ${s.state === 'taught' ? `<div class="m-cov-learn ${s.learner}">${s.learner === 'mastered' ? '★ mastered' : s.learner === 'in-progress' ? `◐ in progress${s.accuracy != null ? ' · ' + s.accuracy + '%' : ''}` : '· not started'}</div>` : ''}
+            ${s.concepts.length ? `<div class="chips">${s.concepts.map(c => `<button class="chip ${Store.isMastered(c.id) ? 'active' : ''}" data-go="${c.id}">${c.name}${Store.isMastered(c.id) ? ' ✓' : ''}</button>`).join('')}</div>`
+              : `<p class="m-cov-none">No lesson addresses this yet.</p>`}
+          </div>`).join('')}</div>`).join('')}
+      <p class="m-cov-src">Source: ${src.name} (${src.version}), ${src.org}.</p>`;
+    rail.update({ title: 'Standards coverage', kind: 'Indiana · HS Biology', tabs: [], body, onBody(el) {
+      el.querySelectorAll('[data-go]').forEach(b => b.onclick = () => openConcept(b.dataset.go));
+    } });
+  }
+
   function boot() {
     rail = BIO.Rail = Atlas.Rail($('rail'));
     $('railclose').onclick = closeDrawer;
@@ -319,6 +357,7 @@
     $('open-cmd').onclick = palette.open;
     $('open-cmd2').onclick = palette.open;
     $('progress-btn').onclick = openProgress;
+    const sb = $('standards-btn'); if (sb) sb.onclick = openStandards;
     $('continue-btn').onclick = () => { const rec = Graph.recommended(); if (rec) openLesson(rec.id); };
     $('overview-btn').onclick = () => { if (mode !== 'map') showMap(); mapView.setMode(mapView.mode() === 'overview' ? 'focus' : 'overview'); };
     $('quiz-btn').onclick = () => { if (browseTopic) quiz.run(browseTopic.quizzes || []); };
