@@ -12,7 +12,10 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # Let deploys queue and finish rather than cancelling mid-publish — a
+  # cancelled Pages deploy can leave the backend in a stuck state that makes
+  # the next run time out on the Deploy step.
+  cancel-in-progress: false
 
 jobs:
   deploy:
