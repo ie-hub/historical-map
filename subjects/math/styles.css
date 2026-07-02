@@ -44,8 +44,6 @@
 .m-map-host.is-overview .m-map-scroll{display:none}
 .m-map-inner{position:relative}
 .m-map-edges{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
-.m-edge{fill:none;stroke:var(--rule2);stroke-width:2;stroke-dasharray:4 5;opacity:.5}
-.m-edge.met{stroke:var(--m-accent);stroke-dasharray:none;opacity:.7;stroke-width:2.5}
 
 /* overview mode: every grade as a progress card */
 .m-overview{position:absolute;inset:0;display:none;padding:var(--sp-6);overflow-y:auto;

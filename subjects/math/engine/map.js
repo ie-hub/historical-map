@@ -113,9 +113,10 @@
       const w = PAD * 2 + maxCols * COL_W - (COL_W - NODE_W);
       const h = y - LANE_GAP + PAD;
       inner.style.width = w + 'px'; inner.style.height = h + 'px';
-      edgesSvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-      edgesSvg.setAttribute('width', w); edgesSvg.setAttribute('height', h);
-      drawEdges(inGrade);
+      // Prerequisite connectors are intentionally not drawn: as diagonal dashes
+      // across the swim-lanes they read as clutter. Prereqs live in the concept
+      // drawer ("Prerequisites" / "Unlocks next"); lane order implies the path.
+      edgesSvg.removeAttribute('viewBox'); edgesSvg.innerHTML = '';
       // centre when it fits; otherwise let it scroll from the start
       inner.style.margin = (w <= scrollEl.clientWidth && h <= scrollEl.clientHeight) ? 'auto' : '0 auto';
     }
@@ -146,22 +147,6 @@
         n.onclick = () => opts.onOpen && opts.onOpen(c.id);
       }
       return n;
-    }
-
-    function drawEdges(inGrade) {
-      const parts = [];
-      Graph.all().forEach(c => {
-        const to = layout[c.id]; if (!to) return;
-        (c.prereqs || []).forEach(p => {
-          if (!inGrade.has(p)) return;              // only within-grade edges in focus mode
-          const from = layout[p]; if (!from) return;
-          const met = Store.isMastered(p);
-          const x1 = from.x + NODE_W / 2, y1 = from.y, x2 = to.x - NODE_W / 2, y2 = to.y;
-          const mx = (x1 + x2) / 2;
-          parts.push(`<path d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" class="m-edge ${met ? 'met' : ''}"/>`);
-        });
-      });
-      edgesSvg.innerHTML = parts.join('');
     }
 
     /* ---- overview: every grade as a progress card ------------------------- */
