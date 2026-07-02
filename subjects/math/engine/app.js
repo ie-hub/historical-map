@@ -42,7 +42,7 @@
     const wrap = el('outline'); if (!wrap) return;
     wrap.innerHTML = '';
     mapView.grades().forEach(g => {
-      const cs = Graph.all().filter(c => c.grade === g).sort((a, b) => (a.strand || '').localeCompare(b.strand || ''));
+      const cs = Graph.all().filter(c => c.grade === g).sort((a, b) => ((b.intro ? 1 : 0) - (a.intro ? 1 : 0)) || (a.strand || '').localeCompare(b.strand || ''));
       const mastered = cs.filter(c => Store.isMastered(c.id)).length;
       const pct = cs.length ? Math.round(mastered / cs.length * 100) : 0;
       const open = openGroups.has(g);

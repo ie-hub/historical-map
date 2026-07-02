@@ -52,7 +52,8 @@
     /* ---- focus: one grade as a layered dependency graph -------------------- */
     function renderFocus() {
       const concepts = Graph.all().filter(c => c.grade === focus);
-      concepts.sort((a, b) => (a.strand || '').localeCompare(b.strand || ''));
+      // intro/orientation concepts pin to the top of the first column
+      concepts.sort((a, b) => ((b.intro ? 1 : 0) - (a.intro ? 1 : 0)) || (a.strand || '').localeCompare(b.strand || ''));
       const inGrade = new Set(concepts.map(c => c.id));
 
       // depth = longest prerequisite chain *within this grade* → column index
@@ -96,7 +97,7 @@
       const st = Graph.status(c.id);
       const rec = Store.concept(c.id);
       const stars = rec ? rec.stars : 0;
-      const n = U.el('button', 'm-node st-' + st + ' strand-' + slug(c.strand));
+      const n = U.el('button', 'm-node st-' + st + ' strand-' + slug(c.strand) + (c.intro ? ' is-intro' : ''));
       n.dataset.cid = c.id;
       n.style.left = x + 'px'; n.style.top = y + 'px';
       n.style.width = NODE_W + 'px'; n.style.height = NODE_H + 'px';
