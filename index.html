@@ -18,7 +18,9 @@
     border-radius:16px;padding:22px 22px 20px;text-decoration:none;color:var(--ink);position:relative;
     transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease}
   a.card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 14px 34px rgba(0,0,0,.12)}
-  .card .icon{display:inline-flex;color:var(--icon-fg,var(--accent));margin-bottom:2px}
+  /* #474747 = the sampled tone of the ➗ Apple emoji bitmap, which never
+     themes — the SVG glyphs pin to it so all six icons stay identical. */
+  .card .icon{font-size:30px;line-height:1;display:inline-flex;align-items:center;height:30px;color:#474747}
   .card h2{font-family:var(--serif);font-size:22px;margin:2px 0 0}
   .card p{font-family:var(--ui);font-size:13.5px;line-height:1.55;color:var(--muted);margin:0;flex:1}
   .card .meta{font-family:var(--ui);font-size:11.5px;color:var(--faint);letter-spacing:.02em}
@@ -44,21 +46,32 @@
     <footer class="hub-foot">Built as a data-driven, buildless web app</footer>
   </main>
 
-<script src="core/shell.js"></script>
 <script>
   /* Render the subject cards from the manifest, so adding a subject is a data
-     change in subjects.json — no HTML edits. `icon` is an Atlas.icon name and
-     `tint` its colour, so the cards share the app-wide SVG icon language.
-     Served over HTTP (python http.server / GitHub Pages), where fetch of a
-     same-origin file works. */
+     change in subjects.json — no HTML edits. Served over HTTP (python http.server
+     / GitHub Pages), where fetch of a same-origin file works.
+
+     Icons: Mathematics keeps its original ➗ emoji, which macOS renders as a
+     flat heavy gray glyph. The other cards use hub-local SVG glyphs drawn to
+     that same aesthetic — heavy monochrome symbols, not colourful pictographs.
+     An `icon` value that is a bare name maps to GLYPHS; anything else renders
+     as text (emoji). */
   (function () {
     const grid = document.getElementById('grid');
     const esc = s => String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-    const tintStyle = t => t ? ` style="--icon-fg:${esc(t)}"` : '';
+    const GLYPHS = {
+      map: '<path d="M9 3.5 3.5 5.5v15L9 18.5l6 2 5.5-2v-15l-5.5 2-6-2z"/><line x1="9" y1="3.5" x2="9" y2="18.5"/><line x1="15" y1="5.5" x2="15" y2="20.5"/>',
+      dna: '<path d="M8.5 3.5c0 4.2 7 4.3 7 8.5s-7 4.3-7 8.5"/><path d="M15.5 3.5c0 4.2-7 4.3-7 8.5s7 4.3 7 8.5"/><line x1="9.5" y1="5.7" x2="14.5" y2="5.7"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9.5" y1="18.3" x2="14.5" y2="18.3"/>',
+      'book-open': '<path d="M12 6.2C10 4.6 7.4 4.2 4.2 4.2v15c3.2 0 5.8.4 7.8 2c2-1.6 4.6-2 7.8-2v-15c-3.2 0-5.8.4-7.8 2z"/><line x1="12" y1="6.6" x2="12" y2="20.6"/>',
+      flask: '<path d="M9.8 3.5v5.8L4.8 18.8a1.6 1.6 0 0 0 1.5 2.2h11.4a1.6 1.6 0 0 0 1.5-2.2L14.2 9.3V3.5"/><line x1="8.6" y1="3.5" x2="15.4" y2="3.5"/><line x1="7.4" y1="15" x2="16.6" y2="15"/>',
+      globe: '<circle cx="12" cy="12" r="8.7"/><line x1="3.3" y1="12" x2="20.7" y2="12"/><path d="M12 3.3c3.3 3.6 3.3 13.8 0 17.4c-3.3-3.6-3.3-13.8 0-17.4z"/>'
+    };
+    const glyph = b => `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${b}</svg>`;
+    const icon = v => GLYPHS[v] ? glyph(GLYPHS[v]) : esc(v);
     function card(s) {
       const inner = `
         <span class="badge${s.status === 'live' ? ' live' : ''}">${s.status === 'live' ? 'Live' : 'Coming soon'}</span>
-        <span class="icon"${tintStyle(s.tint)}>${Atlas.icon(s.icon, 30)}</span>
+        <span class="icon">${icon(s.icon)}</span>
         <h2>${esc(s.name)}</h2>
         <p>${esc(s.description)}</p>
         <span class="meta">${esc(s.meta)}</span>

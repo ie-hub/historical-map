@@ -1,11 +1,10 @@
 {
-  "_comment": "Manifest of Learning Atlas subjects. The hub home (index.html) renders its cards from this file, so adding a subject is a data change here — no HTML edits. status: 'live' links to href; 'soon' renders a disabled Coming-soon card. icon: an Atlas.icon name (core/shell.js); tint: the card icon's colour.",
+  "_comment": "Manifest of Learning Atlas subjects. The hub home (index.html) renders its cards from this file, so adding a subject is a data change here — no HTML edits. status: 'live' links to href; 'soon' renders a disabled Coming-soon card. icon: a hub glyph name (GLYPHS in index.html) or a literal emoji rendered as text — Mathematics keeps its original ➗.",
   "subjects": [
     {
       "id": "history",
       "name": "History",
-      "icon": "compass",
-      "tint": "#9a4b3b",
+      "icon": "map",
       "status": "live",
       "href": "subjects/history/",
       "meta": "Historical Wars Explorer · 8 wars",
@@ -15,7 +14,6 @@
       "id": "biology",
       "name": "Biology",
       "icon": "dna",
-      "tint": "#3d9464",
       "status": "live",
       "href": "subjects/biology/",
       "meta": "Life Explorer · 12-unit knowledge map",
@@ -24,8 +22,7 @@
     {
       "id": "math",
       "name": "Mathematics",
-      "icon": "divide",
-      "tint": "#4f6bed",
+      "icon": "➗",
       "status": "live",
       "href": "subjects/math/",
       "meta": "Math Explorer · K–Calculus knowledge map",
@@ -35,7 +32,6 @@
       "id": "english",
       "name": "English",
       "icon": "book-open",
-      "tint": "#8b5cd6",
       "status": "soon",
       "meta": "In planning",
       "description": "Language and literature — grammar, rhetoric, poetic form and the stories that shaped them."
@@ -44,7 +40,6 @@
       "id": "chemistry",
       "name": "Chemistry",
       "icon": "flask",
-      "tint": "#e8912f",
       "status": "soon",
       "meta": "In planning",
       "description": "An interactive periodic table, bonding, reactions and the states of matter."
@@ -53,7 +48,6 @@
       "id": "geography",
       "name": "Geography",
       "icon": "globe",
-      "tint": "#2fa8c9",
       "status": "soon",
       "meta": "In planning",
       "description": "Physical and human geography — climate, tectonics, biomes and the shape of nations."

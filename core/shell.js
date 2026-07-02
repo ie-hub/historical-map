@@ -34,13 +34,7 @@
     message: '<path d="M20 12a8 8 0 1 0-3.2 6.4L20 20l-.9-3.4A8 8 0 0 0 20 12z"/>',
     flag: '<line x1="5.5" y1="3.5" x2="5.5" y2="21"/><path d="M5.5 4.5c4-2 8 2 13 0v9c-5 2-9-2-13 0"/>',
     book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><line x1="4" y1="20.5" x2="4" y2="5.5"/>',
-    compass: '<circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5"/>',
-    /* subject icons (hub cards) */
-    dna: '<path d="M8 3c0 4.5 8 4.5 8 9s-8 4.5-8 9"/><path d="M16 3c0 4.5-8 4.5-8 9s8 4.5 8 9"/><line x1="9" y1="5.5" x2="15" y2="5.5"/><line x1="8.5" y1="12" x2="15.5" y2="12"/><line x1="9" y1="18.5" x2="15" y2="18.5"/>',
-    divide: '<line x1="5" y1="12" x2="19" y2="12"/><circle cx="12" cy="6.2" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="17.8" r="1.6" fill="currentColor" stroke="none"/>',
-    flask: '<path d="M10 3v6L4.6 19a1.8 1.8 0 0 0 1.6 2.6h11.6a1.8 1.8 0 0 0 1.6-2.6L14 9V3"/><line x1="8.5" y1="3" x2="15.5" y2="3"/><line x1="7.2" y1="15" x2="16.8" y2="15"/>',
-    globe: '<circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3c3.4 3.6 3.4 14.4 0 18c-3.4-3.6-3.4-14.4 0-18z"/>',
-    'book-open': '<path d="M12 6c-2-1.7-4.8-2-8-2v15c3.2 0 6 .3 8 2c2-1.7 4.8-2 8-2V4c-3.2 0-6 .3-8 2z"/><line x1="12" y1="6" x2="12" y2="21"/>'
+    compass: '<circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5"/>'
   };
   Atlas.icon = function (name, size) {
     const body = ICONS[name] || ICONS.help;
