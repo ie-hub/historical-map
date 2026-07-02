@@ -17,6 +17,15 @@
 .war-item .li-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 .war-item .war-dur{font-family:var(--ui);font-size:var(--fs-xs);color:var(--muted)}
 .war-item .dot{margin-top:5px}
+
+/* "This war" jump-menu + "Explore" tools: monochrome line icons, live highlight */
+.sec-item,.sec-tool{gap:10px}
+.sec-ic{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex:none;color:var(--muted)}
+.la-navitem:hover .sec-ic{color:var(--ink)}
+.la-navitem.active .sec-ic{color:var(--brand)}
+.sec-count{margin-left:auto;font-family:var(--ui);font-size:var(--fs-2xs);color:var(--faint);font-variant-numeric:tabular-nums;
+  background:var(--panel2);border-radius:var(--r-pill);padding:1px 7px;flex:none}
+.la-navitem.active .sec-count{color:var(--brand);background:var(--brand-weak)}
 /* on-canvas map controls: popovers open upward from the bottom-right cluster */
 .la-canvas-controls .menu-pop.up{top:auto;bottom:calc(100% + 8px);right:0;left:auto}
 .la-canvas-controls .menu-pop .menu-item{display:block;width:100%;text-align:left;border:0;background:none;
@@ -56,7 +65,7 @@ body{overflow:hidden}
 
 .legend{position:absolute;left:14px;bottom:14px;background:var(--panel);border:1px solid var(--rule);
   border-radius:var(--r-md);padding:10px 12px;font-family:var(--ui);font-size:var(--fs-sm);color:var(--muted);
-  max-width:230px;box-shadow:var(--sh-2)}
+  max-width:230px;max-height:calc(100% - 28px);overflow-y:auto;overscroll-behavior:contain;box-shadow:var(--sh-2)}
 .legend .ttl{font-weight:600;color:var(--ink);margin-bottom:6px;font-size:var(--fs-xs);letter-spacing:.05em;text-transform:uppercase}
 .legend .row{display:flex;align-items:center;gap:7px;margin:3px 0}
 .legend .sw{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.15);flex:none}

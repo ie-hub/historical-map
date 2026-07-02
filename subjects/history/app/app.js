@@ -263,7 +263,7 @@
   /* The list tab each selectable entity belongs to; clicking that tab's header
      while its detail is open jumps back to the full list. */
   const LIST_TAB = { nation: 'countries', city: 'countries', battle: 'battles', leader: 'leaders' };
-  function openRail() { document.getElementById('rail').classList.add('open'); }
+  function openRail() { document.getElementById('rail').classList.add('open'); syncSectionNav(); }
 
   function renderRail() {
     // head
@@ -290,6 +290,7 @@
     });
     document.getElementById('railbody').innerHTML = renderTab(state.activeTab);
     wireRailLinks();
+    syncSectionNav();
   }
 
   function renderTab(tab) {
@@ -634,7 +635,8 @@
     const projBtn = document.getElementById('proj-btn'), projPop = document.getElementById('proj-pop');
     const closeAll = () => { layerPop.classList.remove('open'); projPop.classList.remove('open'); };
 
-    buildWarMenu();   // renders the war list into the sidebar
+    buildWarMenu();      // renders the war list into the sidebar
+    buildSectionNav();   // renders the "This war" jump-menu
 
     layerBtn.onclick = (e) => { e.stopPropagation(); const open = layerPop.classList.contains('open'); closeAll(); if (!open) layerPop.classList.add('open'); };
     layerPop.querySelectorAll('input').forEach(cb => cb.onchange = () => {
@@ -649,11 +651,53 @@
     });
     document.body.addEventListener('click', closeAll);
 
-    document.getElementById('railclose').onclick = () => { document.getElementById('rail').classList.remove('open'); state.railPinned = false; document.getElementById('rail').classList.remove('pinned'); document.getElementById('app').classList.remove('rail-pinned'); };
+    document.getElementById('railclose').onclick = () => { document.getElementById('rail').classList.remove('open'); state.railPinned = false; document.getElementById('rail').classList.remove('pinned'); document.getElementById('app').classList.remove('rail-pinned'); syncSectionNav(); };
     document.getElementById('world-btn').onclick = () => document.getElementById('world').classList.toggle('open');
     document.getElementById('world-close').onclick = () => document.getElementById('world').classList.remove('open');
     document.getElementById('quiz-btn').onclick = () => openQuiz(0);
     document.getElementById('quiz').addEventListener('click', (e) => { if (e.target.id === 'quiz') closeQuiz(); });
+  }
+
+  /* ---------------- SECTION JUMP-MENU (sidebar "This war") ---------------- */
+  /* Monochrome, currentColor line icons — one per rail section. */
+  const svgIcon = inner => `<span class="sec-ic"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg></span>`;
+  const SECTION_ICONS = {
+    overview: svgIcon('<path d="M8 4.2C6.6 3.3 5 3.2 3.5 3.6v7.8C5 11 6.6 11.1 8 12M8 4.2C9.4 3.3 11 3.2 12.5 3.6v7.8C11 11 9.4 11.1 8 12M8 4.2V12"/>'),
+    countries: svgIcon('<path d="M4 2.6v10.8"/><path d="M4 3.3c2.2-1.1 4.3 1 6.5 0v4.6c-2.2 1.1-4.3-1-6.5 0"/>'),
+    battles: svgIcon('<path d="M8 2.5l4.5 1.7v3.4c0 2.7-1.9 4.4-4.5 5.4-2.6-1-4.5-2.7-4.5-5.4V4.2z"/>'),
+    leaders: svgIcon('<circle cx="6" cy="6" r="1.8"/><path d="M2.8 12.4c0-1.9 1.4-3.2 3.2-3.2s3.2 1.3 3.2 3.2"/><path d="M10.6 4.6a1.8 1.8 0 0 1 0 3.4M11.3 9.5c1.3.3 2.1 1.5 2.1 2.9"/>'),
+    timeline: svgIcon('<path d="M3 8h10"/><circle cx="5" cy="8" r="1.3"/><circle cx="9" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1"/>'),
+    documents: svgIcon('<path d="M4.5 2.5h4L11.5 5.5v8h-7z"/><path d="M8.5 2.5V5.5h3"/>'),
+    statistics: svgIcon('<path d="M3.5 12.5h9"/><path d="M5.5 12.5V8M8 12.5V5M10.5 12.5V9.5"/>'),
+    sources: svgIcon('<path d="M6.6 9.4 9.4 6.6"/><path d="M7 5.6l1-1a2.1 2.1 0 0 1 3 3l-1 1"/><path d="M9 10.4l-1 1a2.1 2.1 0 0 1-3-3l1-1"/>')
+  };
+  /* Item counts shown as a badge where the section is a discrete list. */
+  function sectionCount(id) {
+    if (id === 'countries') return war.nations.length;
+    if (id === 'battles') return war.battles.length;
+    if (id === 'leaders') return war.leaders.length;
+    if (id === 'documents') return (war.documents || []).length;
+    return null;
+  }
+  function buildSectionNav() {
+    const nav = document.getElementById('section-nav');
+    nav.innerHTML = tabsFor(war).map(([id, label]) => {
+      const c = sectionCount(id);
+      return `<button class="la-navitem sec-item" data-tab="${id}">${SECTION_ICONS[id] || ''}<span class="nm">${label}</span>${c != null ? `<span class="sec-count">${c}</span>` : ''}</button>`;
+    }).join('');
+    nav.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
+      clearRailSelection();
+      state.activeTab = b.dataset.tab;
+      openRail(); renderRail();
+      document.getElementById('app').classList.remove('nav-open');   // close mobile slide-over
+    });
+    syncSectionNav();
+  }
+  /* Highlight the open section — and only when the rail is actually open. */
+  function syncSectionNav() {
+    const open = document.getElementById('rail').classList.contains('open');
+    document.querySelectorAll('#section-nav .sec-item').forEach(el =>
+      el.classList.toggle('active', open && el.dataset.tab === state.activeTab));
   }
 
   function buildWarMenu() {
@@ -686,6 +730,7 @@
     applyWarChrome();
     setProjection(state.projection, true);
     buildWarMenu();
+    buildSectionNav();
     loadGeometryAndRender();
   }
 
@@ -795,6 +840,13 @@
     document.getElementById('collapse-btn').onclick = () => appEl.classList.toggle('collapsed');
     document.getElementById('menu-btn').onclick = () => appEl.classList.toggle('nav-open');
     document.getElementById('scrim').onclick = () => appEl.classList.remove('nav-open');
+    // collapsible sidebar groups (Wars / This war / Explore)
+    document.querySelectorAll('.la-grouphead').forEach(h => h.addEventListener('click', () => {
+      const open = h.getAttribute('aria-expanded') !== 'false';
+      h.setAttribute('aria-expanded', String(!open));
+      const sub = h.parentElement.querySelector('.la-subgroup');
+      if (sub) sub.classList.toggle('collapsed', open);
+    }));
   }
 
   function wireTimeline() {
@@ -804,7 +856,6 @@
     document.getElementById('next').onclick = () => setYear(state.year + 1);
     document.getElementById('play').onclick = togglePlay;
     document.getElementById('reset').onclick = resetZoom;
-    document.getElementById('overview-btn').onclick = () => { clearRailSelection(); state.activeTab = 'overview'; openRail(); renderRail(); };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();

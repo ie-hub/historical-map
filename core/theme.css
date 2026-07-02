@@ -275,9 +275,9 @@ a{color:var(--link)}
   transition:background var(--dur-1) var(--ease)}
 .list-item:hover{background:var(--panel2)}
 .list-item .dot{width:9px;height:9px;border-radius:var(--r-round);margin-top:6px;flex:none}
-.list-item .li-main{flex:1}
-.list-item .li-title{font-size:var(--fs-md)}
-.list-item .li-sub{font-family:var(--ui);font-size:var(--fs-xs);color:var(--muted)}
+.list-item .li-main{flex:1;min-width:0}
+.list-item .li-title{display:block;font-size:var(--fs-md)}
+.list-item .li-sub{display:block;margin-top:1px;font-family:var(--ui);font-size:var(--fs-xs);color:var(--muted);line-height:1.4}
 
 .note{font-family:var(--ui);font-size:var(--fs-sm);color:var(--muted);background:var(--panel2);
   border-radius:var(--r-sm);padding:var(--sp-2) var(--sp-3);margin:0 0 var(--sp-3)}
