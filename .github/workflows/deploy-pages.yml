@@ -1,0 +1,38 @@
+name: Deploy to GitHub Pages
+
+# Publishes the (buildless) site to a `gh-pages` branch, which GitHub's
+# branch-based Pages builder then serves. This deliberately avoids the
+# actions/deploy-pages "artifact" publish step, whose Deploy phase was
+# persistently timing out for this repo. Set Pages Source to:
+#   Settings -> Pages -> Deploy from a branch -> gh-pages -> / (root)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-branch
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Publish repo contents to gh-pages
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Build a fresh, history-free gh-pages branch from the current tree.
+          git checkout --orphan gh-pages
+          touch .nojekyll               # skip Jekyll processing
+          git add -A
+          git commit -m "Deploy ${GITHUB_SHA::7} to Pages"
+          git push --force origin gh-pages

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Life Explorer — Biology · Learning Atlas</title>
+<link rel="stylesheet" href="../../core/theme.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app" class="la-shell">
+
+  <!-- ===================== SIDEBAR (curriculum spine) ===================== -->
+  <aside class="la-side" id="sidebar" aria-label="Curriculum navigation">
+    <div class="la-brand">
+      <a class="la-logo" href="../../" title="Back to the Learning Atlas hub" aria-label="Learning Atlas home">✦</a>
+      <span class="la-brand-txt"><b>Life Explorer</b><small>Biology</small></span>
+      <button class="btn btn-ghost btn-icon btn-sm" id="collapse-btn" aria-label="Collapse sidebar" data-tooltip="Collapse">‹</button>
+    </div>
+    <div class="la-side-scroll">
+      <a class="la-subject" href="../../" title="Switch subject"><span class="ic">🧬</span><span class="nm">Biology</span><span style="opacity:.5">▾</span></a>
+      <button class="la-navsearch" id="open-cmd"><span style="font-size:15px">🔎</span><span>Search concepts…</span><span class="kbd">⌘K</span></button>
+      <nav id="outline" aria-label="Concepts by unit"></nav>
+    </div>
+    <div class="la-side-foot">
+      <div class="la-streak" id="streak"></div>
+      <button class="btn btn-primary btn-block la-btn-continue" id="continue-btn"><span>Continue learning →</span></button>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="la-main">
+    <header class="la-appbar">
+      <button class="btn btn-ghost btn-icon btn-sm la-menu-toggle" id="menu-btn" aria-label="Open menu">☰</button>
+      <nav class="la-crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
+      <span class="spacer"></span>
+      <button class="btn btn-secondary btn-sm" id="quiz-btn" data-tooltip="Quiz on this model" style="display:none">Quiz</button>
+      <button class="btn btn-secondary btn-sm" id="overview-btn" data-tooltip="Zoom out to the whole map"><span id="overview-label">⤢ Overview</span></button>
+      <button class="btn btn-ghost btn-icon btn-sm" id="standards-btn" data-tooltip="Standards coverage (Indiana)" aria-label="Standards coverage">◪</button>
+      <button class="btn btn-ghost btn-icon btn-sm" id="progress-btn" data-tooltip="Your progress" aria-label="Progress">★</button>
+      <button class="btn btn-ghost btn-icon btn-sm" id="open-cmd2" data-tooltip="Search (⌘K)" aria-label="Search">🔎</button>
+    </header>
+
+    <div id="stage">
+      <div id="bio-main">
+        <div id="bio-map" class="m-view" role="region" aria-label="Learning map"></div>
+        <div id="bio-lesson" class="m-view" role="region" aria-label="Lesson" style="display:none"></div>
+        <div id="canvas" role="region" aria-label="Interactive biology diagram" style="display:none"></div>
+        <div class="legend ui" id="legend" aria-live="polite" style="display:none"></div>
+        <div class="hint ui" id="hint" style="display:none">Click any labelled part to learn what it does.</div>
+        <div class="live-instruction ui" id="live-instruction"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SHARED DRAWER (scrim + rail) ===================== -->
+  <div class="la-scrim" id="scrim"></div>
+  <aside id="rail" aria-label="Details panel">
+    <div class="rail-head">
+      <div style="flex:1">
+        <div class="rkind ui" id="rkind">Field notebook</div>
+        <div class="rtitle" id="rtitle">Your progress</div>
+      </div>
+      <button class="icon-btn" id="railclose" title="Close" aria-label="Close panel">✕</button>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="rail-body" id="railbody"></div>
+  </aside>
+
+  <!-- ===================== COMMAND PALETTE ===================== -->
+  <div class="la-cmd" id="cmd">
+    <div class="la-cmd-card">
+      <div class="la-cmd-in"><span style="font-size:17px;color:var(--muted)">🔎</span>
+        <input id="cmd-input" type="text" placeholder="Search concepts, models, jump to a unit…" aria-label="Search" autocomplete="off">
+        <span class="kbd">esc</span></div>
+      <div class="la-cmd-list" id="cmd-list"></div>
+    </div>
+  </div>
+
+  <!-- ===================== QUIZ MODAL ===================== -->
+  <div id="quiz"><div class="quizcard ui" id="quizcard"></div></div>
+</div>
+
+<script type="module" src="vendor/model-viewer.min.js"></script>
+<script src="../../core/shell.js"></script>
+<script src="engine/store.js"></script>
+<script src="engine/graph.js"></script>
+<script src="engine/components.js"></script>
+<script src="engine/player.js"></script>
+<script src="engine/map.js"></script>
+<script src="explorer.js"></script>
+<script src="data/cell.js"></script>
+<script src="data/plant-cell.js"></script>
+<script src="data/tree-of-life.js"></script>
+<script src="data/body-systems.js"></script>
+<script src="data/genetics.js"></script>
+<script src="data/concepts.js"></script>
+<script src="data/standards.js"></script>
+<script src="data/lessons-life.js"></script>
+<script src="data/lessons-cells.js"></script>
+<script src="data/lessons-processes.js"></script>
+<script src="data/lessons-more.js"></script>
+<script src="engine/app.js"></script>
+</body>
+</html>

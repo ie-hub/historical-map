@@ -1,0 +1,48 @@
+{
+  "_comment": "Manifest of Learning Atlas subjects. The hub home (index.html) renders its cards from this file, so adding a subject is a data change here — no HTML edits. status: 'live' links to href; 'soon' renders a disabled Coming-soon card. icon: a hub glyph name (GLYPHS in index.html) or a literal emoji rendered as text — Mathematics keeps its original ➗.",
+  "subjects": [
+    {
+      "id": "history",
+      "name": "History",
+      "icon": "map",
+      "status": "live",
+      "href": "subjects/history/",
+      "meta": "Historical Wars Explorer · 8 wars",
+      "description": "Eight conflicts from the French & Indian War to the Cold War — animated borders, battles, leaders and treaties on an interactive world map."
+    },
+    {
+      "id": "sciences",
+      "name": "Sciences",
+      "icon": "atom",
+      "status": "live",
+      "href": "subjects/sciences/",
+      "meta": "Science Explorer · Grades 3, 5 & 7 + Biology",
+      "description": "Indiana-aligned science by grade (2023 standards) — matter and its particles, forces and energy, ecosystems and Earth’s systems, taught through models you can run. Includes the interactive Biology explorer with its cells, DNA and plant-cell 3-D model. Explore, discover and master; each concept unlocks the next."
+    },
+    {
+      "id": "math",
+      "name": "Mathematics",
+      "icon": "➗",
+      "status": "live",
+      "href": "subjects/math/",
+      "meta": "Math Explorer · K–Calculus knowledge map",
+      "description": "A knowledge map of interactive lessons — counting, fractions, arrays, the coordinate plane and function machines. Explore, discover and master; each concept unlocks the next."
+    },
+    {
+      "id": "english",
+      "name": "English",
+      "icon": "book-open",
+      "status": "soon",
+      "meta": "In planning",
+      "description": "Language and literature — grammar, rhetoric, poetic form and the stories that shaped them."
+    },
+    {
+      "id": "geography",
+      "name": "Geography",
+      "icon": "globe",
+      "status": "soon",
+      "meta": "In planning",
+      "description": "Physical and human geography — climate, tectonics, biomes and the shape of nations."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  // Serve the historical-map static site (files live at the repo root) as
+  // Cloudflare Workers static assets. No build step; wrangler just uploads
+  // the directory below and serves it.
+  "name": "historical-map",
+  "compatibility_date": "2026-07-01",
+  "assets": {
+    "directory": "./"
+  }
+}

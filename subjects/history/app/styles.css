@@ -1,0 +1,176 @@
+/* ============================================================================
+   Historical Wars Explorer — subject styles.
+   ----------------------------------------------------------------------------
+   The app shell, info rail, tabs, quiz modal, buttons, chips, focus rings and
+   all design tokens now come from the shared design system in
+   ../../core/theme.css (linked first). This file only carries what is unique
+   to History: the map palette + rendering, the timeline, the "world at this
+   time" drawer, the founding-documents cards, and the map legend.
+
+   NOTE: the map palette tokens and #map rendering rules below drive the D3
+   map and are intentionally left as-is — do not restyle the map here.
+   ========================================================================== */
+
+/* ---- sidebar-shell additions -------------------------------------------- */
+/* war list: two-line nav items (name + duration) */
+.war-item{align-items:flex-start}
+.war-item .li-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.war-item .war-dur{font-family:var(--ui);font-size:var(--fs-xs);color:var(--muted)}
+.war-item .dot{margin-top:5px}
+
+/* "This war" jump-menu + "Explore" tools: monochrome line icons, live highlight */
+.sec-item,.sec-tool{gap:10px}
+.sec-ic{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex:none;color:var(--muted)}
+.la-navitem:hover .sec-ic{color:var(--ink)}
+.la-navitem.active .sec-ic{color:var(--brand)}
+.sec-count{margin-left:auto;font-family:var(--ui);font-size:var(--fs-2xs);color:var(--faint);font-variant-numeric:tabular-nums;
+  background:var(--panel2);border-radius:var(--r-pill);padding:1px 7px;flex:none}
+.la-navitem.active .sec-count{color:var(--brand);background:var(--brand-weak)}
+/* on-canvas map controls: popovers open upward from the bottom-right cluster */
+.la-canvas-controls .menu-pop.up{top:auto;bottom:calc(100% + 8px);right:0;left:auto}
+.la-canvas-controls .menu-pop .menu-item{display:block;width:100%;text-align:left;border:0;background:none;
+  color:var(--ink);padding:6px 8px;border-radius:var(--r-xs);font-family:var(--ui);font-size:var(--fs-md)}
+.la-canvas-controls .menu-pop .menu-item:hover{background:var(--panel2)}
+
+/* ---- map-specific tokens (extend the shared palette) --------------------- */
+:root{
+  --ocean:#e3e9ec; --sphere:rgba(43,38,32,.18); --grat:rgba(43,38,32,.06);
+  --britain:#c0796f; --usa:#8a9cb5; --france:#3f5a82; --spain:#c9a24a; --dutch:#8aa17f;
+  --aux:#b98b62; --neutrality:#b8b09e; --battle:#6e2b2b; --capital:#c9a227; --selected:#1f2d44;
+  --union:#3a5e8c; --confederate:#9c8a76; --border:#cdb079;
+  --allied:#5f8a6a; --central:#bd6a45; --axis:#9c4a4a;
+  --prussia:#2f3a4a; --german-states:#8f9bab; --italy:#4a7c59; --italian-states:#9bb59f; --austria:#caa15a;
+  --west:#3f6fa0; --east:#a83a3a; --nonaligned:#8a9a5e;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ocean:#21252a; --sphere:rgba(236,228,212,.18); --grat:rgba(236,228,212,.06);
+    --britain:#a85d52; --usa:#5f78a0; --france:#3a557e; --spain:#b08a36; --dutch:#6f8a64;
+    --aux:#9c7448; --neutrality:#7d7666; --battle:#b25151; --capital:#cda52f; --selected:#9db4d8;
+    --union:#5f7fae; --confederate:#b3a087; --border:#c9ab6f;
+    --allied:#6f9b7a; --central:#cb7d57; --axis:#c06a6a;
+    --prussia:#6b7890; --german-states:#7c88a0; --italy:#6fa27e; --italian-states:#84a689; --austria:#d8b878;
+    --west:#6f93bf; --east:#c86a6a; --nonaligned:#a3b37e;
+  }
+}
+
+/* The map app fills the viewport and never scrolls the page. */
+body{overflow:hidden}
+
+/* ---- stage + map -------------------------------------------------------- */
+#stage{background:var(--ocean)}
+#map{flex:1;height:100%;position:relative;min-width:0}
+#map svg{display:block;width:100%;height:100%}
+#map path.land{transition:fill .42s ease, stroke-opacity .3s ease}
+
+.legend{position:absolute;left:14px;bottom:14px;background:var(--panel);border:1px solid var(--rule);
+  border-radius:var(--r-md);padding:10px 12px;font-family:var(--ui);font-size:var(--fs-sm);color:var(--muted);
+  max-width:230px;max-height:calc(100% - 28px);overflow-y:auto;overscroll-behavior:contain;box-shadow:var(--sh-2)}
+.legend .ttl{font-weight:600;color:var(--ink);margin-bottom:6px;font-size:var(--fs-xs);letter-spacing:.05em;text-transform:uppercase}
+.legend .row{display:flex;align-items:center;gap:7px;margin:3px 0}
+.legend .sw{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.15);flex:none}
+.legend .legnote{display:block;margin-top:7px;padding-top:7px;border-top:1px solid var(--rule);
+  font-size:var(--fs-2xs);color:var(--faint);line-height:1.35}
+
+.hint{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:var(--panel);
+  border:1px solid var(--rule2);border-radius:var(--r-pill);padding:7px 16px;font-family:var(--ui);font-size:var(--fs-sm);
+  color:var(--muted);box-shadow:var(--sh-2);transition:opacity .5s}
+.maptip{position:absolute;pointer-events:none;background:var(--ink);color:var(--page);font-family:var(--ui);
+  font-size:var(--fs-sm);padding:4px 9px;border-radius:var(--r-xs);opacity:0;transition:opacity .12s;white-space:nowrap;z-index:15}
+.zoomctl{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;gap:6px}
+.zoomctl button{width:34px;height:34px;border-radius:var(--r-sm);border:1px solid var(--rule2);background:var(--panel);
+  color:var(--ink);font-size:18px;line-height:1;box-shadow:var(--sh-2);transition:border-color var(--dur-1) var(--ease)}
+.zoomctl button:hover{border-color:var(--accent)}
+
+/* ---- timeline ----------------------------------------------------------- */
+#timeline{flex:none;background:var(--panel);border-top:1px solid var(--rule);padding:10px 18px;
+  display:flex;align-items:center;gap:14px;font-family:var(--ui);z-index:var(--z-nav)}
+#timeline .yearbig{font-family:var(--serif);font-size:26px;font-weight:600;min-width:64px;color:var(--accent);
+  font-variant-numeric:tabular-nums}
+/* Custom slider: a fixed 16px thumb whose centre travels from 8px to (W−8px).
+   The tick row is inset by that same 8px (--thumb/2) so labels and the dot
+   share one coordinate system and line up exactly on each year. */
+#timeline .tl-track{flex:1;display:flex;flex-direction:column;gap:3px;--thumb:16px}
+#timeline input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:var(--thumb);
+  background:transparent;margin:0;cursor:pointer}
+#timeline input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
+  background:linear-gradient(to right,var(--accent) 0 var(--pct,50%),var(--rule2) var(--pct,50%) 100%)}
+#timeline input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(--rule2)}
+#timeline input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:var(--accent)}
+#timeline input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--panel);
+  box-shadow:0 1px 4px rgba(0,0,0,.35);margin-top:-5px}
+#timeline input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--accent);
+  border:3px solid var(--panel);box-shadow:0 1px 4px rgba(0,0,0,.35);box-sizing:border-box}
+#timeline input[type=range]:hover::-webkit-slider-thumb{background:var(--ink)}
+#timeline input[type=range]:hover::-moz-range-thumb{background:var(--ink)}
+.tl-ticks{position:relative;height:13px;margin:0 calc(var(--thumb) / 2);font-size:10.5px;color:var(--faint)}
+.tl-ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap;font-variant-numeric:tabular-nums}
+#timeline .ctrl{display:flex;align-items:center;gap:6px}
+#timeline .ctrl button{width:34px;height:34px;border-radius:var(--r-sm);border:1px solid var(--rule2);background:var(--page);
+  color:var(--ink);font-size:14px;transition:border-color var(--dur-1) var(--ease)}
+#timeline .ctrl button:hover{border-color:var(--accent)}
+#timeline .yearinput{width:62px;height:32px;border:1px solid var(--rule2);background:var(--page);color:var(--ink);
+  border-radius:var(--r-sm);text-align:center;font-family:var(--ui);font-size:var(--fs-md)}
+
+/* ---- rail: History pins the rail open beside the map -------------------- */
+#rail.pinned{position:relative;transform:none !important;box-shadow:none;flex:none;height:auto}
+
+/* sourced-fact citation block (History-specific rail content) */
+.src{font-family:var(--ui);font-size:var(--fs-sm);color:var(--muted);border-left:2px solid var(--rule2);
+  padding:4px 0 4px 10px;margin:0 0 8px}
+.src .rel{font-size:var(--fs-2xs);text-transform:uppercase;letter-spacing:.04em}
+
+/* ---- founding documents ------------------------------------------------- */
+.doc{border:1px solid var(--rule);border-radius:var(--r-lg);padding:14px 16px;margin:0 0 16px;background:var(--panel2)}
+.doc h3{margin:0 0 3px;font-family:var(--serif);font-size:var(--fs-lg);font-weight:700}
+.doc .doc-meta{font-family:var(--ui);font-size:var(--fs-xs);letter-spacing:.03em;color:var(--muted);margin:0 0 10px}
+.doc blockquote{margin:0 0 11px;padding:8px 0 8px 14px;border-left:3px solid var(--accent);
+  font-family:var(--serif);font-style:italic;font-size:var(--fs-base);line-height:1.55;color:var(--ink)}
+.doc p{font-size:14.5px;line-height:1.62;margin:0 0 10px}
+.doc .doc-sig{font-size:var(--fs-md);color:var(--muted);line-height:1.55}
+.doc .doc-sig strong{color:var(--ink)}
+.doc a.doc-link{display:inline-block;font-family:var(--ui);font-size:var(--fs-sm);color:var(--accent);text-decoration:none;margin-top:2px}
+.doc a.doc-link:hover{text-decoration:underline}
+.doc .amend-h{font-family:var(--ui);font-size:var(--fs-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);margin:12px 0 6px}
+.doc ol.amends{list-style:none;margin:0 0 4px;padding:0}
+.doc .amend{display:flex;gap:9px;align-items:flex-start;padding:4px 0;border-bottom:1px solid var(--rule)}
+.doc .amend:last-child{border-bottom:0}
+.doc .amend-n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;
+  font-family:var(--ui);font-size:var(--fs-xs);font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.doc .amend-txt{font-size:var(--fs-md);line-height:1.45}
+.doc .amend-yr{font-family:var(--ui);font-size:var(--fs-xs);color:var(--muted);margin-left:6px}
+
+/* battle prev/next navigation */
+.navrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 14px;font-family:var(--ui)}
+.navrow .nav-btn{border:1px solid var(--rule2);background:var(--page);color:var(--ink);border-radius:var(--r-sm);
+  padding:6px 12px;font-size:var(--fs-sm);transition:border-color var(--dur-1) var(--ease)}
+.navrow .nav-btn:hover:not([disabled]){border-color:var(--accent)}
+.navrow .nav-btn[disabled]{opacity:.4;cursor:default}
+.navrow .nav-count{font-size:var(--fs-xs);color:var(--muted);letter-spacing:.03em}
+
+/* ---- "world at this time" drawer ---------------------------------------- */
+#world{position:absolute;left:0;right:var(--w-offset,0);bottom:0;transform:translateY(100%);
+  transition:transform var(--dur-3) var(--ease);background:var(--page);border-top:1px solid var(--rule);
+  padding:12px 16px 14px;z-index:18}
+#world.open{transform:translateY(0)}
+#world .wh{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+#world .wh h4{margin:0;font-size:var(--fs-base)}
+#world .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+#world .wcard{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-md);padding:9px 12px}
+#world .wcard .lbl{font-family:var(--ui);font-size:var(--fs-2xs);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+#world .wcard .val{font-size:var(--fs-md);line-height:1.35}
+#world .wcard ul{margin:0;padding-left:16px;font-size:var(--fs-md)}
+#world .wcard.wide{grid-column:1 / -1;background:var(--panel2)}
+#world .wcard .lbl-yr{color:var(--accent);font-weight:700}
+#world .warlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px 18px}
+#world .warlist li{padding:5px 0;border-bottom:1px solid var(--rule)}
+#world .warlist .wl-name{font-weight:600;font-size:var(--fs-md)}
+#world .warlist .wl-meta{font-family:var(--ui);font-size:var(--fs-xs);color:var(--accent);margin-left:7px}
+#world .warlist .wl-note{display:block;font-size:var(--fs-sm);color:var(--muted);line-height:1.4;margin-top:1px}
+
+/* ---- responsive: shrink the year readout on small screens --------------- */
+@media (max-width:720px){
+  #timeline .yearbig{font-size:20px;min-width:48px}
+}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Historical Wars Explorer — American Revolutionary War</title>
+<link rel="stylesheet" href="../../core/theme.css">
+<link rel="stylesheet" href="app/styles.css">
+</head>
+<body>
+<div id="app" class="la-shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="la-side" id="sidebar" aria-label="Navigation">
+    <div class="la-brand">
+      <a class="la-logo" href="../../" title="Back to the Learning Atlas hub" aria-label="Learning Atlas home">✦</a>
+      <span class="la-brand-txt"><b>Wars Explorer</b><small>History</small></span>
+      <button class="btn btn-ghost btn-icon btn-sm" id="collapse-btn" aria-label="Collapse sidebar" data-tooltip="Collapse">‹</button>
+    </div>
+    <div class="la-side-scroll">
+      <div class="la-navgroup">
+        <button class="la-grouphead" aria-expanded="true"><span class="tw">▾</span><span>Wars</span></button>
+        <nav id="war-list" class="la-subgroup" aria-label="Choose a war"></nav>
+      </div>
+
+      <div class="la-navgroup">
+        <button class="la-grouphead" aria-expanded="true"><span class="tw">▾</span><span>This war</span></button>
+        <nav id="section-nav" class="la-subgroup" aria-label="War sections"></nav>
+      </div>
+
+      <div class="la-navgroup">
+        <button class="la-grouphead" aria-expanded="true"><span class="tw">▾</span><span>Explore</span></button>
+        <div class="la-subgroup">
+          <button class="la-navitem sec-tool" id="world-btn"><span class="sec-ic"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="5.2"/><path d="M2.8 8h10.4M8 2.8c1.6 1.5 2.5 3.4 2.5 5.2S9.6 11.7 8 13.2C6.4 11.7 5.5 9.8 5.5 8S6.4 4.3 8 2.8z"/></svg></span><span class="nm">World at this time</span></button>
+          <button class="la-navitem sec-tool" id="quiz-btn"><span class="sec-ic"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M6.4 6.3c0-1 .8-1.7 1.8-1.7s1.7.7 1.7 1.6c0 1.4-1.7 1.4-1.7 2.8"/><circle cx="8" cy="11.2" r="0.75" fill="currentColor" stroke="none"/></svg></span><span class="nm">Take the quiz</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="la-side-foot ui" style="font-size:var(--fs-sm);color:var(--muted);line-height:1.5">
+      <span>Drag the timeline below to scrub through the years. Click any country, city or battle on the map.</span>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="la-main">
+    <header class="la-appbar">
+      <button class="btn btn-ghost btn-icon btn-sm la-menu-toggle" id="menu-btn" aria-label="Open menu">☰</button>
+      <nav class="la-crumbs" id="crumbs" aria-label="Breadcrumb">
+        <a href="../../">Atlas</a><span class="sep">›</span>
+        <span>History</span><span class="sep">›</span>
+        <span class="here" id="brand-title">American Revolutionary War</span>
+      </nav>
+      <span class="spacer"></span>
+      <div class="searchbox">
+        <input id="search" type="text" placeholder="Search countries, battles, leaders, years…" aria-label="Search" autocomplete="off">
+        <div id="results" class="results"></div>
+      </div>
+    </header>
+
+    <div id="stage">
+      <div id="map" role="region" aria-label="Historical map"></div>
+      <div class="maptip" id="maptip"></div>
+      <div class="hint" id="hint" style="opacity:0">Drag the timeline. Click a country, city, or battle.</div>
+      <div class="legend ui" id="legend" aria-live="polite"></div>
+      <div class="live-instruction ui" id="live-instruction"></div>
+
+      <!-- zoom control (top-left) -->
+      <div class="zoomctl">
+        <button id="reset" title="Reset view" aria-label="Reset view">⤢</button>
+      </div>
+
+      <!-- map controls (bottom-right): layers + projection -->
+      <div class="la-canvas-controls">
+        <div class="tb-menu">
+          <button class="btn btn-secondary btn-icon" id="layers-btn" data-tooltip="Map layers" aria-label="Map layers">▤</button>
+          <div class="menu-pop up" id="layers-pop">
+            <div class="head">Map layers</div>
+            <label><input type="checkbox" data-layer="political" checked> Political world</label>
+            <label><input type="checkbox" data-layer="borders" checked> Historical borders</label>
+            <label><input type="checkbox" data-layer="cities" checked> Major cities</label>
+            <label><input type="checkbox" data-layer="battles" checked> Battles</label>
+          </div>
+        </div>
+        <div class="tb-menu">
+          <button class="btn btn-secondary btn-icon" id="proj-btn" data-tooltip="Map projection" aria-label="Map projection">◐</button>
+          <div class="menu-pop up" id="proj-pop">
+            <div class="head">Projection</div>
+            <button class="menu-item menu-proj" data-proj="robinson" style="font-weight:600">Robinson</button>
+            <button class="menu-item" data-proj="winkel">Winkel Tripel</button>
+            <button class="menu-item" data-proj="natural">Natural Earth</button>
+            <button class="menu-item" data-proj="mercator">Mercator</button>
+            <button class="menu-item" data-proj="orthographic">Orthographic globe</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORLD AT THIS TIME (bottom drawer) -->
+      <div id="world" class="ui">
+        <div class="wh"><h4 id="world-year">The world at this time</h4><div class="spacer" style="flex:1"></div><button class="icon-btn" id="world-close" aria-label="Close">✕</button></div>
+        <div class="cards" id="world-cards"></div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <footer id="timeline" class="ui">
+      <div class="yearbig" id="yearbig">1778</div>
+      <div class="ctrl">
+        <button id="prev" title="Previous year" aria-label="Previous year">‹</button>
+        <button id="play" title="Play / pause" aria-label="Play or pause">▶</button>
+        <button id="next" title="Next year" aria-label="Next year">›</button>
+      </div>
+      <div class="tl-track">
+        <input type="range" id="yearslider" min="1775" max="1783" value="1778" step="1" aria-label="Year">
+        <div class="tl-ticks"><span>1775</span><span>1777</span><span>1779</span><span>1781</span><span>1783</span></div>
+      </div>
+      <input type="number" id="yearinput" class="yearinput" min="1775" max="1783" value="1778" aria-label="Enter year">
+    </footer>
+  </div>
+
+  <!-- ===================== SHARED DRAWER (scrim + rail) ===================== -->
+  <div class="la-scrim" id="scrim"></div>
+  <aside id="rail" aria-label="Information panel">
+    <div class="rail-head">
+      <div style="flex:1">
+        <div class="rkind ui" id="rkind">War</div>
+        <div class="rtitle" id="rtitle">American Revolutionary War</div>
+      </div>
+      <button class="icon-btn" id="railclose" title="Close" aria-label="Close panel">✕</button>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="rail-body" id="railbody"></div>
+  </aside>
+
+  <!-- QUIZ -->
+  <div id="quiz"><div class="quizcard ui" id="quizcard"></div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4.0.0/dist/d3-geo-projection.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script src="app/data/french-and-indian-war.js"></script>
+<script src="app/data/american-revolution.js"></script>
+<script src="app/data/napoleonic-wars.js"></script>
+<script src="app/data/wars-of-unification.js"></script>
+<script src="app/data/american-civil-war.js"></script>
+<script src="app/data/world-war-1.js"></script>
+<script src="app/data/world-war-2.js"></script>
+<script src="app/data/cold-war.js"></script>
+<script src="app/data/global-conflicts.js"></script>
+<script src="app/engine.js"></script>
+<script src="app/app.js"></script>
+</body>
+</html>
