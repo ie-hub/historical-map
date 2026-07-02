@@ -60,7 +60,8 @@
       <button class="m-btn m-check">Check</button>`;
     host.appendChild(wrap);
     const input = wrap.querySelector('input'), btn = wrap.querySelector('.m-check');
-    const fire = () => onCheck(input.value.trim(), input);
+    // onCheck may return a boolean; if so, mark the field correct/wrong.
+    const fire = () => { const r = onCheck(input.value.trim(), input); if (r === true) { input.classList.remove('bad'); input.classList.add('good'); } else if (r === false) { input.classList.remove('good'); input.classList.add('bad'); } };
     btn.onclick = fire;
     input.addEventListener('keydown', e => { if (e.key === 'Enter') fire(); });
     return { input, btn, focus: () => input.focus() };
@@ -553,6 +554,7 @@
     const stage = U.el('div', 'm-ps-stage'); host.appendChild(stage);
     function render() {
       const p = problems[i]; ctx.progress(i, problems.length);
+      if (ctx.reveal) ctx.reveal(String(p.answer));   // let the player offer a "show answer"
       info.innerHTML = p.prompt;
       stage.innerHTML = '';
       if (p.choices) {
@@ -560,7 +562,7 @@
         U.shuffle(p.choices).forEach(c => { const b = U.el('button', 'm-btn m-ps-opt', String(c)); b.onclick = () => judge(String(c) === String(p.answer), b, String(c)); opts.appendChild(b); });
         stage.appendChild(opts);
       } else {
-        answerField(stage, { label: 'Answer:', onCheck(v) { const val = String(v).replace(/\s/g, ''); judge(val === String(p.answer).replace(/\s/g, ''), null, val); } });
+        answerField(stage, { label: 'Answer:', onCheck(v) { const val = String(v).replace(/\s/g, ''); const ok = val === String(p.answer).replace(/\s/g, ''); judge(ok, null, val); return ok; } });
       }
     }
     function judge(ok, btn, picked) {
@@ -568,7 +570,7 @@
       // a wrong pick on a labelled distractor reveals a specific misconception
       const info = (!ok && p.misconceptions && picked != null && p.misconceptions[picked]) ? { misconception: p.misconceptions[picked] } : null;
       ctx.attempt(ok, info); ctx.count('problemSet');
-      if (btn) stage.querySelectorAll('.m-ps-opt').forEach(b => b.classList.toggle('picked', b === btn));
+      if (btn) { stage.querySelectorAll('.m-ps-opt').forEach(b => b.classList.remove('picked', 'correct', 'wrong')); btn.classList.add(ok ? 'correct' : 'wrong'); }
       ctx.feedback(ok ? U.pick(['Correct!', 'Nice work!', 'Exactly!', 'You got it!']) : (p.hint || 'Not quite — give it another go.'), ok ? 'ok' : 'no');
       if (ok) { i++; if (i >= problems.length) { ctx.progress(problems.length, problems.length); setTimeout(ctx.solved, 500); } else setTimeout(render, 700); }
     }
@@ -784,21 +786,25 @@
 
     function read() {
       const m = U.pick([-3, -2, -1, 1, 2, 3]), b = U.rand(-4, 4);
+      if (ctx.reveal) ctx.reveal('slope ' + m);
       info.innerHTML = `Read the line. What is its <b>slope</b> (rise ÷ run)?`;
       stage.innerHTML = grid(line(m, b, 'live') + pt(0, b, 'int'));
       answerField(stage, { label: 'slope m =', onCheck(v) {
         const ok = +v === m; ctx.attempt(ok, (!ok && +v === -m) ? { misconception: 'Slope sign flipped — a line falling left-to-right has a negative slope' } : null); ctx.count('lineGrapher');
         ctx.feedback(ok ? 'Yes — now read where it crosses the y-axis.' : 'Slope = boxes up ÷ boxes across (down is negative).', ok ? 'ok' : 'no');
         if (ok) askB(m, b);
+        return ok;
       } });
     }
     function askB(m, b) {
+      if (ctx.reveal) ctx.reveal('b = ' + b);
       info.innerHTML = `Good — slope ${m}. Where does it cross the <b>y-axis</b> (b)?`;
       stage.innerHTML = grid(line(m, b, 'live') + pt(0, b, 'int'));
       answerField(stage, { label: 'y-intercept b =', onCheck(v) {
         const ok = +v === b; ctx.attempt(ok); ctx.count('lineGrapher');
         ctx.feedback(ok ? `Right — y = ${eq(m, b)}.` : 'Look where the line meets the vertical axis.', ok ? 'ok' : 'no');
         if (ok) { round++; ctx.progress(round, cfg.rounds); if (round >= cfg.rounds) setTimeout(ctx.solved, 750); else setTimeout(read, 950); }
+        return ok;
       } });
     }
 

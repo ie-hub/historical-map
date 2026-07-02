@@ -12,6 +12,7 @@
   let rail, player, mapView, palette, shell;
   let view = 'map';           // 'map' | 'lesson'
   let currentLesson = null;
+  const openGroups = new Set();   // sidebar sections start collapsed; toggled by the user
 
   const gradeLabel = g => (g.length <= 2 ? 'Grade ' + g : g);
 
@@ -44,16 +45,17 @@
       const cs = Graph.all().filter(c => c.grade === g).sort((a, b) => (a.strand || '').localeCompare(b.strand || ''));
       const mastered = cs.filter(c => Store.isMastered(c.id)).length;
       const pct = cs.length ? Math.round(mastered / cs.length * 100) : 0;
-      const isFocus = g === mapView.grade() && mapView.mode() === 'focus';
+      const open = openGroups.has(g);
 
-      const group = document.createElement('div'); group.className = 'la-navgroup';
+      const group = document.createElement('div'); group.className = 'la-navgroup' + (open ? ' open' : '');
       const head = document.createElement('button');
-      head.className = 'la-grouphead'; head.setAttribute('aria-expanded', String(isFocus));
-      head.innerHTML = `<span class="tw">▾</span><span>${gradeLabel(g)}</span><span class="cnt">${mastered}/${cs.length}</span>`;
-      head.onclick = () => mapView.focusGrade(g);
+      head.className = 'la-grouphead'; head.setAttribute('aria-expanded', String(open));
+      head.innerHTML = `<span class="tw">${open ? '▾' : '▸'}</span><span>${gradeLabel(g)}</span><span class="cnt">${mastered}/${cs.length}</span>`;
+      // toggle this section independently; expanding also focuses that grade on the map
+      head.onclick = () => { if (openGroups.has(g)) { openGroups.delete(g); buildOutline(); } else { openGroups.add(g); mapView.focusGrade(g); } };
       group.appendChild(head);
 
-      if (isFocus) {
+      if (open) {
         const bar = document.createElement('div'); bar.className = 'la-groupbar';
         bar.innerHTML = `<span style="width:${pct}%"></span>`; group.appendChild(bar);
         const items = document.createElement('div'); items.className = 'la-subgroup';

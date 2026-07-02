@@ -9,6 +9,25 @@
   const P = window.MATH.Player, U = window.MATH.util;
   const reg = P.register;
 
+  /* ---- Orientation · Algebra: Start Here -------------------------------- */
+  /* A readable intro (no assessment): what algebra is, where it came from, and
+     how the course is sequenced. Pure narrative + an extension. */
+  reg({
+    concept: 'algebra-intro', title: 'Algebra: Start Here',
+    steps: [
+      { kind: 'discover', title: 'What is algebra?', text: 'Algebra is arithmetic with one powerful twist: we use <b>letters</b> to stand for numbers we don’t know yet. That single idea — a symbol for the unknown — lets us describe patterns, write general rules, and solve problems that fixed numbers never could.', rule: 'A letter (a variable) stands for an unknown number' },
+      { kind: 'discover', title: 'Where it came from', text: 'Around 820 CE in Baghdad’s House of Wisdom, the Persian scholar <b>al-Khwārizmī</b> wrote a book whose title gave us the word “algebra” — from <i>al-jabr</i>, meaning “restoring” or “balancing”. He laid out step-by-step methods for balancing and solving equations — the very moves you’ll use here. His own name, Latinised, became another word you know: <b>algorithm</b>.' },
+      { kind: 'discover', title: 'Why it’s worth it', text: 'Every graph, budget, video-game engine, rocket trajectory, and AI model runs on algebra. The real goal of this course isn’t memorising steps — it’s learning to move fluently between <b>words, tables, graphs, and equations</b>, and to reason about quantities you can’t yet see.' },
+      { kind: 'discover', title: 'How this course is built', text: 'The map builds in order: <b>solving equations</b> → <b>slope & lines</b> → <b>functions</b> → <b>systems</b> → <b>exponents & polynomials</b> → <b>quadratics</b> → <b>data & statistics</b>. Master one concept and it unlocks the next. You can wander, but each idea leans on the ones before it.' },
+      { kind: 'extend', title: 'Warm up', intro: 'Optional ways to ease in before the first lesson.',
+        items: [
+          { icon: '📜', label: 'The House of Wisdom', detail: 'Read a little about al-Khwārizmī and 9th-century Baghdad, where algebra was first written down.' },
+          { icon: '🔤', label: 'Try the big idea', detail: 'Write “a number plus 5 equals 12” using a letter for the unknown. Congratulations — that’s algebra.' },
+          { icon: '🗺️', label: 'Scan the map', detail: 'Close this and look over the Algebra I map. Notice how each concept connects to the next.' }
+        ] }
+    ]
+  });
+
   /* ---- AI.L.1 · Solving Linear Equations -------------------------------- */
   reg({
     concept: 'solve-linear-eq', title: 'Solving Linear Equations',

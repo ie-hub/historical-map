@@ -31,11 +31,10 @@
   function register(lesson) { LESSONS[lesson.concept] = lesson; }
   function get(conceptId) { return LESSONS[conceptId]; }
 
-  /* Build the ordered step list including the auto Hook (from lesson.hook) and a
-     synthetic Unlock step appended at the end. */
+  /* Build the ordered step list (the authored steps) plus a synthetic Unlock step
+     at the end. A lesson's `hook` field, if present, is no longer shown as a step. */
   function buildFlow(lesson) {
     const flow = [];
-    if (lesson.hook) flow.push({ kind: 'hook', title: 'A question to start', hook: lesson.hook });
     (lesson.steps || []).forEach(s => flow.push(s));
     flow.push({ kind: 'unlock', title: 'Unlocked!' });
     return flow;
@@ -44,13 +43,13 @@
   /* Player controller. host = the #lesson element. onExit() returns to the map. */
   function Player(host, opts) {
     opts = opts || {};
-    let lesson, concept, flow, idx, run, mountedDestroy = null, startTime = 0;
+    let lesson, concept, flow, idx, maxIdx, run, mountedDestroy = null, startTime = 0;
 
     function start(conceptId) {
       lesson = LESSONS[conceptId]; concept = Graph.get(conceptId);
       if (!lesson) { host.innerHTML = `<div class="m-lesson-empty note">This lesson isn't written yet — but the concept is on the map.</div>`; return; }
       flow = buildFlow(lesson);
-      idx = 0; startTime = Date.now();
+      idx = 0; maxIdx = 0; startTime = Date.now();
       run = { attempts: 0, correct: 0, solvedSteps: {}, challengeCleared: false, everFailedChallenge: false,
               summative: { attempts: 0, correct: 0 }, formative: { attempts: 0, correct: 0 }, misconceptions: [] };
       renderShell(); renderStep();
@@ -66,6 +65,7 @@
           </header>
           <div class="m-stage-wrap"><div class="m-card" id="m-card"></div></div>
           <footer class="m-lesson-foot ui">
+            <button class="m-btn ghost m-prev" id="m-prev">← Back</button>
             <div class="m-feedback" id="m-feedback" aria-live="polite"></div>
             <div class="m-foot-right">
               <span class="m-roundpill" id="m-roundpill"></span>
@@ -75,11 +75,17 @@
         </div>`;
       host.querySelector('#m-lesson-exit').onclick = () => { cleanup(); opts.onExit && opts.onExit(); };
       host.querySelector('#m-next').onclick = advance;
+      host.querySelector('#m-prev').onclick = back;
     }
 
     function renderDots() {
-      const dots = flow.map((s, i) => `<span class="m-fd ${i === idx ? 'now' : i < idx ? 'done' : ''}" title="${KIND_LABEL[s.kind] || s.kind}">${KIND_ICON[s.kind] || '•'}</span>`).join('');
-      host.querySelector('#m-flowdots').innerHTML = dots;
+      const dots = flow.map((s, i) => {
+        const reached = i <= maxIdx;
+        return `<button class="m-fd ${i === idx ? 'now' : i < idx ? 'done' : ''}${reached ? ' nav' : ''}" data-i="${i}" title="${KIND_LABEL[s.kind] || s.kind}"${reached ? '' : ' disabled'}>${KIND_ICON[s.kind] || '•'}</button>`;
+      }).join('');
+      const box = host.querySelector('#m-flowdots');
+      box.innerHTML = dots;
+      box.querySelectorAll('.m-fd.nav').forEach(b => b.onclick = () => { const i = +b.dataset.i; if (i <= maxIdx && i !== idx) { idx = i; renderStep(); } });
     }
 
     function cleanup() { if (mountedDestroy) { try { mountedDestroy(); } catch (e) {} mountedDestroy = null; } Store.flushActivity(); }
@@ -88,10 +94,14 @@
     function feedback(msg, kind) { const f = host.querySelector('#m-feedback'); if (!f) return; f.textContent = msg || ''; f.className = 'm-feedback' + (kind ? ' ' + kind : ''); }
     function progress(done, total) { const p = host.querySelector('#m-roundpill'); if (!p) return; p.textContent = total ? `${Math.min(done, total)} / ${total}` : ''; p.style.display = total ? '' : 'none'; }
 
+    function back() { if (idx > 0) { idx--; renderStep(); } }
+
     function renderStep() {
-      cleanup(); renderDots();
+      cleanup(); if (idx > maxIdx) maxIdx = idx; renderDots();
       const step = flow[idx]; const card = host.querySelector('#m-card');
       feedback(''); progress(0, 0); setNext(false, 'Continue →');
+      run.currentAnswer = null;
+      const prev = host.querySelector('#m-prev'); if (prev) prev.disabled = idx === 0;
       card.className = 'm-card kind-' + step.kind;
 
       if (step.kind === 'hook') {
@@ -179,6 +189,9 @@
         },
         feedback, progress,
         count(name) { Store.countActivity(name); },
+        // a component tells the player the current correct answer, so the learner
+        // can reveal it and move on if they're stuck.
+        reveal(text) { run.currentAnswer = text; },
         solved() {
           run.solvedSteps[idx] = true;
           if (step.kind === 'challenge') run.challengeCleared = true;
@@ -188,11 +201,16 @@
       };
       const ret = def.mount(mount, step.config || {}, ctx);
       mountedDestroy = ret && ret.destroy;
-      // Challenge steps are optional: allow skipping to still finish the lesson.
-      if (step.kind === 'challenge') {
-        const skip = U.el('button', 'm-skip', 'Skip challenge');
-        skip.onclick = () => { run.everFailedChallenge = true; feedback('Skipped the challenge — you can come back for the 3rd star.', ''); setNext(true, 'Finish →'); };
-        card.appendChild(skip);
+      // Graded steps: never trap a stuck learner. Offer a reveal-and-continue so
+      // they always have a way forward (challenge stays optional for the 3rd star).
+      if (step.kind === 'practice' || step.kind === 'mastery' || step.kind === 'challenge') {
+        const rb = U.el('button', 'm-reveal', step.kind === 'challenge' ? 'Skip challenge →' : 'Stuck? Show answer & continue →');
+        rb.onclick = () => {
+          if (step.kind === 'challenge') run.everFailedChallenge = true;
+          feedback(run.currentAnswer != null ? `Answer: ${run.currentAnswer}. Keep going — you’ll get the next one.` : 'No worries — moving on.', '');
+          setNext(true, idx + 1 < flow.length ? 'Continue →' : 'Finish →');
+        };
+        card.appendChild(rb);
       }
     }
 

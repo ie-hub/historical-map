@@ -60,8 +60,10 @@
   // ---- Algebra I ----  (a full course graph; 7 concepts have authored lessons,
   //                       the rest render as "coming soon" so the whole course —
   //                       and its Indiana standards coverage — is visible.)
+  // Start here — an orientation to the course (history + what's ahead; no standard)
+  add({ id: 'algebra-intro', name: 'Algebra: Start Here', grade: 'Algebra I', strand: 'Number', lesson: true, prereqs: [], blurb: 'What algebra is, and where it came from.' });
   // Linear equations & inequalities
-  add({ id: 'solve-linear-eq', name: 'Solving Linear Equations', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['equations1'], blurb: 'Isolate x, keep it balanced.', components: ['equationBalance', 'problemSet'], standards: ['AI.L.1'] });
+  add({ id: 'solve-linear-eq', name: 'Solving Linear Equations', grade: 'Algebra I', strand: 'Algebra', lesson: true, prereqs: ['algebra-intro', 'equations1'], blurb: 'Isolate x, keep it balanced.', components: ['equationBalance', 'problemSet'], standards: ['AI.L.1'] });
   add({ id: 'literal-equations', name: 'Rearranging Formulas', grade: 'Algebra I', strand: 'Algebra', prereqs: ['solve-linear-eq'], blurb: 'Solve for any variable.', standards: ['AI.L.7'] });
   add({ id: 'compound-inequalities', name: 'Compound Inequalities', grade: 'Algebra I', strand: 'Algebra', prereqs: ['solve-linear-eq'], blurb: 'AND / OR on a number line.', standards: ['AI.L.2'] });
   add({ id: 'slope', name: 'Slope', grade: 'Algebra I', strand: 'Functions', lesson: true, prereqs: ['functions', 'linear-eq'], blurb: 'Steepness — rise over run.', components: ['lineGrapher'], standards: ['AI.L.3'] });
