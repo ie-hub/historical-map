@@ -477,8 +477,8 @@ input[type=checkbox],input[type=radio],input[type=range]{accent-color:var(--acce
    (#rail, reused), and a ⌘K command palette. Chrome accents use --brand so
    each subject carries its own hue. Class prefix: .la-*
    ========================================================================== */
-.la-shell{position:relative;display:grid;grid-template-columns:var(--side-w,264px) 1fr;height:100vh;overflow:hidden;
-  transition:grid-template-columns var(--dur-3) var(--ease)}
+.la-shell{position:relative;display:grid;grid-template-columns:var(--side-w,264px) 1fr;grid-template-rows:minmax(0,1fr);
+  height:100vh;overflow:hidden;transition:grid-template-columns var(--dur-3) var(--ease)}
 .la-shell.collapsed{--side-w:68px}
 
 /* ---- sidebar ---- */
@@ -532,7 +532,7 @@ input[type=checkbox],input[type=radio],input[type=range]{accent-color:var(--acce
 .collapsed .la-navitem,.collapsed .la-subject,.collapsed .la-navsearch,.collapsed .la-grouphead{justify-content:center;padding-left:0;padding-right:0}
 
 /* ---- main + slim header ---- */
-.la-main{display:flex;flex-direction:column;min-width:0}
+.la-main{display:flex;flex-direction:column;min-width:0;min-height:0}
 .la-appbar{flex:none;display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-4);
   background:var(--panel);border-bottom:1px solid var(--rule);z-index:5;min-height:49px}
 .la-crumbs{display:flex;align-items:center;gap:6px;font-family:var(--ui);font-size:var(--fs-md);min-width:0;flex-wrap:wrap}
