@@ -17,6 +17,28 @@
     concept: 'systems-algebra', title: 'Substitution & Elimination',
     standards: ['AI.SEI.2', 'AI.SEI.3'],
     steps: [
+      { kind: 'teach', title: 'What “solving a system” really means',
+        lead: 'A system is <b>two equations that must hold at the same time</b>. Solving it means finding the one pair <b>(x, y)</b> that makes <b>both</b> true at once — the single point where the two lines cross. The trick in both methods is the same: <b>get rid of one variable</b> so you’re left with an equation you can actually solve.',
+        anatomy: {
+          expr: '<span class="tint-m">y = 2x + 1</span><br><span class="tint-b">3x + y = 11</span>',
+          parts: [
+            { sym: 'eq 1', tone: 'm', name: 'first rule', desc: 'one condition the answer must obey — here y is already alone, ripe for <b>substitution</b>' },
+            { sym: 'eq 2', tone: 'b', name: 'second rule', desc: 'the other condition — the SAME (x, y) has to satisfy this one too' },
+            { sym: '(x, y)', tone: 'y', name: 'the solution', desc: 'the one point that lies on <b>both</b> lines — plug it in and every equation checks out' }
+          ]
+        },
+        moves: [
+          { label: 'Substitution', text: '→ one equation says what a variable EQUALS; drop that expression into the OTHER equation and one variable vanishes.' },
+          { label: 'Elimination', text: '→ line the equations up and add or subtract them so a matching variable cancels to zero.' },
+          { label: 'Either way', text: '→ you collapse two equations into ONE, solve it, then back-substitute for the second variable — and check both.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'From <b>y = 2x + 1</b>, put <b>2x + 1</b> in for y in <b>3x + y = 11</b>. Now it’s all x:',
+          math: '3x + (2x + 1) = 11 → 5x = 10 → x = 2, y = 5'
+        },
+        takeaway: 'both methods do one job — kill a variable so two equations become one.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Two lines cross at exactly one point. If you knew that point <b>(x, y)</b> makes BOTH equations true, how could you find it without drawing a graph?',
         options: ['Combine the two equations so one variable disappears', 'Just guess numbers until both work', 'You can’t — a graph is the only way'] },
@@ -132,6 +154,29 @@
     concept: 'systems-inequalities', title: 'Systems of Inequalities',
     standards: ['AI.SEI.4'],
     steps: [
+      { kind: 'teach', title: 'The answer is the OVERLAP',
+        lead: 'One inequality shades a whole <b>half of the plane</b> — every point on one side of a line. A <b>system</b> asks for points that obey <b>every</b> inequality at the same time, so the solution is only the region where all the shadings <b>overlap</b> — the piece caught by both. Not everything shaded — just the double-shaded wedge.',
+        anatomy: {
+          expr: '<span class="tint-m">y ≥ x − 1</span>   AND   <span class="tint-b">y &lt; −x + 3</span>',
+          parts: [
+            { sym: 'y ≥ x − 1', tone: 'm', name: 'first region', desc: 'a solid boundary (≥ includes the line) with everything <b>above</b> it shaded' },
+            { sym: 'y < −x + 3', tone: 'b', name: 'second region', desc: 'a dashed boundary (&lt; excludes the line) with everything <b>below</b> it shaded' },
+            { sym: 'AND', tone: 'x', name: 'the catch', desc: 'a point counts only if it lies in <b>both</b> — the intersection, never the union' },
+            { sym: 'overlap', tone: 'y', name: 'the solution', desc: 'the double-shaded region where both conditions hold at once' }
+          ]
+        },
+        moves: [
+          { label: '≤ or ≥', text: '→ solid boundary line: points exactly ON the line count as solutions.' },
+          { label: '< or >', text: '→ dashed boundary line: the line itself is excluded.' },
+          { label: 'Take the union instead of the overlap', text: '→ the classic error — it lets in points that break one of the rules.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Test <b>(0, 0)</b> in both: 0 ≥ 0 − 1 is true, and 0 &lt; 0 + 3 is true. Passing both means it sits inside the overlap:',
+          math: '0 ≥ −1 ✓  and  0 < 3 ✓  →  (0, 0) is a solution'
+        },
+        takeaway: 'shade each side, then keep only where they overlap — a system means AND.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A point must satisfy <b>y &gt; 1</b> AND <b>y &lt; 4</b>. Which points work?',
         options: ['Only points with y between 1 and 4 — both conditions at once', 'Any point with y > 1 OR y < 4', 'No point can satisfy two rules'] },

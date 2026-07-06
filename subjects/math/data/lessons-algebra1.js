@@ -16,6 +16,27 @@
   reg({
     concept: 'algebra-intro', title: 'Algebra: Start Here',
     steps: [
+      { kind: 'teach', title: 'What a letter really means',
+        lead: 'The scary part of algebra is the letters — but a letter is just a <b>name for a number you don’t know yet</b>. It isn’t a new kind of maths; it’s a placeholder that lets you talk about a number before you’ve pinned it down. In <b>x + 5 = 12</b>, <b>x</b> is <i>one specific fixed number</i> hiding behind a mask — your whole job is to unmask it.',
+        anatomy: {
+          expr: '<span class="tint-x">x</span> + 5 = 12',
+          parts: [
+            { sym: 'x', tone: 'x', name: 'the unknown', desc: 'a <b>single fixed number</b> we haven’t found yet — here it can only be 7, nothing else' },
+            { sym: '+ 5', tone: 'm', name: 'a known amount', desc: 'an ordinary number, doing ordinary arithmetic to x' },
+            { sym: '=', tone: 'b', name: 'the balance', desc: 'a promise that both sides name the <b>same</b> value' }
+          ]
+        },
+        moves: [
+          { label: 'A letter in an equation', text: '→ stands for one fixed unknown you can solve for — like x in x + 5 = 12.' },
+          { label: 'A letter in a formula', text: '→ stands for <i>any</i> number you choose to plug in — like x in “area = x²”. Same symbol, different job.' },
+          { label: 'Once you know its value', text: '→ the letter and the number are interchangeable. x just <i>was</i> 7 all along.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Think “<b>a number plus 5 equals 12</b>.” You already know in your gut it’s 7 — algebra is just the tidy way to write and confirm that hunch.',
+          math: 'x + 5 = 12  →  x = 7'
+        },
+        takeaway: 'A letter isn’t scary — it’s a number wearing a name tag until you figure out who it is.' },
       { kind: 'discover', title: 'What is algebra?', text: 'Algebra is arithmetic with one powerful twist: we use <b>letters</b> to stand for numbers we don’t know yet. That single idea — a symbol for the unknown — lets us describe patterns, write general rules, and solve problems that fixed numbers never could.', rule: 'A letter (a variable) stands for an unknown number' },
       { kind: 'discover', title: 'Where it came from', text: 'Around 820 CE in Baghdad’s House of Wisdom, the Persian scholar <b>al-Khwārizmī</b> wrote a book whose title gave us the word “algebra” — from <i>al-jabr</i>, meaning “restoring” or “balancing”. He laid out step-by-step methods for balancing and solving equations — the very moves you’ll use here. His own name, Latinised, became another word you know: <b>algorithm</b>.' },
       { kind: 'discover', title: 'Why it’s worth it', text: 'Every graph, budget, video-game engine, rocket trajectory, and AI model runs on algebra. The real goal of this course isn’t memorising steps — it’s learning to move fluently between <b>words, tables, graphs, and equations</b>, and to reason about quantities you can’t yet see.' },
@@ -35,6 +56,27 @@
     standards: ['AI.L.1'],
     hook: { emoji: '⚖️', text: 'A scale balances only when both sides weigh the same.', sub: 'Solving an equation is just keeping that balance while you get x alone.' },
     steps: [
+      { kind: 'teach', title: 'What “solving” actually is',
+        lead: 'Solving isn’t guessing — it’s <b>undoing</b>. x got buried under operations (times this, plus that); solving digs it back out by doing the <b>opposite operation, in reverse order</b>. The one iron rule: whatever you do to one side, you do to the <b>other</b>, so the equation stays balanced the whole way.',
+        anatomy: {
+          expr: '3<span class="tint-x">x</span> + 5 = 17',
+          parts: [
+            { sym: 'x', tone: 'x', name: 'what you want alone', desc: 'the unknown, currently buried under a ×3 and a +5' },
+            { sym: '× 3', tone: 'm', name: 'inner layer', desc: 'done to x <b>first</b> — so it comes off <b>last</b>' },
+            { sym: '+ 5', tone: 'b', name: 'outer layer', desc: 'done <b>last</b> — so it’s the <b>first</b> thing you undo' }
+          ]
+        },
+        moves: [
+          { label: 'Subtract from both sides', text: '→ undoes a + . The 5 leaves the left, and the right drops by 5 too — balance kept.' },
+          { label: 'Divide both sides', text: '→ undoes a × . Split BOTH sides by 3 and x stands alone.' },
+          { label: 'Touch only one side', text: '→ breaks the balance. Now the two sides name different numbers and the answer is wrong.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'For <b>3x + 5 = 17</b>: peel off the +5 first (subtract 5 from both sides → 3x = 12), then the ×3 (divide both sides by 3 → x = 4). Last on, first off.',
+          math: '3x + 5 = 17  →  3x = 12  →  x = 4'
+        },
+        takeaway: 'Solving = unwrapping x in reverse, doing the same move to both sides every step.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'In <b>x + 5 = 12</b>, what should you do to <b>both sides</b> to get x by itself?',
         options: ['Add 5 to both sides', 'Subtract 5 from both sides', 'Move the 5 across and flip its sign'] },
@@ -112,6 +154,27 @@
     standards: ['AI.L.3'],
     hook: { emoji: '📈', text: 'A wheelchair ramp, a ski run, a staircase — all the same idea: how steep?', sub: 'How do we put a single number on the steepness of a line?' },
     steps: [
+      { kind: 'teach', title: 'What slope really measures',
+        lead: 'Slope isn’t just “a number” — it’s a <b>rate of change with a direction built in</b>. It answers: for every step you take to the right, how far up (or down) does the line go? That’s why it’s <b>rise over run</b> — and why the <b>sign</b> matters as much as the size.',
+        anatomy: {
+          expr: 'slope = <span class="tint-y">rise</span> ÷ <span class="tint-x">run</span>',
+          parts: [
+            { sym: 'rise', tone: 'y', name: 'the up-and-down', desc: 'change in <b>y</b> — positive if the line climbs, negative if it drops' },
+            { sym: 'run', tone: 'x', name: 'the across', desc: 'change in <b>x</b> — how far right you stepped to get that rise' },
+            { sym: '÷', tone: 'm', name: 'per one step', desc: 'the division turns it into a <b>rate</b>: rise <i>for each</i> unit of run' }
+          ]
+        },
+        moves: [
+          { label: 'Bigger number', text: '→ steeper line. Slope 5 climbs faster than slope 2.' },
+          { label: 'Positive vs. negative', text: '→ direction flips. Positive climbs left-to-right; negative falls. Same size, opposite tilt.' },
+          { label: 'Swap the order', text: '→ do (y₂−y₁) over (x₂−x₁) in the <b>same</b> order both times. Mixing the order flips the sign wrongly.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A road that rises <b>6 m</b> over a <b>2 m</b> horizontal run has slope 6 ÷ 2 = 3 — it gains 3 metres of height for every 1 metre across. A road dropping the same amount has slope −3.',
+          math: 'slope = 6 ÷ 2 = 3'
+        },
+        takeaway: 'Slope is a rate <i>and</i> a direction: how much y changes per step of x, sign included.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A line goes <b>up 6</b> every time it goes <b>2 to the right</b>. How steep is it (its slope)?',
         options: ['3', '8', '12'] },
@@ -254,6 +317,27 @@
     standards: ['AI.F.1', 'AI.F.2'],
     hook: { emoji: '⚙️', text: 'A function is a machine: one input goes in, exactly one output comes out.', sub: 'Could the same input ever give two different outputs?' },
     steps: [
+      { kind: 'teach', title: 'What f(x) really means',
+        lead: 'The notation <b>f(x)</b> trips everyone up because it <i>looks</i> like f times x — it isn’t. Read it as “<b>f of x</b>”: the machine named <b>f</b>, fed the input <b>x</b>. A function is a machine with one unbreakable promise — <b>one input, exactly one output</b>. Same number in, same answer out, every time.',
+        anatomy: {
+          expr: '<span class="tint-m">f</span>(<span class="tint-x">x</span>) = <span class="tint-y">2x + 1</span>',
+          parts: [
+            { sym: 'f', tone: 'm', name: 'the machine', desc: 'the <b>name</b> of the rule — not a number multiplying anything' },
+            { sym: 'x', tone: 'x', name: 'the input', desc: 'the value you feed in; the parentheses mean “<b>of</b>”, not “times”' },
+            { sym: '2x + 1', tone: 'y', name: 'the rule', desc: 'what the machine <b>does</b> to whatever you put in' }
+          ]
+        },
+        moves: [
+          { label: 'Feed in a number', text: '→ replace every x with it. f(3) means put 3 everywhere x was: 2(3) + 1 = 7.' },
+          { label: 'Same input twice', text: '→ same output twice, guaranteed. That reliability is what <i>makes</i> it a function.' },
+          { label: 'One input, two outputs', text: '→ not a function. {(1,2),(1,5)} breaks the promise — 1 can’t give both 2 and 5.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Think of a vending machine: press <b>B4</b> and you always get the same snack. <b>f(B4)</b> is “what comes out when you press B4.” It never hands you two different things for one button.',
+          math: 'f(3) = 2(3) + 1 = 7   →   (3, 7)'
+        },
+        takeaway: 'f(x) is “f of x” — a machine, not multiplication — and it gives exactly one output per input.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A machine follows the rule <b>f(x) = 2x + 1</b>. What is <b>f(3)</b>?',
         options: ['7', '6', '5'] },
@@ -312,6 +396,27 @@
     standards: ['AI.SEI.1'],
     hook: { emoji: '✖️', text: 'Two lines, two rules — but is there a single (x, y) that makes BOTH true at once?', sub: 'Where would two phone plans cost exactly the same?' },
     steps: [
+      { kind: 'teach', title: 'What a solution to a system is',
+        lead: 'A single line has endless points that satisfy it. A <b>system</b> asks a harder question: is there one <b>(x, y)</b> that satisfies <b>both</b> lines <i>at the same time</i>? Graph both, and that shared point is exactly <b>where they cross</b> — the one spot that lives on line 1 <i>and</i> line 2.',
+        anatomy: {
+          expr: '<span class="tint-m">y = 2x − 1</span>   and   <span class="tint-b">y = −x + 5</span>',
+          parts: [
+            { sym: 'line 1', tone: 'm', name: 'first rule', desc: 'every point on it makes <b>y = 2x − 1</b> true' },
+            { sym: 'line 2', tone: 'b', name: 'second rule', desc: 'every point on it makes <b>y = −x + 5</b> true' },
+            { sym: 'crossing', tone: 'x', name: 'the solution', desc: 'the <b>one</b> point on <i>both</i> — it obeys both rules at once' }
+          ]
+        },
+        moves: [
+          { label: 'Lines cross once', text: '→ exactly one solution: the single point they share.' },
+          { label: 'Lines are parallel', text: '→ no crossing, so <b>no solution</b> — no (x, y) satisfies both.' },
+          { label: 'Same line drawn twice', text: '→ they overlap everywhere, so <b>infinitely many</b> solutions.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Two phone plans cost the same only at their crossing point. For <b>y = 2x − 1</b> and <b>y = −x + 5</b>, both lines pass through <b>(2, 3)</b> — plug it in and both give 3, so it satisfies both.',
+          math: '2(2) − 1 = 3  and  −(2) + 5 = 3  →  (2, 3)'
+        },
+        takeaway: 'A system’s solution is the point that makes <i>every</i> equation true at once — where the lines cross.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Two lines are graphed. The <b>solution</b> to the system is…',
         options: ['where the lines cross', 'where each line hits the y-axis', 'the steeper line'] },
@@ -380,6 +485,27 @@
     standards: ['AI.NE.2'],
     hook: { emoji: '🔢', text: '3² × 3⁴ — do you add the exponents, or multiply them?', sub: 'Every exponent rule hides a simple counting shortcut. Let’s uncover it.' },
     steps: [
+      { kind: 'teach', title: 'What an exponent counts',
+        lead: 'An exponent is not a mysterious operation to memorise — it just <b>counts how many copies of the base are multiplied</b>. <b>2³</b> means 2 · 2 · 2, three copies. Every exponent “rule” is really a <b>counting shortcut</b> you could rediscover by expanding — which is why they’re worth understanding, not cramming.',
+        anatomy: {
+          expr: '<span class="tint-x">2</span><sup><span class="tint-m">3</span></sup> = 2 · 2 · 2',
+          parts: [
+            { sym: '2', tone: 'x', name: 'the base', desc: 'the number being multiplied by itself' },
+            { sym: '3', tone: 'm', name: 'the exponent', desc: 'how many <b>copies</b> of the base to multiply — a count, not a multiplier' },
+            { sym: '2·2·2', tone: 'y', name: 'the expansion', desc: 'what it really is — write this out and every rule becomes obvious' }
+          ]
+        },
+        moves: [
+          { label: 'Multiply same base', text: '→ <b>add</b> exponents. x²·x³ lines up (x·x)(x·x·x) = five x’s = x⁵.' },
+          { label: 'Divide same base', text: '→ <b>subtract</b>. x⁵ ÷ x² cancels two x’s, leaving x³.' },
+          { label: 'Power of a power', text: '→ <b>multiply</b>. (x²)³ is three copies of x², so 2 × 3 = six x’s = x⁶.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Why does 3² × 3³ add to 3⁵? Just count the 3’s: (3·3)(3·3·3) is <b>five</b> threes multiplied. You add because you’re <i>tallying copies</i>, not because someone said so.',
+          math: '3² × 3³ = (3·3)(3·3·3) = 3⁵'
+        },
+        takeaway: 'An exponent counts copies — expand it and the rules stop being rules and start being obvious.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'What does <b>2³</b> mean?',
         options: ['2 × 2 × 2', '2 × 3', '3 × 3'] },
@@ -449,6 +575,20 @@
     standards: ['AI.DS.4'],
     hook: { emoji: '🍦', text: 'Ice-cream sales and shark attacks rise together every single summer.', sub: 'So… does eating ice cream cause shark attacks? When two things move together, what can we actually conclude?' },
     steps: [
+      { kind: 'teach', title: 'Moving together isn’t causing',
+        lead: 'When two things rise and fall together, they’re <b>correlated</b> — and it’s dangerously tempting to say one <i>causes</i> the other. But a correlation alone can never prove that. Often a hidden third thing — a <b>lurking variable</b> — is quietly driving <i>both</i>, with no direct link between them at all.',
+        moves: [
+          { label: 'A lurking variable', text: '→ some third factor drives both. Hot weather lifts ice-cream sales AND beach crowds (so shark attacks) — the two are linked only through it.' },
+          { label: 'Reverse causation', text: '→ the cause may run the other way from what you assumed. Check the direction before you commit.' },
+          { label: 'Pure coincidence', text: '→ with enough data, some things line up by sheer chance and mean nothing.' },
+          { label: 'A controlled experiment', text: '→ the only real fix: change one thing, hold the rest steady, and see if the effect follows.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Children with <b>bigger feet</b> read better. Shoes don’t make you literate — <b>age</b> is the lurking variable: older kids have bigger feet <i>and</i> read better. Remove age and the link vanishes.',
+          math: 'big feet ↔ reading  ⇐  age drives both'
+        },
+        takeaway: 'A strong link is a clue, not a verdict — always ask what third thing might be driving both.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Ice-cream sales and shark attacks both climb in summer. The best explanation is…',
         options: ['Ice cream causes shark attacks', 'A third factor (hot weather) drives both', 'Sharks are drawn to ice cream'] },

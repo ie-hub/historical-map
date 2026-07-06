@@ -16,6 +16,29 @@
     concept: 'completing-square', title: 'Completing the Square',
     standards: ['AI.QE.3'],
     steps: [
+      { kind: 'teach', title: 'What “completing the square” really does',
+        lead: 'Some quadratics just <b>won’t factor nicely</b> — but every one hides a perfect square inside it. Completing the square is the move that <b>forces that square to appear</b>: you reshape <b>x² + bx + c</b> into <b>(x + p)² + q</b>. Once it’s a single squared bracket, the turning point is sitting in plain sight and you can undo the square with one ±√.',
+        anatomy: {
+          expr: '<span class="tint-x">x²</span> + <span class="tint-m">b</span>x + c   →   (x + <span class="tint-b">p</span>)² + <span class="tint-y">q</span>',
+          parts: [
+            { sym: 'b', tone: 'm', name: 'the middle', desc: 'the coefficient you halve — <b>p is exactly b/2</b>, so the middle number secretly names the bracket' },
+            { sym: '(b/2)²', tone: 'x', name: 'the missing corner', desc: 'the number a perfect square is <b>missing</b> — add this and x² + bx becomes (x + b/2)²' },
+            { sym: 'p', tone: 'b', name: 'the shift', desc: 'half of b — where the parabola <b>turns left/right</b> (the vertex’s x is −p)' },
+            { sym: 'q', tone: 'y', name: 'the leftover', desc: 'the constant left after you tidy up — the vertex’s <b>height</b>' }
+          ]
+        },
+        moves: [
+          { label: 'Why (b/2)²?', text: '→ (x + p)² expands to x² + 2px + p². Match 2p = b and you’re forced to p = b/2, so the missing constant is p² = (b/2)².' },
+          { label: 'Solving an equation', text: '→ add (b/2)² to <b>both sides</b> to stay balanced, then finish with ±√.' },
+          { label: 'Rewriting an expression', text: '→ there’s only one side, so <b>add AND subtract</b> (b/2)² — the value can’t change.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'For <b>x² + 6x</b>, half of 6 is 3, and 3² = 9 is the missing corner. Add it and the whole thing collapses into one bracket:',
+          math: 'x² + 6x + 9 = (x + 3)²'
+        },
+        takeaway: 'Half the middle, square it — that one number turns a messy quadratic into a single perfect square.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'You know x² + 6x + <b>9</b> = (x + 3)². What single number turns <b>x² + 6x</b> into a perfect square you can factor like that?',
         options: ['9 — the square of half of 6', '6 — the same as the middle number', '3 — just half of 6'] },
@@ -127,6 +150,29 @@
     concept: 'quadratic-modeling', title: 'Modeling with Quadratics',
     standards: ['AI.QE.5'],
     steps: [
+      { kind: 'teach', title: 'Why a parabola models the real world',
+        lead: 'Lots of real situations <b>rise then fall</b> (or fall then rise): a thrown ball climbs and drops, a fenced-in area grows then shrinks, profit peaks then dips. That single hump is exactly the shape of a <b>parabola</b> — so a quadratic like <b>h = at² + bt + c</b> becomes a machine you can <i>read</i>. Two features carry almost all the meaning: the <b>vertex</b> and the <b>zeros</b>.',
+        anatomy: {
+          expr: 'h = <span class="tint-m">a</span>t² + bt + c   →   <span class="tint-y">vertex</span> &amp; <span class="tint-x">zeros</span>',
+          parts: [
+            { sym: 'vertex y', tone: 'y', name: 'HOW MUCH', desc: 'the turning point’s <b>height</b> — the <b>max or min</b>: greatest height, largest area, top profit' },
+            { sym: 'vertex x', tone: 'b', name: 'WHEN / WHAT', desc: 'the turning point’s <b>input</b> — the time it peaks, the width that’s best' },
+            { sym: 'zeros', tone: 'x', name: 'WHERE IT’S 0', desc: 'where the quantity <b>hits zero</b> — launch and landing; a projectile has <b>two</b>' },
+            { sym: 'a', tone: 'm', name: 'the opening', desc: '<b>a &lt; 0 opens down</b> (vertex is a max), a &gt; 0 opens up (a min)' }
+          ]
+        },
+        moves: [
+          { label: '“How high / how much?”', text: '→ read the vertex’s <b>y-value</b> — that’s the max or min amount.' },
+          { label: '“When / what input?”', text: '→ read the vertex’s <b>x-value</b> — the time of the peak, or the best width.' },
+          { label: '“When does it start/land?”', text: '→ read the <b>zeros</b>. Never assume the max is at t = 0 — a projectile leaves and returns to the ground.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'For <b>h = −16t² + 64t</b>, a is negative so it opens down. The zeros t = 0 and t = 4 are launch and landing; the vertex sits midway, at t = 2, and its height is the max:',
+          math: 'peaks at t = 2 s, h = 64 ft; lands at t = 4 s'
+        },
+        takeaway: 'Vertex tells you the max/min and when it happens; zeros tell you where the value is nothing.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A ball is thrown up and its height follows h = −16t² + 64t. Which part of the parabola tells you the ball’s <b>greatest height</b>?',
         options: ['The vertex — the turning point at the top', 'A zero — where it crosses the axis', 'The starting point at t = 0'] },

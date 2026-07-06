@@ -17,6 +17,29 @@
     concept: 'domain-range', title: 'Domain & Range',
     standards: ['AI.F.3'],
     steps: [
+      { kind: 'teach', title: 'What domain and range actually name',
+        lead: 'A function is a <b>machine</b>: you feed it an input, it hands back an output. The <b>domain</b> is the full list of inputs the machine will <b>accept</b>; the <b>range</b> is every output it can <b>produce</b>. The whole trick to a domain is spotting the inputs that would <b>break</b> the machine — everything else is allowed.',
+        anatomy: {
+          expr: '<span class="tint-y">y</span> = f(<span class="tint-x">x</span>)',
+          parts: [
+            { sym: 'x', tone: 'x', name: 'the input', desc: 'the value you feed in — every legal x together is the <b>domain</b>' },
+            { sym: 'y', tone: 'y', name: 'the output', desc: 'what comes back out — every possible y together is the <b>range</b>' },
+            { sym: '÷0', tone: 'm', name: 'a denominator', desc: 'if an x makes the bottom <b>0</b>, that input is banned — you can’t divide by zero' },
+            { sym: '√−', tone: 'b', name: 'a radicand', desc: 'the stuff under a √ can’t go <b>negative</b>, so those inputs are banned too' }
+          ]
+        },
+        moves: [
+          { label: 'Denominator hits 0', text: '→ that one input is excluded — 1/(x−3) bans only x = 3, punching a single hole.' },
+          { label: 'Radicand goes negative', text: '→ a whole stretch is excluded — √(x−2) needs x ≥ 2, cutting off everything below.' },
+          { label: 'No bottom, no root', text: '→ nothing can break, so the domain is <b>all real numbers</b> (like 2x + 1).' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'For <b>f(x) = 1/(x − 3)</b>, ask “which input is illegal?” The bottom is 0 exactly at x = 3, so that lone input is banned and every other real number sails through.',
+          math: 'domain: all real x, x ≠ 3'
+        },
+        takeaway: 'x goes IN (domain), y comes OUT (range) — and a domain is what’s left after you remove the inputs that break the machine.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A function is a machine: you feed it an <b>input</b> x, it hands back an <b>output</b> y. For <b>f(x) = 1/x</b>, is there any number you simply <b>cannot</b> feed in?',
         options: ['Yes — 0, because 1 ÷ 0 is undefined', 'No — any number is fine', 'Only negative numbers are banned'] },
@@ -108,6 +131,29 @@
     concept: 'interpret-graphs', title: 'Interpreting Graphs',
     standards: ['AI.F.4'],
     steps: [
+      { kind: 'teach', title: 'A graph is a story you can read',
+        lead: 'A graph isn’t just dots — it’s a <b>story told in shape</b>. Where the curve climbs, the quantity is growing; where it falls, shrinking; where it goes flat, nothing is changing. Learn to read the shape and the picture tells you exactly what’s happening, moment by moment.',
+        anatomy: {
+          expr: 'the <span class="tint-x">shape</span> → the <span class="tint-y">story</span>',
+          parts: [
+            { sym: '↗', tone: 'm', name: 'rising', desc: 'the curve goes uphill → the function is <b>increasing</b> (output growing)' },
+            { sym: '↘', tone: 'x', name: 'falling', desc: 'the curve goes downhill → the function is <b>decreasing</b> (output shrinking)' },
+            { sym: '—', tone: 'b', name: 'flat', desc: 'a horizontal stretch → <b>no change</b>; steepness 0, not necessarily zero height' },
+            { sym: '●', tone: 'y', name: 'intercepts & turns', desc: 'y-intercept = the <b>start</b> (x = 0); x-intercepts = <b>zeros</b>; a peak is a max, a valley a min' }
+          ]
+        },
+        moves: [
+          { label: 'Steeper segment', text: '→ the quantity is changing FASTER — on a distance–time graph, that’s more speed.' },
+          { label: 'Flat segment', text: '→ the value holds steady: on a walk, you’ve <b>stopped</b> — flat means no change, not zero.' },
+          { label: 'Reach a peak, then fall', text: '→ that peak is the <b>maximum</b>; its y is HOW MUCH, its x is WHEN it happens.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A cyclist’s distance–time graph rises steeply, then goes flat, then rises gently. Read straight off the shape: fast, then <b>stopped</b>, then slow — no numbers needed.',
+          math: 'steep = fast · flat = stopped · gentle = slow'
+        },
+        takeaway: 'Don’t confuse steep with high — steepness is the RATE of change, height is the VALUE.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'On a <b>distance–time</b> graph of a walk, a segment goes perfectly <b>flat</b> (horizontal) for a while. What is happening during that flat stretch?',
         options: ['Standing still — distance isn’t changing', 'Walking at top speed', 'Walking backward'] },

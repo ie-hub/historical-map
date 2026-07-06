@@ -14,6 +14,28 @@
     concept: 'literal-equations', title: 'Rearranging Formulas',
     standards: ['AI.L.7'],
     steps: [
+      { kind: 'teach', title: 'Solving for a letter is the same old moves',
+        lead: 'Rearranging a formula feels new, but it isn’t — you use the <b>exact same inverse-operation moves</b> as solving for x. The only twist: the target is a <b>letter</b>, and <b>every other letter just rides along like a number</b>. In <b>A = lw</b>, to free w you divide by l, and l behaves exactly as a 5 or a 12 would.',
+        anatomy: {
+          expr: '<span class="tint-y">A</span> = <span class="tint-m">l</span><span class="tint-x">w</span>',
+          parts: [
+            { sym: 'w', tone: 'x', name: 'your target', desc: 'the letter you want <b>alone</b> on one side' },
+            { sym: 'l', tone: 'm', name: 'a passenger', desc: 'every other letter — treat it as an <b>ordinary number</b> you undo around' },
+            { sym: 'A', tone: 'y', name: 'the result', desc: 'what the formula already equals; it stays put on its side' }
+          ]
+        },
+        moves: [
+          { label: 'Target multiplied by a letter', text: '→ divide both sides by that letter to peel it off (A = lw → w = A/l).' },
+          { label: 'Target has a letter added', text: '→ subtract that whole term from both sides first, then divide.' },
+          { label: 'Two operations wrap it', text: '→ undo in reverse PEMDAS: strip the added term first, then the multiplier.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A rectangle with <b>A = 40</b> and <b>l = 8</b>: freeing w is just “divide by 8.” The move is identical whether l is the number 8 or the letter l.',
+          math: 'A = lw → w = A/l → w = 40/8 = 5'
+        },
+        takeaway: 'Isolate your letter with inverse operations; every other letter is a stand-in number.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'The area of a rectangle is <b>A = lw</b>. If you already know A and l but need the width w, what should you do?',
         options: ['Divide both sides by l to get w alone', 'Multiply A by l', 'You can’t — there are too many letters'] },
@@ -117,6 +139,28 @@
     concept: 'compound-inequalities', title: 'Compound Inequalities',
     standards: ['AI.L.2'],
     steps: [
+      { kind: 'teach', title: 'AND means between, OR means either',
+        lead: 'A <b>compound inequality</b> glues two conditions together, and the glue word decides everything. <b>AND</b> keeps only what satisfies <b>both</b> — the <b>overlap</b>, a band <i>between</i> two values. <b>OR</b> keeps anything that satisfies <b>either</b> — the <b>union</b>, two separate regions pointing apart. One little word turns one band into two rays.',
+        anatomy: {
+          expr: '<span class="tint-m">−3</span> &lt; <span class="tint-x">x</span> ≤ <span class="tint-b">5</span>',
+          parts: [
+            { sym: 'x', tone: 'x', name: 'the unknown', desc: 'the value being pinned down from <b>both</b> sides at once' },
+            { sym: '−3', tone: 'm', name: 'lower bound', desc: 'the left wall — <b>strict &lt;</b> here means <b>−3 is NOT included</b> (open dot ○)' },
+            { sym: '5', tone: 'b', name: 'upper bound', desc: 'the right wall — <b>≤</b> means <b>5 IS included</b> (closed dot ●)' }
+          ]
+        },
+        moves: [
+          { label: 'AND (a band)', text: '→ solution is the overlap — one connected stretch between the two bounds.' },
+          { label: 'OR (a union)', text: '→ solution is two separate rays; a value only has to satisfy one piece.' },
+          { label: 'Multiply/divide by a negative', text: '→ the inequality sign FLIPS (−2x < 6 becomes x > −3) — the classic trap.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A fridge must stay <b>at least 1°C and at most 4°C</b> — that “and” is a band. A password reset link is valid if it’s <b>unused OR still fresh</b> — that “or” is two regions.',
+          math: '1 ≤ T ≤ 4   (a band)      vs.      x < −1  or  x ≥ 4   (two rays)'
+        },
+        takeaway: 'AND = the overlap between; OR = either region — and flip the sign on a negative × or ÷.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Which numbers make <b>both</b> x > −3 <b>and</b> x ≤ 2 true at the same time?',
         options: ['Everything between −3 and 2 (a band)', 'Everything except that band', 'Only −3 and 2'] },
@@ -222,6 +266,29 @@
     concept: 'linear-modeling', title: 'Modeling with Lines',
     standards: ['AI.L.4'],
     steps: [
+      { kind: 'teach', title: 'Turning a story into y = mx + b',
+        lead: 'Modelling is translation: a real situation goes in, an equation <b>y = mx + b</b> comes out. Two words in the story do all the work — a <b>“per” or “each”</b> phrase is the <b>rate</b> (the slope m), and a <b>one-time “start” or “fee”</b> is the <b>beginning amount</b> (the intercept b). Find those two, and the model writes itself.',
+        anatomy: {
+          expr: '<span class="tint-y">y</span> = <span class="tint-m">m</span><span class="tint-x">x</span> + <span class="tint-b">b</span>',
+          parts: [
+            { sym: 'b', tone: 'b', name: 'the start', desc: 'the <b>one-time</b> amount before anything changes — the fee, deposit, or value at step 0' },
+            { sym: 'm', tone: 'm', name: 'the rate', desc: 'the <b>per / each</b> amount — how much y changes for every 1 step of x' },
+            { sym: 'x', tone: 'x', name: 'the input', desc: 'what accumulates: months, hours, items, years' },
+            { sym: 'y', tone: 'y', name: 'the total', desc: 'the running result the model predicts' }
+          ]
+        },
+        moves: [
+          { label: '“…per month / each hour”', text: '→ that’s the slope m — a repeating rate of change.' },
+          { label: '“$25 to join / starts at…”', text: '→ that’s the intercept b — paid or present once, at x = 0.' },
+          { label: 'The quantity DROPS over time', text: '→ the slope is NEGATIVE (a $150/yr loss → m = −150).' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A gym: <b>$25 to join</b> (paid once → b = 25) plus <b>$10 per month</b> (a rate → m = 10). Feed in 6 months and the model predicts the cost.',
+          math: 'C = 10m + 25;   at m = 6:   C = 10(6) + 25 = $85'
+        },
+        takeaway: 'Per/each → slope; one-time/start → intercept. Then substitute to predict.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A gym charges <b>$25 to join</b> plus <b>$10 per month</b>. In a formula for total cost, which number is the slope (the rate)?',
         options: ['10 — the cost per month', '25 — the joining fee', 'Both are the slope'] },
@@ -315,6 +382,28 @@
     concept: 'linear-inequalities-2', title: 'Linear Inequalities (2 vars)',
     standards: ['AI.L.6'],
     steps: [
+      { kind: 'teach', title: 'The answer is a whole region, not a line',
+        lead: 'An equation like <b>y = 2x − 1</b> draws a single line — every solution sits exactly on it. An <b>inequality</b> like <b>y ≤ 2x − 1</b> is far more generous: its solutions fill an <b>entire half of the plane</b> (a <b>half-plane</b>). The line becomes just the <b>boundary</b>; the real answer is the shaded side.',
+        anatomy: {
+          expr: '<span class="tint-y">y</span> <span class="tint-m">≤</span> <span class="tint-b">2x − 1</span>',
+          parts: [
+            { sym: '2x − 1', tone: 'b', name: 'the boundary', desc: 'the line y = 2x − 1 — the <b>edge</b> that splits the plane into two halves' },
+            { sym: '≤', tone: 'm', name: 'the sign', desc: '<b>≤ / ≥</b> include the edge → <b>solid</b> line; strict <b>&lt; / &gt;</b> exclude it → <b>dashed</b> line' },
+            { sym: 'y', tone: 'y', name: 'which side', desc: '<b>y &lt;</b> shades <b>below</b> the line, <b>y &gt;</b> shades <b>above</b>' }
+          ]
+        },
+        moves: [
+          { label: '≤ or ≥', text: '→ solid boundary — points on the line count as solutions.' },
+          { label: 'Strict < or >', text: '→ dashed boundary — the line itself is NOT included.' },
+          { label: 'Unsure which side?', text: '→ test (0, 0): if TRUE, shade its side; if FALSE, shade the other.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'For <b>y ≤ 2x − 1</b>: draw a <b>solid</b> line, then test (0, 0) → 0 ≤ −1 is FALSE, so shade the <b>opposite</b> side. The solution is that entire shaded half-plane, not the line.',
+          math: 'boundary y = 2x − 1 (solid) · (0,0) fails → shade away from it'
+        },
+        takeaway: 'The solution is a shaded half-plane; the sign sets solid vs dashed, a test point sets the side.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'The graph of the LINE y = 2x − 1 is a single line. What do you think the graph of the INEQUALITY y ≤ 2x − 1 looks like?',
         options: ['A whole shaded region (a half-plane)', 'Still just the line', 'Two separate lines'] },

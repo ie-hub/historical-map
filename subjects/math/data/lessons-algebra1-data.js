@@ -15,6 +15,29 @@
     concept: 'scatter-plots', title: 'Scatter Plots & Trend Lines',
     standards: ['AI.DS.3'],
     steps: [
+      { kind: 'teach', title: 'What a scatter plot is really showing',
+        lead: 'A scatter plot is a way to see whether <b>two measurements move together</b>. Each dot is <b>one individual</b> carrying two numbers at once — how much they studied AND what they scored. Look at the whole cloud, not any single dot, and a <b>trend line</b> draws the pattern the cloud is hinting at.',
+        anatomy: {
+          expr: 'one <span class="tint-x">dot</span> = ( <span class="tint-x">hours studied</span> , <span class="tint-y">test score</span> ) · trend line: <span class="tint-y">score</span> ≈ <span class="tint-m">5</span>·<span class="tint-x">hours</span> + <span class="tint-b">60</span>',
+          parts: [
+            { sym: 'dot', tone: 'x', name: 'one observation', desc: 'a single person or thing, plotted by its <b>two</b> values at once — never a total, always an individual' },
+            { sym: 'trend', tone: 'm', name: 'the trend line', desc: 'a single line that <b>summarises</b> the whole cloud — its slope is the typical change in y per +1 in x' },
+            { sym: 'direction', tone: 'y', name: 'direction', desc: 'dots rising → <b>positive</b> association · falling → <b>negative</b> · no drift → <b>no</b> association' },
+            { sym: 'strength', tone: 'b', name: 'strength', desc: 'how <b>tightly</b> the dots hug the line — a thin band is strong, a fat cloud is weak' }
+          ]
+        },
+        moves: [
+          { label: 'Dots rise', text: '→ positive association: as x goes up, y tends to go up too.' },
+          { label: 'Tighter cloud', text: '→ stronger correlation. Strength is about the SCATTER, not how steep the line is.' },
+          { label: 'A steeper trend line', text: '→ a bigger rate of change — but NOT a stronger correlation; steepness and strength are different things.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Plot each student as a dot: someone who studied 4 hours and scored 78 sits at (4, 78). Do that for the whole class and the dots drift up-and-right — more study, higher score. The trend line reads that drift as “about +5 points per hour.”',
+          math: 'more hours → higher score = positive association'
+        },
+        takeaway: 'One dot is one observation; the trend line is the story the whole cloud is telling.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A class records <b>hours studied</b> and <b>test score</b> for each student, then plots one dot per student. What would you expect the cloud of dots to show?',
         options: ['More study tends to go with higher scores — dots drift upward', 'Study time has nothing to do with the score', 'Every student who studied more scored exactly higher'] },
@@ -125,6 +148,29 @@
     concept: 'two-way-tables', title: 'Two-Way Tables',
     standards: ['AI.DS.5'],
     steps: [
+      { kind: 'teach', title: 'What a two-way table is counting',
+        lead: 'A two-way table sorts people by <b>two categories at once</b> — plays a sport (yes/no) crossed with has a job (yes/no). Every person lands in exactly one inner cell. The clever part: the same table holds <b>three different kinds of number</b>, and each answers a different question.',
+        anatomy: {
+          expr: '<span class="tint-x">12</span> (inner cell) · <span class="tint-y">30</span> (row/col total) · <span class="tint-b">60</span> (grand total) → <span class="tint-m">12 ÷ ?</span> = a relative frequency',
+          parts: [
+            { sym: 'joint', tone: 'x', name: 'joint (inner cell)', desc: 'counts people in <b>BOTH</b> categories at once — Sport: Yes AND Job: Yes = 12' },
+            { sym: 'marginal', tone: 'y', name: 'marginal (a total)', desc: 'a row or column total in the margin — counts <b>one</b> variable alone (30 play a sport)' },
+            { sym: 'grand', tone: 'b', name: 'grand total', desc: 'everyone (60) — sits in the bottom corner and is the denominator for “of everyone”' },
+            { sym: 'relative', tone: 'm', name: 'relative frequency', desc: 'a cell divided by <b>some</b> total — turning counts into fractions that reveal association' }
+          ]
+        },
+        moves: [
+          { label: 'Divide 12 by the grand total (60)', text: '→ “of everyone” — the fraction who both play a sport and work.' },
+          { label: 'Divide 12 by its ROW total (30)', text: '→ “of sport-players, the fraction who work” — a conditional. The denominator IS the question.' },
+          { label: 'Swap to the COLUMN total (20)', text: '→ “of workers, the fraction who play a sport” — same cell, different total, different meaning. P(A|B) ≠ P(B|A).' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Of 60 students, 12 both play a sport and have a job. Is that a lot? It depends what you compare it to: 12 out of all 60 is 20%, but 12 out of the 30 sport-players is 40%. Choosing the denominator changes the story.',
+          math: '12 / 60 = 20% (of all)  ·  12 / 30 = 40% (of sport-players)'
+        },
+        takeaway: 'Inner cell = both · margin = one variable · and the total you divide by decides which question you answered.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'You survey 60 students about two yes/no questions — <b>plays a sport?</b> and <b>has a job?</b> How many numbers do you need to show every combination?',
         options: ['Four — one count for each Yes/No pair', 'Two — just the two totals', 'One — the total of 60'] },
@@ -231,6 +277,21 @@
     concept: 'stats-process', title: 'Sampling & Studies',
     standards: ['AI.DS.1'],
     steps: [
+      { kind: 'teach', title: 'Why we study a sample instead of everyone',
+        lead: 'You almost never get to measure <b>everyone</b> you care about — the whole <b>population</b>. So you measure a smaller <b>sample</b> and generalise. That leap only works if the sample looks like the population in miniature. The enemy is <b>bias</b>: a sample that <i>systematically</i> leans one way, so it points at the wrong answer no matter how many people you add.',
+        moves: [
+          { label: 'Sample only the easy-to-reach (gym-goers, callers)', text: '→ convenience / voluntary-response bias: the sample tilts toward one type and overstates their trait.' },
+          { label: 'Make a biased sample BIGGER', text: '→ nothing improves. Size sharpens a wrong aim; it doesn’t re-aim it. Randomness fights bias, not size.' },
+          { label: 'Give everyone an equal chance (random sampling)', text: '→ the sample represents the population, so its rate is a fair estimate of the whole.' },
+          { label: 'IMPOSE a treatment and randomize who gets it', text: '→ you’ve moved from an observational study (association only) to an experiment (can argue cause).' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'To find the fraction of a 1,000-student school that exercises daily, you ask 50 people leaving the gym. Gym-goers exercise more than average, so your estimate comes out far too high — and asking 500 gym-goers instead of 50 would just make a confidently wrong number. A random draw of 50 from the whole school is the honest fix.',
+          math: 'random sample → represents the population · bigger ≠ unbiased'
+        },
+        takeaway: 'A sample stands in for a population only if it’s chosen fairly — and only a randomized experiment can claim cause.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'You want to know what fraction of a whole <b>school</b> of 1,000 students exercises daily, but you can only ask 50. Whom should you ask?',
         options: ['50 students chosen at RANDOM from the whole school', '50 students leaving the gym after practice', 'The first 50 who volunteer to answer'] },
@@ -338,6 +399,21 @@
     concept: 'data-nonneutral', title: 'Misleading Data',
     standards: ['AI.DS.2'],
     steps: [
+      { kind: 'teach', title: 'How true numbers can still lie',
+        lead: 'Every chart is a pile of <b>choices</b> — where the axis starts, which dates to show, which “average” to quote. The numbers can all be honest and the picture can still push you toward the wrong conclusion. The skill here isn’t doing arithmetic; it’s <b>spotting the choice</b> that’s doing the distorting.',
+        moves: [
+          { label: 'Start the y-axis above 0 (truncate it)', text: '→ a tiny 2-point gap fills the frame and looks enormous. Bar charts should start at 0.' },
+          { label: 'Show only a flattering slice of time', text: '→ a cherry-picked window can show the OPPOSITE of the real long-run trend.' },
+          { label: 'Quote the mean when there’s an outlier', text: '→ one giant value drags the mean up; the median stays put. Skewed data → report the median.' },
+          { label: 'Give a number with no baseline', text: '→ “up 300%!” means nothing without knowing 300% of what, from where.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Two bars, 92% and 94% — a mere 2-point gap. Start the y-axis at 90 instead of 0 and Brand B’s bar looks twice as tall as Brand A’s. Nothing about the numbers changed; the chosen baseline did all the lying. Redraw it from 0 and the bars are nearly equal, as they should be.',
+          math: 'gap = 94 − 92 = 2 points · axis from 90 makes it look like ×2'
+        },
+        takeaway: 'Before you trust a chart, interrogate the choices behind it — the axis, the time window, and the “average.”' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Two bars look wildly different in height — one seems to TOWER over the other. But the values are 92 and 94. How can that be?',
         options: ['The y-axis probably doesn’t start at 0, exaggerating the gap', 'The 94 really is twice the 92', 'Bar charts can’t be trusted at all, ever'] },

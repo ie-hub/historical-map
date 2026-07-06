@@ -14,6 +14,29 @@
     concept: 'radicals', title: 'Simplifying Radicals',
     standards: ['AI.NE.3'],
     steps: [
+      { kind: 'teach', title: 'What a radical is really asking',
+        lead: 'A square root is a <b>question</b>: <b>√n</b> asks “<i>what number, squared, gives n?</i>” Simplifying doesn’t change that answer — it just <b>rewrites</b> it in the cleanest form by pulling any <b>perfect-square</b> factor out from under the sign.',
+        anatomy: {
+          expr: '√<span class="tint-x">72</span> = √(<span class="tint-m">36</span> · <span class="tint-b">2</span>) = <span class="tint-m">6</span>√<span class="tint-b">2</span>',
+          parts: [
+            { sym: '√', tone: 'y', name: 'the radical', desc: 'asks “what squared gives this?” — the whole expression under it is the <b>radicand</b>' },
+            { sym: '36', tone: 'm', name: 'the perfect square', desc: 'the <b>largest</b> square factor hiding inside — its root <b>6</b> walks out front' },
+            { sym: '2', tone: 'b', name: 'the leftover', desc: 'has no square factor, so it <b>stays</b> under the sign' },
+            { sym: '72', tone: 'x', name: 'the radicand', desc: 'the number you’re taking the root of, split as <b>square × leftover</b>' }
+          ]
+        },
+        moves: [
+          { label: 'Bigger perfect square', text: '→ more comes out front, less stays under. Grab the LARGEST so you finish in one pass.' },
+          { label: 'No square factor left', text: '→ it’s fully simplified — 6√2 is done because 2 hides no square.' },
+          { label: '√ over a sum', text: '→ does NOT split: √(9 + 16) = √25 = 5, not 3 + 4. The root only breaks over ×, never over +.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Think of √72 as an area of 72 laid out as a rectangle. Pull off the biggest square tile — a 6×6 block of area 36 — and the root of that tile, <b>6</b>, steps outside:',
+          math: '√72 = √36 · √2 = 6√2'
+        },
+        takeaway: 'Simplifying a radical = pull out the biggest perfect square; the leftover — and any + inside — stays put.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: '√72 isn’t a whole number, but it isn’t “finished” either. What does <b>simplifying</b> a square root mean?',
         options: ['Pulling a perfect square out from under the root', 'Rounding it to a decimal', 'Making the root sign disappear'] },
@@ -112,6 +135,29 @@
     concept: 'polynomials', title: 'Polynomials',
     standards: ['AI.NE.5'],
     steps: [
+      { kind: 'teach', title: 'What a polynomial is made of',
+        lead: 'A polynomial is just a <b>sum of terms</b> — each term is a number times a power of x. The word looks scary, but it’s only <b>addition of building blocks</b>, and the one rule that governs it is: you can only combine <b>LIKE terms</b> — terms with the same variable AND same exponent.',
+        anatomy: {
+          expr: '<span class="tint-m">3</span><span class="tint-x">x²</span> <span class="tint-y">−</span> <span class="tint-m">2</span><span class="tint-x">x</span> <span class="tint-y">+</span> <span class="tint-b">3</span>',
+          parts: [
+            { sym: '3x²', tone: 'x', name: 'leading term', desc: 'the term with the <b>highest exponent</b>; its exponent (2) is the polynomial’s <b>degree</b>' },
+            { sym: '3', tone: 'm', name: 'coefficients', desc: 'the numbers out front — these are what you <b>add</b> when combining like terms' },
+            { sym: '3', tone: 'b', name: 'constant', desc: 'the lone number with no x — the term of degree 0' },
+            { sym: '+ −', tone: 'y', name: 'the glue', desc: 'terms are <b>added</b> together; standard form runs highest exponent → lowest' }
+          ]
+        },
+        moves: [
+          { label: 'Same variable & exponent', text: '→ LIKE terms — add the coefficients: 4x² + 7x² = 11x².' },
+          { label: 'Different exponent', text: '→ UNLIKE — they can’t merge: 2x² + 3x is already as short as it gets.' },
+          { label: 'Highest exponent', text: '→ sets the degree and the leading term; write terms from that one down to the constant.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Sort the terms like coins: x²’s in one pile, x’s in another, plain numbers in a third. You add within a pile, never across. So 2x² + 3x + (x² − 5x) groups to:',
+          math: '(2x² + x²) + (3x − 5x) = 3x² − 2x'
+        },
+        takeaway: 'A polynomial is a sum of terms; only like terms (same variable, same exponent) ever combine.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'To add <b>2x² + 3x</b> and <b>x² − 5x</b>, what can you legally combine?',
         options: ['x² with x², and x with x — matching terms only', 'Everything into one big term', 'Only the numbers in front'] },
@@ -205,6 +251,28 @@
     concept: 'complex-numbers', title: 'The Complex Number System',
     standards: ['AI.NE.1'],
     steps: [
+      { kind: 'teach', title: 'Why i exists, and what a + bi means',
+        lead: 'No real number squares to a negative — so √−1 had no answer. Mathematicians <b>defined one</b>: a new number <b>i</b> with the single property <b>i² = −1</b>. That one definition unlocks square roots of negatives, and every complex number then has the form <b>a + bi</b> — a real piece and an imaginary piece living side by side.',
+        anatomy: {
+          expr: '<span class="tint-m">a</span> + <span class="tint-b">b</span><span class="tint-y">i</span>',
+          parts: [
+            { sym: 'i', tone: 'y', name: 'the imaginary unit', desc: 'defined by <b>i² = −1</b> — it’s what √−1 becomes, the thing no real number could be' },
+            { sym: 'a', tone: 'm', name: 'the real part', desc: 'an ordinary real number — the part with no i' },
+            { sym: 'b', tone: 'b', name: 'the imaginary part', desc: 'the <b>coefficient of i</b> (sign included) — how much imaginary the number carries' }
+          ]
+        },
+        moves: [
+          { label: 'Negative under a root', text: '→ pull out √−1 as i: √−9 = √9 · √−1 = 3i.' },
+          { label: 'Meet an i²', text: '→ replace it with −1: −3i² = −3(−1) = +3 — an imaginary term turns real.' },
+          { label: 'a and b are separate', text: '→ 3 + 2i does NOT collapse to 5; the real and imaginary parts never merge.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Think of a + bi as a point on a map: <b>a</b> steps east (real axis), <b>b</b> steps north (imaginary axis). The number 3 + 2i lands 3 across and 2 up — two coordinates that stay distinct, just like the x and y of a point.',
+          math: '√−9 = 3i,   (3 + 2i) is the point (3, 2)'
+        },
+        takeaway: 'i is invented so i² = −1; every complex number is a + bi — one real part, one imaginary part, kept separate.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'No real number squares to a negative — so <b>x² + 1 = 0</b> has no real solution. What did mathematicians do about it?',
         options: ['Invented a new number i with i² = −1', 'Declared the equation has no answer, ever', 'Rounded to the nearest real number'] },
