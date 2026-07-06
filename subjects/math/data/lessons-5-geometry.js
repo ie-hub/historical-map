@@ -11,6 +11,28 @@
     concept: 'triangles-circles', title: 'Triangles & Circles',
     standards: ['5.G.1'],
     steps: [
+      { kind: 'teach', title: 'How we name triangles and circles',
+        lead: 'Two shapes, two simple rules. A <b>triangle</b> gets its name from its <b>biggest angle</b>. A <b>circle</b> is built from one distance — how far the edge sits from the center. Once you know that distance, you know the whole circle.',
+        anatomy: {
+          expr: '<span class="tint-m">d</span> = 2<span class="tint-b">r</span>',
+          parts: [
+            { sym: 'r', tone: 'b', name: 'radius', desc: 'from the <b>center out to the edge</b> — every radius of one circle is the same' },
+            { sym: 'd', tone: 'm', name: 'diameter', desc: 'straight <b>across</b> through the center — it is just two radii in a row' },
+            { sym: 'angle', tone: 'x', name: 'the angles', desc: 'a triangle’s three angles always add to <b>180°</b>' }
+          ]
+        },
+        moves: [
+          { label: 'One 90° angle', text: '→ a <b>right</b> triangle (a square corner).' },
+          { label: 'All angles under 90°', text: '→ an <b>acute</b> triangle.' },
+          { label: 'One angle over 90°', text: '→ an <b>obtuse</b> triangle.' },
+          { label: 'Double the radius', text: '→ you get the diameter. Halve the diameter → back to the radius.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A pizza with a <b>5 cm radius</b> reaches 5 cm from the center to the crust. Straight across the whole pizza is <b>twice that</b>:',
+          math: 'r = 5 cm  →  d = 2 × 5 = 10 cm'
+        },
+        takeaway: 'Name a triangle by its biggest angle; a circle’s diameter is always two radii.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Triangles come in different shapes. What do you think we use to sort them into <b>right</b>, <b>acute</b>, and <b>obtuse</b>?',
         options: ['Their colour', 'Their biggest angle', 'How big they are'] },
@@ -63,6 +85,28 @@
     concept: 'classify-polygons', title: 'Classifying Polygons',
     standards: ['5.G.2'],
     steps: [
+      { kind: 'teach', title: 'How shapes get sorted into families',
+        lead: 'A <b>polygon</b> is a closed shape with straight sides. Its name comes from <b>how many sides</b> it has. But shapes also fit into <b>families</b>: a shape joins a family when it has <b>all</b> of that family’s rules. That is why a square counts as a rectangle too.',
+        anatomy: {
+          expr: '<span class="tint-y">quadrilateral</span> ⊃ <span class="tint-b">parallelogram</span> ⊃ <span class="tint-m">rectangle</span> ⊃ <span class="tint-x">square</span>',
+          parts: [
+            { sym: 'quadrilateral', tone: 'y', name: '4 sides', desc: 'any closed shape with <b>4 straight sides</b>' },
+            { sym: 'parallelogram', tone: 'b', name: '+ parallel sides', desc: 'both pairs of opposite sides are <b>parallel</b>' },
+            { sym: 'rectangle', tone: 'm', name: '+ right angles', desc: 'a parallelogram with <b>4 square corners</b>' },
+            { sym: 'square', tone: 'x', name: '+ equal sides', desc: 'a rectangle whose <b>4 sides are all equal</b>' }
+          ]
+        },
+        moves: [
+          { label: 'Add a rule', text: '→ you move to a smaller, more special family.' },
+          { label: 'A square', text: '→ has every rectangle rule (and more), so it <b>is</b> a rectangle.' },
+          { label: 'A rectangle', text: '→ does <b>not</b> need equal sides, so it is <b>not</b> always a square.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A door is a <b>rectangle</b> — 4 square corners — but it is tall and thin, so its sides aren’t all equal. It is <b>not</b> a square. A square tile has 4 corners <i>and</i> 4 equal sides, so it is a rectangle <b>and</b> a square.',
+          math: 'square ⇒ rectangle,   but rectangle ⇏ square'
+        },
+        takeaway: 'The family tree runs one way: every square is a rectangle, but not every rectangle is a square.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A square is a rectangle. Is a rectangle also always a square?',
         options: ['Yes — same thing', 'No — a rectangle needn’t have equal sides', 'Only sometimes'] },
@@ -114,6 +158,27 @@
     concept: 'unit-conversions', title: 'Measurement Conversions',
     standards: ['5.M.1'],
     steps: [
+      { kind: 'teach', title: 'What converting units really does',
+        lead: 'Converting a measurement doesn’t change how long something is — it only changes the <b>unit</b> you count it in. Each pair of units is joined by a fixed number (like <b>1 m = 100 cm</b>). To switch, you <b>multiply or divide by that number</b>. The tricky part is picking which one.',
+        anatomy: {
+          expr: '<span class="tint-b">3 m</span> × <span class="tint-m">100</span> = <span class="tint-x">300 cm</span>',
+          parts: [
+            { sym: '3 m', tone: 'b', name: 'start', desc: 'the amount in the <b>unit you have</b>' },
+            { sym: '100', tone: 'm', name: 'the ratio', desc: 'how many small units fit in one big one (<b>1 m = 100 cm</b>)' },
+            { sym: '300 cm', tone: 'x', name: 'result', desc: 'the <b>same length</b>, now counted in the new unit' }
+          ]
+        },
+        moves: [
+          { label: 'Big unit → small unit', text: '→ you need <b>more</b> pieces, so <b>multiply</b>.' },
+          { label: 'Small unit → big unit', text: '→ you need <b>fewer</b> pieces, so <b>divide</b>.' },
+          { label: 'A bigger unit', text: '→ always gives a <b>smaller number</b> for the same length.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A <b>3 m</b> rope isn’t getting longer when you say it in cm — you’re just counting in smaller steps. Since cm are smaller, you need <b>more</b> of them:',
+          math: '3 m × 100 = 300 cm'
+        },
+        takeaway: 'Same length, new unit — smaller units mean a bigger number, so multiply; bigger units mean fewer, so divide.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'You change <b>3 meters</b> into centimeters. Since a meter is bigger, will the NUMBER of centimeters be bigger or smaller than 3?',
         options: ['Bigger — more small units fit', 'Smaller — meters are bigger', 'The same number'] },
@@ -165,6 +230,27 @@
     concept: 'area-formulas', title: 'Area of Triangles & Parallelograms',
     standards: ['5.M.3'],
     steps: [
+      { kind: 'teach', title: 'Why every area formula is really a rectangle',
+        lead: 'You already know a rectangle’s area: <b>base × height</b>, the number of unit squares that fill it. Every other area formula is just this one in disguise — you <b>rearrange</b> the shape into a rectangle and read off the answer. A <b>triangle</b> is exactly <b>half</b> a rectangle, so it gets a <b>½</b>.',
+        anatomy: {
+          expr: '<span class="tint-x">A</span> = ½ · <span class="tint-b">b</span> · <span class="tint-m">h</span>',
+          parts: [
+            { sym: 'b', tone: 'b', name: 'base', desc: 'the flat bottom side you measure along' },
+            { sym: 'h', tone: 'm', name: 'height', desc: 'the <b>straight-up</b> distance to the top — <i>not</i> the slanted side' },
+            { sym: '½', tone: 'x', name: 'the half', desc: 'a triangle fills <b>half</b> the rectangle around it' }
+          ]
+        },
+        moves: [
+          { label: 'Rectangle', text: '→ A = b × h (the unit squares that fill it).' },
+          { label: 'Parallelogram', text: '→ slide its slanted end over and it becomes a rectangle: A = b × h.' },
+          { label: 'Triangle', text: '→ half of that rectangle, so A = ½ × b × h.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Draw a <b>6 by 4</b> rectangle (area 24). Cut it corner to corner — you get <b>two matching triangles</b>. So one triangle covers half:',
+          math: 'A = ½ × 6 × 4 = 12'
+        },
+        takeaway: 'Rearrange any shape into a rectangle — a triangle is half of one, which is where the ½ comes from.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A triangle sits inside a rectangle of the same base and height. What fraction of the rectangle do you think the triangle covers?',
         options: ['The whole thing', 'Half of it', 'A quarter'] },
@@ -212,6 +298,27 @@
     concept: 'volume', title: 'Volume',
     standards: ['5.M.4', '5.M.5'],
     steps: [
+      { kind: 'teach', title: 'What volume counts',
+        lead: 'Area covers a flat floor with squares. <b>Volume</b> fills a whole solid with <b>little cubes</b> — how many 1×1×1 cubes fit inside. Fill the bottom layer first (that’s just the base area), then <b>stack that layer</b> as many times as the box is tall.',
+        anatomy: {
+          expr: '<span class="tint-y">V</span> = <span class="tint-b">l</span> × <span class="tint-x">w</span> × <span class="tint-m">h</span>',
+          parts: [
+            { sym: 'l × w', tone: 'b', name: 'base area', desc: 'cubes in <b>one bottom layer</b> (length × width)' },
+            { sym: 'h', tone: 'm', name: 'height', desc: 'how many <b>layers stack up</b>' },
+            { sym: 'V', tone: 'y', name: 'volume', desc: 'total cubes inside — measured in <b>cubic</b> units' }
+          ]
+        },
+        moves: [
+          { label: 'Base area × height', text: '→ layers stacked up give the volume: V = B × h.' },
+          { label: 'Taller box (bigger h)', text: '→ more layers, so more cubes.' },
+          { label: 'Three lengths multiplied', text: '→ that’s why the answer is in <b>cubic</b> units, not square.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A box <b>4 × 3 × 2</b>: the bottom layer holds 4 × 3 = <b>12 cubes</b>. It is <b>2 layers</b> tall, so stack them:',
+          math: 'V = 12 × 2 = 24 cubic units'
+        },
+        takeaway: 'Volume = the cubes that fill a solid = base area × height = length × width × height.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'To find how much space fills a box, area (length × width) covers the FLOOR. What’s missing to fill the whole box?',
         options: ['Nothing — area is enough', 'The height — how many layers stack up', 'The color'] },

@@ -11,6 +11,28 @@
     concept: 'variable-expressions', title: 'Expressions with Variables',
     standards: ['5.AT.8'],
     steps: [
+      { kind: 'teach', title: 'What a variable expression really is',
+        lead: 'A <b>letter can stand for a number you get to choose</b>. An <b>expression</b> is like a recipe: it tells you what to do with that number. You <b>evaluate</b> it by putting a value in for the letter and working it out.',
+        anatomy: {
+          expr: '<span class="tint-m">2</span><span class="tint-x">m</span> + <span class="tint-b">3</span>',
+          parts: [
+            { sym: 'm', tone: 'x', name: 'the letter', desc: 'a number you can choose — here, the number of miles' },
+            { sym: '2', tone: 'm', name: 'per each', desc: '2m means <b>2 × m</b> — $2 for <b>every</b> mile' },
+            { sym: '+ 3', tone: 'b', name: 'added once', desc: 'a flat $3 fee, added just one time' },
+            { sym: 'no =', tone: 'y', name: 'no equals sign', desc: 'an expression is a recipe, not a question — an <b>equation</b> has an = sign' }
+          ]
+        },
+        moves: [
+          { label: 'Pick m = 4', text: '→ 2×4 + 3 = 11. You put 4 in for m and worked it out.' },
+          { label: 'Pick a bigger m', text: '→ a bigger answer. More miles means more cost.' },
+          { label: 'Same recipe, any m', text: '→ one expression covers every possible trip at once.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A taxi costs <b>$2 a mile plus a $3 fee</b>. Write it as <b>2m + 3</b>. To find the cost of a 4-mile ride, put <b>4</b> in for m:',
+          math: 'm = 4  gives  2×4 + 3 = 11'
+        },
+        takeaway: 'A letter is a number you choose; an expression is the recipe you run it through.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Apples cost $2 each. If you don’t know how many you’ll buy, how could you write the total cost?',
         options: ['$2 exactly', '2 × n, where n is the number of apples', 'You can’t write it without a number'] },
@@ -58,6 +80,28 @@
     concept: 'measures-of-center', title: 'Mean, Median & Mode',
     standards: ['5.DS.2'],
     steps: [
+      { kind: 'teach', title: 'Three ways to sum up a data set',
+        lead: 'Sometimes you want <b>one number</b> that stands for a whole pile of numbers. Mean, median, and mode each do this in a different way — so they can give <b>different answers</b> for the same data.',
+        anatomy: {
+          expr: '<span class="tint-m">mean</span> · <span class="tint-b">median</span> · <span class="tint-x">mode</span>',
+          parts: [
+            { sym: 'mean', tone: 'm', name: 'fair share', desc: '<b>add up</b> all the values, then <b>split evenly</b> by how many there are' },
+            { sym: 'median', tone: 'b', name: 'the middle', desc: 'put the values <b>in order</b>, then pick the one in the middle' },
+            { sym: 'mode', tone: 'x', name: 'most common', desc: 'the value that shows up the <b>most times</b>' },
+            { sym: 'outlier', tone: 'y', name: 'the odd one out', desc: 'a value much bigger or smaller than the rest' }
+          ]
+        },
+        moves: [
+          { label: 'Add a huge value', text: '→ the mean jumps up. The fair share gets dragged toward the big number.' },
+          { label: 'Same huge value', text: '→ the median barely moves. Only the middle spot matters, not the size.' },
+          { label: 'Add a repeat', text: '→ the mode can change to whatever now shows up most.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Five friends have <b>2, 3, 3, 4, 8</b> stickers. The <b>8</b> is an outlier. Add up (20) and split by 5 for the mean; the middle value is the median; 3 repeats, so it’s the mode:',
+          math: 'mean = 4   median = 3   mode = 3'
+        },
+        takeaway: 'Mean is the fair share, median is the middle, mode is the most common — and outliers pull the mean, not the median.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Five friends have 2, 3, 3, 4, and 8 stickers. What single number best describes "a typical amount"?',
         options: ['The biggest, 8', 'Somewhere in the middle', 'The smallest, 2'] },

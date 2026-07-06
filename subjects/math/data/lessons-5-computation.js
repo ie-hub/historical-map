@@ -11,6 +11,28 @@
     concept: 'multiply-multidigit', title: 'Multi-Digit Multiplication',
     standards: ['5.C.1', '5.C.3'],
     steps: [
+      { kind: 'teach', title: 'What multiplying big numbers really does',
+        lead: 'Big multiplication looks scary, but it’s just <b>lots of small multiplications added up</b>. You break each number into its <b>place-value parts</b> (tens and ones), multiply the parts, then add. The tall “stacked” algorithm is just a <b>neat way to keep those parts organized</b>.',
+        anatomy: {
+          expr: '<span class="tint-m">23</span> × <span class="tint-x">14</span>  =  <span class="tint-m">23</span>×<span class="tint-b">10</span> + <span class="tint-m">23</span>×<span class="tint-y">4</span>',
+          parts: [
+            { sym: '10', tone: 'b', name: 'the tens part', desc: 'the <b>10</b> hiding inside 14 — worth ten times as much as the ones' },
+            { sym: '4', tone: 'y', name: 'the ones part', desc: 'the <b>4</b> in 14 — the plain ones' },
+            { sym: '23', tone: 'm', name: 'the other factor', desc: 'the number you multiply by <b>each</b> part' },
+            { sym: '14', tone: 'x', name: 'split me up', desc: 'break it into <b>10 + 4</b> so the pieces are easy' }
+          ]
+        },
+        moves: [
+          { label: '×10', text: '→ every digit slides one place left. Just add a zero: 23 → 230.' },
+          { label: 'Smaller factor', text: '→ smaller product. 48 × 9 is less than 48 × 10.' },
+          { label: 'Estimate first', text: '→ round the numbers to check your answer looks right (23×14 ≈ 300).' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'To do <b>23 × 14</b>, split 14 into <b>10 and 4</b>. Do 23×4 = 92 and 23×10 = 230, then add the two <b>partial products</b>:',
+          math: '92 + 230 = 322'
+        },
+        takeaway: 'Multiply each place value, then add the parts — that’s all the tall algorithm is doing.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'To find <b>23 × 14</b>, why can’t you just do 2×1 and 3×4 and mash them together?',
         options: ['You can — 2 and 12 → 212', 'No — each digit has a place value', 'You have to add 14 twenty-three times'] },
@@ -53,6 +75,27 @@
     concept: 'add-sub-fractions', title: 'Adding & Subtracting Fractions',
     standards: ['5.C.4'],
     steps: [
+      { kind: 'teach', title: 'Why you can’t just add straight across',
+        lead: 'A fraction is a <b>count of same-size pieces</b>. The bottom number tells you the <b>piece size</b>; the top tells you <b>how many</b> you have. You can only add fractions when the pieces are the <b>same size</b> — so you rename them to a <b>common denominator</b> first, then add the tops.',
+        anatomy: {
+          expr: '<span class="tint-y">1</span><span class="tint-m">/2</span>  +  <span class="tint-y">1</span><span class="tint-m">/3</span>   →   <span class="tint-y">3</span><span class="tint-b">/6</span> + <span class="tint-y">2</span><span class="tint-b">/6</span>',
+          parts: [
+            { sym: 'top', tone: 'y', name: 'the numerator', desc: '<b>how many</b> pieces you have — this is what you add' },
+            { sym: 'bottom', tone: 'm', name: 'the denominator', desc: 'the <b>size</b> of each piece — halves, thirds, and so on' },
+            { sym: '/6', tone: 'b', name: 'common denominator', desc: 'one shared piece size (<b>sixths</b>) that halves AND thirds fit into' }
+          ]
+        },
+        moves: [
+          { label: 'Different bottoms', text: '→ the pieces don’t match yet. Rename before you add.' },
+          { label: 'Common denominator', text: '→ now the pieces are the same size. Just add the tops.' },
+          { label: 'Bigger denominator', text: '→ smaller pieces. Sixths are smaller than halves.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'You can’t add half a pizza and a third of a pizza as-is — the slices are different sizes. Cut both into <b>sixths</b>: 1/2 becomes <b>3/6</b> and 1/3 becomes <b>2/6</b>. Now the slices match:',
+          math: '3/6 + 2/6 = 5/6'
+        },
+        takeaway: 'Same-size pieces first, then add the tops — the bottom (piece size) stays put.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Is <b>1/2 + 1/3 = 2/5</b>? (Add the tops, add the bottoms?)',
         options: ['Yes — 1+1 over 2+3', 'No — the pieces are different sizes', 'Only sometimes'] },
@@ -100,6 +143,27 @@
     concept: 'multiply-fractions', title: 'Multiplying Fractions',
     standards: ['5.C.5', '5.C.6'],
     steps: [
+      { kind: 'teach', title: 'What multiplying fractions really means',
+        lead: 'To multiply fractions, you <b>multiply straight across</b> — top times top, bottom times bottom. The word <b>“of” means multiply</b>: “1/2 of 1/2” IS 1/2 × 1/2. And here’s the surprise — multiplying by a fraction <b>less than 1 makes the number smaller</b>, because you’re taking a <b>part of a part</b>.',
+        anatomy: {
+          expr: '<span class="tint-y">a</span><span class="tint-m">/b</span>  ×  <span class="tint-y">c</span><span class="tint-b">/d</span>   =   <span class="tint-y">(a×c)</span><span class="tint-x">/(b×d)</span>',
+          parts: [
+            { sym: 'a×c', tone: 'y', name: 'tops multiply', desc: 'the two <b>numerators</b> multiply to make the new top' },
+            { sym: 'b×d', tone: 'x', name: 'bottoms multiply', desc: 'the two <b>denominators</b> multiply to make the new bottom' },
+            { sym: '×', tone: 'm', name: '“of”', desc: '“1/2 <b>of</b> something” means <b>multiply</b> by 1/2' }
+          ]
+        },
+        moves: [
+          { label: 'Times a fraction < 1', text: '→ the answer SHRINKS. 1/2 × 1/2 = 1/4, smaller than a half.' },
+          { label: 'Times a fraction > 1', text: '→ the answer GROWS. 8 × 3/2 is bigger than 8.' },
+          { label: 'Simplify at the end', text: '→ divide top and bottom by a shared number. 6/12 becomes 1/2.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Fold a paper in half, then in half again. Each part is <b>half of a half</b>. Multiply straight across:',
+          math: '1/2 × 1/2 = (1×1)/(2×2) = 1/4'
+        },
+        takeaway: 'Multiply across, “of” means times, and a fraction below 1 makes things smaller.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'You take <b>1/2 of 1/2</b> a chocolate bar. Do you get MORE than half or LESS than half?',
         options: ['More — you’re multiplying', 'Less — a part of a part is smaller', 'Exactly half'] },
@@ -148,6 +212,27 @@
     concept: 'decimal-operations', title: 'Decimal Operations',
     standards: ['5.C.8'],
     steps: [
+      { kind: 'teach', title: 'Decimals are just whole numbers plus a point',
+        lead: 'Working with decimals is <b>ordinary arithmetic with one extra job</b>: placing the point. To <b>add or subtract</b>, line the numbers up by <b>place value</b> (points under points). To <b>multiply</b>, ignore the points, multiply like whole numbers, then <b>count the decimal places</b> to know where the point goes.',
+        anatomy: {
+          expr: '<span class="tint-m">12.25</span> + <span class="tint-m">3.50</span>  vs.  <span class="tint-x">0.3</span> × <span class="tint-x">0.2</span> = <span class="tint-b">0.06</span>',
+          parts: [
+            { sym: '.', tone: 'm', name: 'line up (add/sub)', desc: 'stack the <b>decimal points</b> so tenths meet tenths, hundredths meet hundredths' },
+            { sym: '×', tone: 'x', name: 'count places (multiply)', desc: 'multiply as whole numbers, then place the point' },
+            { sym: '0.06', tone: 'b', name: 'the placed point', desc: 'two decimal places in (0.3 and 0.2) means <b>two</b> decimal places out' }
+          ]
+        },
+        moves: [
+          { label: 'Adding', text: '→ align the points and pad with zeros. 3.5 becomes 3.50.' },
+          { label: 'Multiplying', text: '→ total the decimal places in both factors. 0.3 × 0.2 → 2 places → 0.06.' },
+          { label: 'Money', text: '→ dollars and cents line up exactly like any decimal.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'To add <b>3.5 + 12.25</b>, pad 3.5 as <b>3.50</b> and line up the points so the places match:',
+          math: '12.25 + 3.50 = 15.75'
+        },
+        takeaway: 'Line up points to add or subtract; count decimal places to multiply.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'To add <b>3.5 + 12.25</b>, what matters most about how you line the numbers up?',
         options: ['Line up the last digits on the right', 'Line up the decimal points', 'It doesn’t matter'] },
@@ -195,6 +280,27 @@
     concept: 'order-ops', title: 'Order of Operations',
     standards: ['5.C.9'],
     steps: [
+      { kind: 'teach', title: 'Why we all agree on an order',
+        lead: 'If everyone solved <b>2 + 3 × 4</b> their own way, they’d get different answers — and math would be useless. So we agree on <b>one order</b>, sometimes called <b>PEMDAS</b>: do <b>grouping first</b>, then <b>× and ÷</b>, then <b>+ and −</b>. That way one expression always has <b>one right answer</b>.',
+        anatomy: {
+          expr: '<span class="tint-b">( )</span>  →  <span class="tint-m">× ÷</span>  →  <span class="tint-x">+ −</span>',
+          parts: [
+            { sym: '( )', tone: 'b', name: 'grouping first', desc: 'anything inside <b>parentheses or brackets</b> happens before everything else' },
+            { sym: '× ÷', tone: 'm', name: 'then times & divide', desc: 'multiply and divide next, working <b>left to right</b>' },
+            { sym: '+ −', tone: 'x', name: 'then add & subtract', desc: 'add and subtract last, working <b>left to right</b>' }
+          ]
+        },
+        moves: [
+          { label: 'Add parentheses', text: '→ that part jumps to the front. (2 + 3) × 4 = 20, not 14.' },
+          { label: 'No parentheses', text: '→ × still beats +. 2 + 3 × 4 means 2 + 12 = 14.' },
+          { label: 'Same rank', text: '→ if it’s all × ÷ (or all + −), just go left to right.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'For <b>2 + 3 × 4</b>, multiplication goes first: 3 × 4 = 12. So it becomes 2 + 12:',
+          math: '2 + 3 × 4 = 2 + 12 = 14'
+        },
+        takeaway: 'Grouping, then × ÷, then + − — one order so everyone gets the same answer.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'What is <b>2 + 3 × 4</b>? (Left to right, or is there a rule?)',
         options: ['20 — add first, then ×', '14 — multiply first', 'Either is fine'] },

@@ -12,6 +12,28 @@
     concept: 'decimal-place-value', title: 'Decimal Place Value',
     standards: ['5.NS.3'],
     steps: [
+      { kind: 'teach', title: 'What the digits after the point mean',
+        lead: 'The decimal point is a fence. To its <b>left</b> are whole things — ones, tens, hundreds. To its <b>right</b> are <b>pieces</b> of one whole — tenths, hundredths, thousandths. Each step to the right is <b>10 times smaller</b> than the step before it.',
+        anatomy: {
+          expr: '<span class="tint-m">3</span> . <span class="tint-b">3</span> <span class="tint-x">3</span> <span class="tint-y">3</span>',
+          parts: [
+            { sym: '3', tone: 'm', name: 'ones', desc: 'a whole 3 — this sits to the <b>left</b> of the point' },
+            { sym: '3', tone: 'b', name: 'tenths', desc: 'first place after the point — worth <b>0.3</b> (three out of ten pieces)' },
+            { sym: '3', tone: 'x', name: 'hundredths', desc: 'one step further right — worth <b>0.03</b>, ten times smaller' },
+            { sym: '3', tone: 'y', name: 'thousandths', desc: 'smaller again — worth <b>0.003</b>' }
+          ]
+        },
+        moves: [
+          { label: 'Step right', text: '→ the digit is worth 1/10 as much. Tenths become hundredths.' },
+          { label: 'Step left', text: '→ the digit is worth 10 times more.' },
+          { label: 'Same digit, new place', text: '→ a very different value. The 3 in tenths is 10 times the 3 in hundredths.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Think of money. In <b>$3.33</b>, the first 3 after the point is <b>3 dimes</b> (0.30), and the second 3 is <b>3 pennies</b> (0.03). Same digit, but dimes are worth ten times more than pennies.',
+          math: '3 + 0.3 + 0.03 = 3.33'
+        },
+        takeaway: 'The place a digit sits in tells you its real worth — and each place right is 1/10 of the one before.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'In the number <b>3.33</b>, the two 3s after the point look the same. Is the first 3 (tenths) worth <b>the same</b> as the second 3 (hundredths)?',
         options: ['Same — they’re both just 3', 'No — each place to the right is worth less', 'I’m not sure yet'] },
@@ -61,6 +83,27 @@
     concept: 'powers-of-ten', title: 'Powers of 10',
     standards: ['5.NS.4'],
     steps: [
+      { kind: 'teach', title: 'What multiplying by 10 really does',
+        lead: 'You’re not "adding a zero" — you’re <b>sliding the decimal point</b>. Multiply by 10 and every digit jumps one place to the <b>left</b>, so the number gets bigger. Divide by 10 and every digit slides <b>right</b>, so it gets smaller. The zeros just fill in the empty spots.',
+        anatomy: {
+          expr: '× <span class="tint-m">10</span><span class="tint-x">ⁿ</span>',
+          parts: [
+            { sym: '10', tone: 'm', name: 'the base', desc: '10ⁿ is just <b>1 followed by n zeros</b> — 10³ = 1000' },
+            { sym: 'n', tone: 'x', name: 'the exponent', desc: 'counts how many <b>zeros</b> — and how many <b>places</b> the point moves' },
+            { sym: '×', tone: 'b', name: 'the direction', desc: '× moves the point <b>right</b> (bigger); ÷ moves it <b>left</b> (smaller)' }
+          ]
+        },
+        moves: [
+          { label: '× 10', text: '→ point moves 1 place right. 4.7 becomes 47.' },
+          { label: '× 100 (10²)', text: '→ point moves 2 places right. 4.7 becomes 470.' },
+          { label: '÷ 10', text: '→ point moves 1 place left, getting smaller. 4.7 becomes 0.47.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: '<b>2.5 × 10³</b> means "slide the point <b>3 places right</b>" (because 10³ = 1000). Start at 2.5 and walk the point over: 2.5 → 25 → 250 → 2500.',
+          math: '2.5 × 10³ = 2500'
+        },
+        takeaway: 'The exponent counts the zeros — and that same number tells you how far the point slides.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Multiplying by 10 keeps adding a zero: 4 → 40 → 400. What do you think happens to a <b>decimal</b> like 4.7 when you multiply it by 10?',
         options: ['You add a zero → 4.70', 'The point moves → 47', 'Nothing changes'] },
@@ -107,6 +150,27 @@
     concept: 'round-decimals', title: 'Rounding Decimals',
     standards: ['5.NS.5'],
     steps: [
+      { kind: 'teach', title: 'What rounding is really asking',
+        lead: 'Rounding just asks: <b>which nearby mark is it closest to?</b> To round to a place, you only need to peek at <b>one digit</b> — the very next one to the right. That digit tells you whether to bump up or stay put.',
+        anatomy: {
+          expr: '4 . <span class="tint-m">6</span> 8',
+          parts: [
+            { sym: '6', tone: 'm', name: 'the deciding digit', desc: 'to round to the ones place, look at the <b>next digit right</b> (tenths)' },
+            { sym: '≥5', tone: 'x', name: 'round up', desc: 'if that digit is <b>5 or more</b>, bump the rounding place up by one' },
+            { sym: '≤4', tone: 'b', name: 'stay', desc: 'if it’s <b>4 or less</b>, leave the rounding place alone' }
+          ]
+        },
+        moves: [
+          { label: 'Next digit is 5–9', text: '→ round UP. 4.68 rounds to 5.' },
+          { label: 'Next digit is 0–4', text: '→ stay. 4.31 rounds to 4.' },
+          { label: 'A 9 rounds up', text: '→ it carries. 5.96 to the nearest tenth becomes 6.0.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'A bill of <b>$4.68</b> rounded to the nearest dollar: the deciding digit is the <b>6</b> (tenths). 6 is 5 or more, so you round up — $4.68 is closer to $5.',
+          math: '4.68 ≈ 5'
+        },
+        takeaway: 'Find the deciding digit: 5 or more rounds up, 4 or less stays.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A bill comes to <b>$4.68</b>. Rounded to the nearest dollar, is that closer to $4 or $5?',
         options: ['$4 — it starts with 4', '$5 — 0.68 is past halfway', 'Exactly in between'] },
@@ -148,6 +212,28 @@
     concept: 'compare-order', title: 'Comparing & Ordering',
     standards: ['5.NS.1'],
     steps: [
+      { kind: 'teach', title: 'Why longer doesn’t mean bigger',
+        lead: 'With whole numbers, more digits means a bigger number. With decimals, that trick <b>breaks</b>. To compare fairly, line up the decimal points and check the places <b>from the left</b>. The first place where they differ wins.',
+        anatomy: {
+          expr: '0 . <span class="tint-m">7</span> 0 &nbsp; vs &nbsp; 0 . <span class="tint-x">6</span> 5',
+          parts: [
+            { sym: '.', tone: 'b', name: 'line up the points', desc: 'stack the decimal points so the same places sit under each other' },
+            { sym: '0', tone: 'y', name: 'pad with zeros', desc: 'write 0.7 as <b>0.70</b> so both have the same length — the value doesn’t change' },
+            { sym: '7', tone: 'm', name: 'tenths first', desc: 'compare the <b>biggest place</b> first: 7 tenths beats 6 tenths' },
+            { sym: '6', tone: 'x', name: 'the loser', desc: '6 tenths is smaller, so 0.65 is smaller — the hundredths never matter' }
+          ]
+        },
+        moves: [
+          { label: 'Different tenths', text: '→ done. Bigger tenths wins, no need to look further.' },
+          { label: 'Same tenths', text: '→ move right to hundredths and compare those.' },
+          { label: 'Extra trailing zeros', text: '→ they add nothing. 0.3 and 0.300 are equal.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Is <b>0.7</b> or <b>0.65</b> bigger? Pad 0.7 to <b>0.70</b>. Compare tenths: 7 vs 6. 7 wins right away — so 0.7 is bigger, even though 0.65 has more digits.',
+          math: '0.70 > 0.65'
+        },
+        takeaway: 'Line up the points and compare place by place from the left — length is a trap.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Which is bigger, <b>0.7</b> or <b>0.65</b>? (Careful — 65 looks like a bigger number than 7.)',
         options: ['0.65 — 65 > 7', '0.7 — line up the places first', 'They’re equal'] },
@@ -194,6 +280,28 @@
     concept: 'percents-intro', title: 'Percents as Part of 100',
     standards: ['5.NS.6'],
     steps: [
+      { kind: 'teach', title: 'What "percent" really means',
+        lead: 'Percent means <b>"per hundred"</b>. The word "cent" means hundred — like 100 cents in a dollar. So <b>45%</b> is just 45 out of 100. A percent, a fraction over 100, and a decimal are <b>three names for the same amount</b>.',
+        anatomy: {
+          expr: '<span class="tint-m">45</span><span class="tint-x">%</span> = <span class="tint-b">45/100</span> = <span class="tint-y">0.45</span>',
+          parts: [
+            { sym: '45', tone: 'm', name: 'the count', desc: 'how many pieces you have out of the hundred' },
+            { sym: '%', tone: 'x', name: 'per hundred', desc: 'a shortcut for "out of 100" — the whole is always 100' },
+            { sym: '45/100', tone: 'b', name: 'the fraction', desc: '45 over 100 — the 100 always sits on the <b>bottom</b>' },
+            { sym: '0.45', tone: 'y', name: 'the decimal', desc: 'the same thing as a decimal: 45 hundredths' }
+          ]
+        },
+        moves: [
+          { label: 'Percent → fraction', text: '→ put the number over 100. 45% = 45/100.' },
+          { label: 'Percent → decimal', text: '→ divide by 100 (move the point 2 places left). 45% = 0.45.' },
+          { label: 'Bigger percent', text: '→ more of the whole shaded. 100% is the whole thing.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'Picture a 10×10 grid — 100 squares. Shade <b>45</b> of them and you’ve shaded <b>45%</b>. That same shaded part is <b>45/100</b> as a fraction and <b>0.45</b> as a decimal.',
+          math: '45% = 45/100 = 0.45'
+        },
+        takeaway: 'Percent, fraction over 100, and decimal are one amount wearing three outfits.' },
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A phone battery shows <b>50%</b>. What does the "%" tell you it’s 50 <b>out of</b>?',
         options: ['Out of 50', 'Out of 100', 'Out of 10'] },

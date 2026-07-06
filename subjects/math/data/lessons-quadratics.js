@@ -16,6 +16,28 @@
     concept: 'factoring', title: 'Factoring Quadratics',
     standards: ['AI.NE.4'],
     steps: [
+      { kind: 'teach', title: 'What factoring actually does',
+        lead: 'Factoring <b>undoes multiplication</b>. Multiplying takes two brackets and spreads them into x² + bx + c; factoring runs that in reverse — you take the spread-out quadratic and <b>rebuild the two brackets</b> it came from. The whole job is a number hunt: find two numbers that fit both a <i>product</i> and a <i>sum</i>.',
+        anatomy: {
+          expr: '<span class="tint-x">x²</span> + <span class="tint-m">b</span>x + <span class="tint-b">c</span>  =  (x + <span class="tint-y">p</span>)(x + <span class="tint-y">q</span>)',
+          parts: [
+            { sym: 'c', tone: 'b', name: 'the product', desc: 'the two numbers must <b>multiply to c</b> — for x² + 5x + 6, they multiply to 6' },
+            { sym: 'b', tone: 'm', name: 'the sum', desc: 'those same two numbers must <b>add to b</b> — for x² + 5x + 6, they add to 5' },
+            { sym: 'p, q', tone: 'y', name: 'the pair', desc: 'the numbers you find — one drops into each bracket as (x + p)(x + q)' }
+          ]
+        },
+        moves: [
+          { label: 'c is positive', text: '→ the pair shares a sign (both + or both −), matching the sign of b.' },
+          { label: 'c is negative', text: '→ the pair has opposite signs — one +, one −, with the bigger matching b’s sign.' },
+          { label: 'Check by multiplying back', text: '→ multiply your brackets out; if you don’t land on the original, the pair is wrong.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'To factor <b>x² + 5x + 6</b>, hunt for two numbers that multiply to 6 and add to 5. That’s <b>2 and 3</b> — so it rebuilds as:',
+          math: 'x² + 5x + 6 = (x + 2)(x + 3)'
+        },
+        takeaway: 'Factoring = find two numbers whose product is c and whose sum is b.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: '<b>(x + 2)(x + 3)</b> multiplies out to x² + 5x + 6. So what would “factoring” x² + 5x + 6 mean?',
         options: ['Un-multiplying it back into (x + 2)(x + 3)', 'Setting it equal to zero', 'Making the x² disappear'] },
@@ -115,6 +137,28 @@
     concept: 'quadratic-graphs', title: 'Graphing Parabolas',
     standards: ['AI.QE.6'],
     steps: [
+      { kind: 'teach', title: 'What sets a parabola’s shape',
+        lead: 'Every quadratic graphs as a <b>parabola</b> — a symmetric U-shaped cup. Three things describe it: the <b>vertex</b> (the turning point), the <b>axis of symmetry</b> (the vertical mirror line through it), and the <b>direction</b> it opens. In vertex form <b>y = a(x − h)² + k</b>, those three are handed to you directly.',
+        anatomy: {
+          expr: 'y = <span class="tint-m">a</span>(x − <span class="tint-x">h</span>)² + <span class="tint-y">k</span>',
+          parts: [
+            { sym: 'a', tone: 'm', name: 'the shape', desc: 'sets the cup — <b>a &gt; 0 opens up</b> (a minimum), <b>a &lt; 0 opens down</b> (a maximum); bigger |a| is narrower' },
+            { sym: 'h', tone: 'x', name: 'left/right', desc: 'the vertex’s x — the <b>axis of symmetry is x = h</b>. Mind the sign: (x − 3)² turns at x = <b>+3</b>' },
+            { sym: 'k', tone: 'y', name: 'up/down', desc: 'the vertex’s height — how far the whole cup sits above or below the x-axis' }
+          ]
+        },
+        moves: [
+          { label: 'Flip the sign of a', text: '→ the cup flips over — an upward U becomes a downward ∩.' },
+          { label: 'Change h', text: '→ the whole parabola slides left or right; the axis of symmetry moves with it.' },
+          { label: 'Change k', text: '→ the parabola slides straight up or down; its shape never changes.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: '<b>y = (x − 2)² − 1</b> reads as: “a = 1 so it opens <b>up</b>, vertex sits at <b>(2, −1)</b>, mirror line x = 2.” The square is zero exactly at x = 2 — that’s the bottom of the cup:',
+          math: 'vertex (2, −1) · axis x = 2 · opens up'
+        },
+        takeaway: 'a shapes the cup; h slides it sideways; k slides it up or down.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'A ball thrown upward rises, slows, turns, and falls. What shape does its height trace over time?',
         options: ['An arch (a parabola)', 'A straight line', 'A circle'] },
@@ -178,6 +222,28 @@
     concept: 'solve-quadratics', title: 'Solving Quadratics',
     standards: ['AI.QE.4'],
     steps: [
+      { kind: 'teach', title: 'What “solving” a quadratic means',
+        lead: 'Solving a quadratic means finding the <b>x-values where y = 0</b> — the <b>roots</b>. Once you’ve factored, the key that unlocks them is the <b>zero-product property</b>: if two things multiply to zero, at least one of them <i>must be</i> zero. That turns one hard equation into two easy ones.',
+        anatomy: {
+          expr: '<span class="tint-b">(x − 3)</span> · <span class="tint-x">(x + 2)</span> = <span class="tint-m">0</span>',
+          parts: [
+            { sym: '= 0', tone: 'm', name: 'the setup', desc: 'everything must be on one side <b>equal to zero</b> first — that’s what makes the next step legal' },
+            { sym: '(x − 3)', tone: 'b', name: 'factor one', desc: 'set it to zero on its own: <b>x − 3 = 0 → x = 3</b>' },
+            { sym: '(x + 2)', tone: 'x', name: 'factor two', desc: 'set it to zero on its own: <b>x + 2 = 0 → x = −2</b>' }
+          ]
+        },
+        moves: [
+          { label: 'A product hits zero', text: '→ one of the factors is zero — so each factor gives its own solution.' },
+          { label: 'It’s already a bare square', text: '→ take square roots instead: x² = 49 → x = ±7 (never drop the negative).' },
+          { label: 'It won’t factor', text: '→ the quadratic formula x = (−b ± √(b² − 4ac)) / 2a always works.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'To solve <b>x² − x − 6 = 0</b>, factor to <b>(x − 3)(x + 2) = 0</b>, then set each factor to zero. Two little equations, two roots:',
+          math: 'x − 3 = 0 or x + 2 = 0  →  x = 3 or x = −2'
+        },
+        takeaway: 'Roots are where y = 0; the zero-product rule splits one equation into two.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'If <b>x² = 49</b>, what could x be?',
         options: ['7 or −7', 'Only 7', '24.5'] },
@@ -271,6 +337,28 @@
     concept: 'quadratic-zeros', title: 'Zeros, Roots & Factors',
     standards: ['AI.QE.7'],
     steps: [
+      { kind: 'teach', title: 'Zeros, roots, x-intercepts — one thing',
+        lead: 'These three words all name the <b>same numbers</b>: the <b>zeros</b> of the function, the <b>roots</b> of the equation, and the <b>x-intercepts</b> of the graph — the x-values where the parabola crosses the x-axis. And the <b>factors</b> point straight at them: (x − 3) means a crossing at x = 3.',
+        anatomy: {
+          expr: 'y = (x − <span class="tint-b">3</span>)(x + <span class="tint-x">2</span>)  →  crosses at x = <span class="tint-b">3</span>, <span class="tint-x">−2</span>',
+          parts: [
+            { sym: '(x − 3)', tone: 'b', name: 'right crossing', desc: 'this factor is zero at <b>x = 3</b> — a zero r ⟷ the factor (x − r), so mind the sign flip' },
+            { sym: '(x + 2)', tone: 'x', name: 'left crossing', desc: 'this factor is zero at <b>x = −2</b> — the graph pierces the x-axis there' },
+            { sym: 'y = 0', tone: 'm', name: 'the crossing line', desc: 'a crossing is any point where <b>y = 0</b> — which is exactly what solving sets up' }
+          ]
+        },
+        moves: [
+          { label: 'Two distinct factors', text: '→ two crossings — the parabola cuts the x-axis at two spots.' },
+          { label: 'A repeated factor (x − 3)²', text: '→ one crossing — the vertex just touches the axis (one real zero).' },
+          { label: 'The cup floats off the axis', text: '→ zero real crossings — the two solutions are complex, not real.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: 'For <b>y = x² − x − 6 = (x − 3)(x + 2)</b>, the zeros, roots, and x-intercepts are all the same pair — the graph crosses at:',
+          math: 'x = 3 and x = −2'
+        },
+        takeaway: 'Zeros = roots = x-intercepts; there can be 2, 1, or 0 real ones.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'You solved x² − x − 6 = 0 and got x = 3 and x = −2. Where would the graph of y = x² − x − 6 cross the x-axis?',
         options: ['At x = 3 and x = −2 — same numbers', 'At x = −3 and x = 2 — flipped', 'You can’t tell from the solutions'] },
@@ -334,6 +422,28 @@
     concept: 'linear-vs-exp', title: 'Linear vs. Exponential',
     standards: ['AI.QE.1'],
     steps: [
+      { kind: 'teach', title: 'Adding vs. multiplying each step',
+        lead: 'This is the core contrast of the whole strand. <b>Linear</b> growth <b>adds</b> the same amount every step — equal <i>differences</i>. <b>Exponential</b> growth <b>multiplies</b> by the same factor every step — equal <i>ratios</i>. That one difference — plus vs. times — is why one crawls in a straight line and the other explodes.',
+        anatomy: {
+          expr: 'linear: <span class="tint-m">y = mx + b</span>   ·   exponential: <span class="tint-b">y = a·bˣ</span>',
+          parts: [
+            { sym: 'y = mx + b', tone: 'm', name: 'linear — adds', desc: 'each step ADDS m: check by <b>subtracting</b> — equal differences mean linear' },
+            { sym: 'y = a·bˣ', tone: 'b', name: 'exponential — multiplies', desc: 'each step MULTIPLIES by b: check by <b>dividing</b> — equal ratios mean exponential' },
+            { sym: 'test it', tone: 'x', name: 'how to tell', desc: 'differences equal → linear; ratios equal → exponential; neither → something else' }
+          ]
+        },
+        moves: [
+          { label: 'Read a table', text: '→ subtract for differences, divide for ratios — whichever stays constant names the type.' },
+          { label: 'Give it enough steps', text: '→ any growing exponential overtakes any line, no matter how steep the line.' },
+          { label: 'Factor below 1', text: '→ multiplying by ½ each step is still exponential — it’s decay, not linear decrease.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: '<b>5, 8, 11, 14</b> keeps ADDING 3 — linear. <b>2, 6, 18, 54</b> keeps MULTIPLYING by 3 — exponential. Same-looking lists, opposite engines:',
+          math: '+3 each step (linear)   vs.   ×3 each step (exponential)'
+        },
+        takeaway: 'Linear adds the same amount; exponential times the same factor.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'Offer A: $1000 a day for 30 days. Offer B: a penny that <b>doubles</b> every day for 30 days. Which pays more?',
         options: ['B — doubling explodes past it', 'A — $30,000 is clearly more', 'They come out about even'] },
@@ -397,6 +507,28 @@
     concept: 'exponential-fn', title: 'Exponential Functions',
     standards: ['AI.QE.2'],
     steps: [
+      { kind: 'teach', title: 'What y = a·bˣ actually says',
+        lead: 'An exponential function is <b>repeated multiplication</b> written as a rule. In <b>y = a·bˣ</b>, just two numbers set everything: <b>a</b> is where you start, and <b>b</b> is the factor you multiply by at every step. The exponent x counts <i>how many times</i> you’ve multiplied.',
+        anatomy: {
+          expr: 'y = <span class="tint-m">a</span> · <span class="tint-b">b</span><span class="tint-x">ˣ</span>',
+          parts: [
+            { sym: 'a', tone: 'm', name: 'the start', desc: 'the value when <b>x = 0</b> (since b⁰ = 1, y = a) — your beginning amount' },
+            { sym: 'b', tone: 'b', name: 'the factor', desc: 'what you <b>multiply by</b> each step — b &gt; 1 grows, 0 &lt; b &lt; 1 decays' },
+            { sym: 'x', tone: 'x', name: 'the count', desc: 'how many times you’ve multiplied — the exponent, not a thing you add' }
+          ]
+        },
+        moves: [
+          { label: 'b &gt; 1', text: '→ growth: 1.05 adds 5% each step, 2 doubles it, 3 triples it.' },
+          { label: '0 &lt; b &lt; 1', text: '→ decay: ½ halves it each step, 0.8 loses 20% each step.' },
+          { label: 'Turn a percent into b', text: '→ keep the whole 100% and add the change: +20% → ×1.2; −20% → ×0.8.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: '<b>y = 500 · 1.2ˣ</b> models 500 subscribers growing 20% a year: start at 500, multiply by 1.2 each year. Year 2 means multiply <b>twice</b>, not by 2:',
+          math: 'y = 500 · 1.2² = 500 · 1.44 = 720'
+        },
+        takeaway: 'a is the start, b is the factor; b > 1 grows, 0 < b < 1 decays.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'In <b>y = 3 · 2ˣ</b>, what does the 3 tell you?',
         options: ['The starting amount (when x = 0)', 'How fast it grows', 'The biggest y can get'] },
