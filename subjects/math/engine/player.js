@@ -25,10 +25,10 @@
   const U = MATH.util, Store = MATH.Store, Graph = MATH.Graph;
 
   const LESSONS = {};
-  const KIND_LABEL = { hook: 'Curiosity', prior: 'Warm-up', explore: 'Explore', discover: 'Discovery', example: 'Worked example', practice: 'Practice', challenge: 'Challenge', mastery: 'Mastery check', reflect: 'Reflection', extend: 'Go further' };
+  const KIND_LABEL = { hook: 'Curiosity', prior: 'Warm-up', teach: 'The idea', explore: 'Explore', discover: 'Discovery', example: 'Worked example', practice: 'Practice', challenge: 'Challenge', mastery: 'Mastery check', reflect: 'Reflection', extend: 'Go further' };
   /* crisp SVG chrome icons (Atlas.icon) — emoji stays only inside lesson content */
   const ic = (n, s) => (window.Atlas && Atlas.icon) ? Atlas.icon(n, s) : '•';
-  const KIND_ICON = { hook: ic('spark', 15), prior: ic('help', 15), explore: ic('search', 15), discover: ic('spark', 15), example: ic('book', 15), practice: ic('pencil', 15), challenge: ic('zap', 15), mastery: ic('award', 15), reflect: ic('message', 15), extend: ic('arrow-up-right', 15), unlock: ic('flag', 15) };
+  const KIND_ICON = { hook: ic('spark', 15), prior: ic('help', 15), teach: ic('compass', 15), explore: ic('search', 15), discover: ic('spark', 15), example: ic('book', 15), practice: ic('pencil', 15), challenge: ic('zap', 15), mastery: ic('award', 15), reflect: ic('message', 15), extend: ic('arrow-up-right', 15), unlock: ic('flag', 15) };
 
   function register(lesson) { LESSONS[lesson.concept] = lesson; }
   function get(conceptId) { return LESSONS[conceptId]; }
@@ -118,6 +118,34 @@
           <div class="m-discover"><h2>${step.title || 'Nice work!'}</h2><p>${step.text}</p>
           ${step.rule ? `<div class="m-rule-box">${step.rule}</div>` : ''}</div>`;
         setNext(true, 'Got it →');
+        return;
+      }
+      if (step.kind === 'teach') {
+        // Pure explanation, no questions — teach the meaning of the idea BEFORE
+        // anything is asked. Data-driven sections; every field is optional.
+        const anat = step.anatomy;
+        const anatHTML = anat ? `<div class="m-teach-anatomy">
+            <div class="m-teach-expr">${anat.expr}</div>
+            <div class="m-teach-parts">${(anat.parts || []).map(p => `
+              <div class="m-teach-part${p.tone ? ' tone-' + p.tone : ''}">
+                <span class="m-tp-sym">${p.sym}</span>
+                <span class="m-tp-body"><b>${p.name}</b>${p.desc ? ` — ${p.desc}` : ''}</span>
+              </div>`).join('')}</div>
+          </div>` : '';
+        const movesHTML = (step.moves && step.moves.length) ? `<div class="m-teach-moves">
+            ${step.moves.map(m => `<div class="m-teach-move"><b>${m.label}</b><span>${m.text}</span></div>`).join('')}
+          </div>` : '';
+        const ex = step.example;
+        const exHTML = ex ? `<div class="m-teach-eg">
+            ${ex.lead ? `<div class="m-teach-eg-lead">${ex.lead}</div>` : ''}
+            <p>${ex.text || ''}</p>${ex.math ? `<div class="m-teach-eg-math">${ex.math}</div>` : ''}
+          </div>` : '';
+        card.innerHTML = `<div class="m-kicker">${KIND_ICON.teach} ${KIND_LABEL.teach}</div>
+          <div class="m-teach"><h2>${step.title || ''}</h2>
+          ${step.lead ? `<p class="m-teach-lead">${step.lead}</p>` : ''}
+          ${anatHTML}${movesHTML}${exHTML}
+          ${step.takeaway ? `<div class="m-rule-box">${step.takeaway}</div>` : ''}</div>`;
+        setNext(true, 'Makes sense →');
         return;
       }
       if (step.kind === 'prior') {

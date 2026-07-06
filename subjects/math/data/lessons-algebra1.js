@@ -170,6 +170,29 @@
     standards: ['AI.L.3', 'AI.L.5'],
     hook: { emoji: '📐', text: 'One tidy formula — y = mx + b — describes an entire line at a glance.', sub: 'If you know only the slope and the starting height, can you draw the whole line?' },
     steps: [
+      { kind: 'teach', title: 'What y = mx + b actually says',
+        lead: 'A line is a <b>rule for turning any x into a y</b> — a little machine: feed it an input, it hands back an output. The equation <b>y = mx + b</b> is that rule written down, and just <b>two numbers</b> — m and b — set the whole line’s behaviour.',
+        anatomy: {
+          expr: '<span class="tint-y">y</span> = <span class="tint-m">m</span><span class="tint-x">x</span> + <span class="tint-b">b</span>',
+          parts: [
+            { sym: 'b', tone: 'b', name: 'the start', desc: 'where the line sits when x = 0 — the <b>y-intercept</b>, your starting height' },
+            { sym: 'm', tone: 'm', name: 'the rate', desc: 'how much y changes <b>every time x goes up by 1</b> — the <b>slope</b>, or “rise over run”' },
+            { sym: 'x', tone: 'x', name: 'the input', desc: 'the value you choose to feed in' },
+            { sym: 'y', tone: 'y', name: 'the output', desc: 'what the line hands back for that x' }
+          ]
+        },
+        moves: [
+          { label: 'Bigger m', text: '→ a steeper climb. The line tilts up faster as x grows.' },
+          { label: 'Negative m', text: '→ the line runs downhill: y falls as x rises.' },
+          { label: 'Change b', text: '→ the whole line slides straight up or down — the steepness never changes.' }
+        ],
+        example: {
+          lead: 'A concrete picture',
+          text: '<b>y = 2x + 3</b> reads as: “<b>start at 3</b>, then <b>climb 2</b> for every step right.” Step x from 0 → 1 → 2 and y answers back:',
+          math: 'x: 0 → 1 → 2   gives   y: 3 → 5 → 7'
+        },
+        takeaway: 'm and b are the line’s personality; x is just the question you ask it.' },
+
       { kind: 'prior', title: 'What do you think?',
         prompt: 'In <b>y = 3x + 2</b>, which number tells you where the line <b>crosses the y-axis</b>?',
         options: ['3', '2', 'x'] },
