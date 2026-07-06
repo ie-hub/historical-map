@@ -132,6 +132,7 @@
                 <span class="m-tp-body"><b>${p.name}</b>${p.desc ? ` — ${p.desc}` : ''}</span>
               </div>`).join('')}</div>
           </div>` : '';
+        const visHTML = step.visual ? `<div class="m-teach-visual">${step.visual}</div>` : '';
         const movesHTML = (step.moves && step.moves.length) ? `<div class="m-teach-moves">
             ${step.moves.map(m => `<div class="m-teach-move"><b>${m.label}</b><span>${m.text}</span></div>`).join('')}
           </div>` : '';
@@ -143,7 +144,7 @@
         card.innerHTML = `<div class="m-kicker">${KIND_ICON.teach} ${KIND_LABEL.teach}</div>
           <div class="m-teach"><h2>${step.title || ''}</h2>
           ${step.lead ? `<p class="m-teach-lead">${step.lead}</p>` : ''}
-          ${anatHTML}${movesHTML}${exHTML}
+          ${anatHTML}${visHTML}${movesHTML}${exHTML}
           ${step.takeaway ? `<div class="m-rule-box">${step.takeaway}</div>` : ''}</div>`;
         setNext(true, 'Makes sense →');
         return;

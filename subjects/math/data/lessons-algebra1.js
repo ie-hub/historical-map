@@ -164,6 +164,7 @@
             { sym: '÷', tone: 'm', name: 'per one step', desc: 'the division turns it into a <b>rate</b>: rise <i>for each</i> unit of run' }
           ]
         },
+        visual: '<svg viewBox="0 0 300 172" role="img" aria-label="Slope shown as a staircase: the same rise for every run"><polyline points="40,145 110,145 110,105 180,105 180,65 250,65 250,25" fill="none" stroke="var(--rule2)" stroke-width="2" stroke-linejoin="round"/><line x1="40" y1="145" x2="250" y2="25" stroke="var(--m-accent)" stroke-width="3" stroke-linecap="round"/><circle cx="110" cy="105" r="3.5" fill="var(--m-accent)"/><circle cx="180" cy="65" r="3.5" fill="var(--m-accent)"/><line x1="110" y1="120" x2="180" y2="120" stroke="#c8791a" stroke-width="2"/><text x="145" y="136" fill="#c8791a" font-size="12.5" font-weight="700" text-anchor="middle">run</text><line x1="196" y1="105" x2="196" y2="65" stroke="#8a4fc4" stroke-width="2"/><text x="204" y="90" fill="#8a4fc4" font-size="12.5" font-weight="700">rise</text><text x="150" y="166" fill="var(--muted)" font-size="11" text-anchor="middle">the same step up for every step across — that is the slope</text></svg>',
         moves: [
           { label: 'Bigger number', text: '→ steeper line. Slope 5 climbs faster than slope 2.' },
           { label: 'Positive vs. negative', text: '→ direction flips. Positive climbs left-to-right; negative falls. Same size, opposite tilt.' },

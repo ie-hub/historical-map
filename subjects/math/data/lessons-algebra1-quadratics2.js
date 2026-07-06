@@ -161,6 +161,7 @@
             { sym: 'a', tone: 'm', name: 'the opening', desc: '<b>a &lt; 0 opens down</b> (vertex is a max), a &gt; 0 opens up (a min)' }
           ]
         },
+        visual: '<svg viewBox="0 0 300 180" role="img" aria-label="A downward parabola: two zeros on the ground and a vertex at the top"><line x1="20" y1="140" x2="286" y2="140" stroke="var(--rule2)" stroke-width="2"/><path d="M60 140 Q150 -60 240 140" fill="none" stroke="var(--m-accent)" stroke-width="3"/><line x1="150" y1="42" x2="150" y2="140" stroke="var(--rule2)" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="150" cy="40" r="5" fill="#8a4fc4"/><text x="150" y="30" fill="#8a4fc4" font-size="12" font-weight="700" text-anchor="middle">vertex = max</text><circle cx="60" cy="140" r="5" fill="#c8791a"/><circle cx="240" cy="140" r="5" fill="#c8791a"/><text x="60" y="158" fill="#c8791a" font-size="11.5" font-weight="700" text-anchor="middle">zero</text><text x="240" y="158" fill="#c8791a" font-size="11.5" font-weight="700" text-anchor="middle">zero</text><text x="150" y="174" fill="var(--muted)" font-size="11" text-anchor="middle">rises, peaks at the vertex, then falls back to the ground</text></svg>',
         moves: [
           { label: '“How high / how much?”', text: '→ read the vertex’s <b>y-value</b> — that’s the max or min amount.' },
           { label: '“When / what input?”', text: '→ read the vertex’s <b>x-value</b> — the time of the peak, or the best width.' },
